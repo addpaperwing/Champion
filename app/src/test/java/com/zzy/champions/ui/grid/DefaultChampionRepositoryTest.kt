@@ -8,6 +8,7 @@ import com.zzy.champions.data.remote.Api
 import com.zzy.champions.ui.grid.TestUtil.LOCAL_CHAMP_NAME
 import com.zzy.champions.ui.grid.TestUtil.REMOTE_CHAMP_NAME
 import com.zzy.champions.ui.grid.TestUtil.aatrox
+import com.zzy.champions.ui.grid.TestUtil.createChampion
 import io.mockk.Called
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -57,9 +58,9 @@ class DefaultChampionRepositoryTest {
             championRepository.getLatestVersion()
         }
 
-        coVerify { dsManager.setVersion(VERSION_1_0) wasNot Called }
+        coVerify(exactly = 0) { dsManager.setVersion(VERSION_1_0) }
 
-        assertEquals(championRepository.getUseRemote(), false)
+        assertEquals(false, championRepository.getUseRemote())
         assertEquals(Champion.version, VERSION_1_0)
     }
 
@@ -75,41 +76,51 @@ class DefaultChampionRepositoryTest {
 
         coVerify { dsManager.setVersion(VERSION_1_1) }
 
-        assertEquals(championRepository.getUseRemote(), true)
+        assertEquals(true, championRepository.getUseRemote())
         assertEquals(Champion.version, VERSION_1_1)
     }
 
     @Test
     fun getLocalChampions_When_UseRemote_Is_False() {
-        championRepository.setUseRemote(false)
+        val aatrox = createChampion("aatrox", 1)
+        val ahri = createChampion("ahri", 2)
+        coEvery {
+            api.getChampions(VERSION_1_0, LANGUAGE_US)
+        } returns ChampionResponse(HashMap<String, Champion>().apply { this["aatrox"] = aatrox })
 
-        coEvery { api.getChampions(VERSION_1_0, LANGUAGE_US) } returns ChampionResponse(HashMap<String, Champion>().apply { this["Aatrox"] = aatrox(true) })
-        coJustRun { dao.insertList(listOf(aatrox(true))) }
-        coEvery { dao.getAll() } returns listOf(aatrox(remote = false))
+        coJustRun { dao.insertList(listOf(aatrox)) }
+        coEvery { dao.getAll() } returns listOf(ahri)
 
         runTest {
+            championRepository.setUseRemote(false)
+
             val result = championRepository.getChampions(VERSION_1_0, LANGUAGE_US)
 
-            assertEquals(result[0].name, LOCAL_CHAMP_NAME)
+            assertEquals(ahri, result[0])
         }
 
-        coVerify { dao.insertList(listOf(aatrox(true)))  wasNot Called }
+        assertEquals(false, championRepository.getUseRemote())
+        coVerify(exactly = 0) { api.getChampions(VERSION_1_0, LANGUAGE_US) }
+        coVerify(exactly = 0) { dao.insertList(listOf(aatrox)) }
     }
 
     @Test
     fun getRemoteChampions_When_UseRemote_Is_True_And_UpdateDataBase() {
-        championRepository.setUseRemote(true)
+        val aatrox = createChampion("aatrox", 1)
+        val ahri = createChampion("ahri", 2)
 
-        coEvery { api.getChampions(VERSION_1_0, LANGUAGE_US) } returns ChampionResponse(HashMap<String, Champion>().apply { this["Aatrox"] = aatrox(true) })
-        coJustRun { dao.insertList(listOf(aatrox(true))) }
-        coEvery { dao.getAll() } returns listOf(aatrox(remote = false))
+        coEvery { api.getChampions(VERSION_1_0, LANGUAGE_US) } returns ChampionResponse(HashMap<String, Champion>().apply { this["aatrox"] = aatrox })
+        coJustRun { dao.insertList(listOf(aatrox)) }
+        coEvery { dao.getAll() } returns listOf(ahri)
 
         runTest {
+            championRepository.setUseRemote(true)
+
             val result = championRepository.getChampions(VERSION_1_0, LANGUAGE_US)
 
-            assertEquals(result[0].name, REMOTE_CHAMP_NAME)
+            assertEquals(aatrox, result[0])
         }
 
-        coVerify { dao.insertList(listOf(aatrox(true))) }
+        coVerify { dao.insertList(listOf(aatrox)) }
     }
 }
