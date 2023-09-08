@@ -50,6 +50,9 @@ jobs:
 
             - name: Gradle cache
               uses: gradle/gradle-build-action@v2
+
+            - name: make gradlew executable
+              run: chmod +x ./gradlew
             
             # - name: Get AVD info
             #   uses: ./.github/actions/get-avd-info
