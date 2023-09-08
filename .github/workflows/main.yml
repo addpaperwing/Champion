@@ -34,7 +34,7 @@ jobs:
             - name: run unit test
               run: ./gradlew testDebugUnitTest
 
-    ui-test:
+    instrumentation-test:
         runs-on: macOs-latest
         strategy:
             fail-fast: true
@@ -42,19 +42,20 @@ jobs:
                 api-level: [22, 26, 29]
         steps:
             - uses: actions/checkout@v3
-            - uses: actions/setup-java@v3
-              with: 
-                distribution: zulu
-                java-version: 18
+
+            # - uses: actions/setup-java@v3
+            #   with: 
+            #     distribution: zulu
+            #     java-version: 18
 
             - name: Gradle cache
               uses: gradle/gradle-build-action@v2
             
-            - name: Get AVD info
-              uses: ./.github/actions/get-avd-info
-              id: avd-info
-              with:
-                api-level: ${{ matrix.api-level }}
+            # - name: Get AVD info
+            #   uses: ./.github/actions/get-avd-info
+            #   id: avd-info
+            #   with:
+            #     api-level: ${{ matrix.api-level }}
   
             - name: AVD cache
               uses: actions/cache@v3
