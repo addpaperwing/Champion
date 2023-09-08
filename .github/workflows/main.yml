@@ -35,7 +35,7 @@ jobs:
               run: ./gradlew assembleDebug
 
             - name: run unit test
-              run: ./gradle testDebugUnitTest
+              run: ./gradlew testDebugUnitTest
 
     # ui-test:
     #     runs-on: macOs-latest
