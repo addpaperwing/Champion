@@ -32,7 +32,14 @@ jobs:
             #   run: ./gradlew assembleDebug
 
             - name: run unit test
-              run: ./gradlew testDebugUnitTest
+              run: ./gradlew lint testDebugUnitTest
+
+            - name: Upload Reports
+              uses: actions/upload-artifact@v2
+              with:
+                name: Test-Reports
+                path: app/build/reports
+              if: always()
 
     instrumentation-test:
         runs-on: macOs-latest

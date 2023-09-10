@@ -19,4 +19,15 @@ object TestUtil {
         Info(),
         Stats()
     )
+
+    fun createChampion(name: String = "Aatrox", key: Int): Champion = Champion(
+        "",
+        key,
+        name,
+        "",
+        emptyList(),
+        "",
+        Info(),
+        Stats()
+    )
 }
