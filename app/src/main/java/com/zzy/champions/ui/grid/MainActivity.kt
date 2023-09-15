@@ -1,5 +1,6 @@
 package com.zzy.champions.ui.grid
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,7 +14,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.zzy.champions.data.model.Champion
 import com.zzy.champions.data.remote.UiState
+import com.zzy.champions.ui.detail.DetailActivity
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,7 +41,9 @@ class MainActivity : ComponentActivity() {
                         ChampionIndexScreen(
                             modifier = Modifier.padding(padding),
                             viewModel = viewModel
-                        )
+                        ) {
+                            startActivity(Intent(this, DetailActivity::class.java))
+                        }
                     }
                 }
             }
@@ -49,9 +54,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ChampionIndexScreen(modifier: Modifier = Modifier, viewModel: ChampionsViewModel) {
+fun ChampionIndexScreen(modifier: Modifier = Modifier, viewModel: ChampionsViewModel, onItemClick: (Champion) -> Unit) {
     val champions by viewModel.champions.collectAsStateWithLifecycle()
     if (champions is UiState.Success) {
-        ChampionsGrid(modifier = modifier, champions = (champions as UiState.Success).data)
+        ChampionsGrid(modifier = modifier, champions = (champions as UiState.Success).data, onItemClick)
     }
 }

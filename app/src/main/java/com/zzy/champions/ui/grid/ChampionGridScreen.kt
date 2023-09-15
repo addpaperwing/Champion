@@ -3,6 +3,7 @@ package com.zzy.champions.ui.grid
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -73,7 +74,7 @@ fun SearchBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ChampionsGrid(modifier: Modifier = Modifier, champions: List<Champion>) {
+fun ChampionsGrid(modifier: Modifier = Modifier, champions: List<Champion>, onItemClick: (Champion) -> Unit) {
     LazyVerticalGrid(
         modifier = modifier,
         columns = GridCells.Fixed(4),
@@ -82,20 +83,25 @@ fun ChampionsGrid(modifier: Modifier = Modifier, champions: List<Champion>) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         items(count = champions.size) { index ->
-            ChampionItem(champion = champions[index])
+            ChampionItem(
+                champion = champions[index],
+                onClick = {
+                    onItemClick(champions[index])
+                })
         }
     }
 }
 
 @Composable
-fun ChampionItem(modifier: Modifier = Modifier, champion: Champion) {
+fun ChampionItem(modifier: Modifier = Modifier, champion: Champion, onClick: () -> Unit) {
         AsyncImage(
             model = champion.getAvatar(),
             contentDescription = null,
             modifier = modifier
                 .clip(RoundedCornerShape(corner = CornerSize(6.dp)))
                 .fillMaxWidth()
-                .aspectRatio(1f / 1),
+                .aspectRatio(1f / 1)
+                .clickable(onClick = onClick),
             contentScale = ContentScale.Crop,
         )
 }
@@ -132,7 +138,7 @@ fun PreviewLaunchScreen() {
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xff111111)
+@Preview(showBackground = true)
 @Composable
 fun PreviewChampionGridScreen() {
     val aatrox = Champion(
@@ -157,7 +163,9 @@ fun PreviewChampionGridScreen() {
                 TopBar()
             }
         ) { padding ->
-            ChampionsGrid(modifier = Modifier.padding(padding), champions = champions)
+            ChampionsGrid(modifier = Modifier.padding(padding), champions = champions) {
+
+            }
         }
     }
 }
