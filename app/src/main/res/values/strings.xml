@@ -1,4 +1,39 @@
 <resources>
     <string name="app_name">Champions</string>
     <string name="champions">Champions</string>
+    
+    <array name="tabs">
+        <item>Info</item>
+        <item>Abilities</item>
+        <item>Stats</item>
+        <item>Build</item>
+    </array>
+    
+    <array name="abilities">
+        <item>Passive</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+    
+    <string name="difficulty">Difficulty: </string>
+    <string name="more">…More</string>
+    <string name="less">Less</string>
+    
+    <string name="move_speed">Base Move Speed: %s</string>
+    <string name="attack_range">Base Attack Range: %s</string>
+    
+    <string name="level">Lv. </string>
+    <string name="hp">Hp</string>
+    <string name="mp">Mp</string>
+    
+    <string name="hp_regen">Hp.Regen</string>
+    <string name="mp_regen">Mp.Regen</string>
+    
+    <string name="armor">Armor</string>
+    <string name="magic_resist">M.Resist</string>
+    
+    <string name="attack_damage">A.Damage</string>
+    <string name="attack_speed">A.Speed</string>
 </resources>

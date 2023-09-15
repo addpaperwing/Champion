@@ -47,4 +47,10 @@ data class Champion(
     }
 
     fun getAvatar() = "https://ddragon.leagueoflegends.com/cdn/$version/img/champion/${id}.png"
+
+    fun getP() = "https://ddragon.leagueoflegends.com/cdn/$version/img/passive/${id}_Passive.png"
+    fun getQ() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}Q.png"
+    fun getW() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}W.png"
+    fun getE() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}E.png"
+    fun getR() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}R.png"
 }

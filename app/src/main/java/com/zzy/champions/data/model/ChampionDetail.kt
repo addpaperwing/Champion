@@ -1,7 +1,5 @@
 package com.zzy.champions.data.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.squareup.moshi.JsonClass
 
 //Aatrox: {
@@ -31,9 +29,14 @@ data class ChampionDetail(
     val id: String,
     val skins: List<SkinNumber>,
     val lore: String,
-//    val spells: List<>,
-//    val passive: Any
+    val spells: List<Ability>,
+    val passive: Ability
 ) {
 
     fun getSplash(index: Int = 0) = "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${id}_${index}.jpg"
+
+    fun getAbilities() = buildList {
+        add(passive)
+        addAll(spells)
+    }
 }

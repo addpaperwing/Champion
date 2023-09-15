@@ -15,6 +15,7 @@ import java.lang.reflect.Type
 object Converters {
 
     @TypeConverter
+    @JvmStatic
     fun toSkinNumberList(value :  String):  List<SkinNumber> {
         val moshi = Moshi.Builder().build()
         val type: Type = Types.newParameterizedType(
@@ -27,6 +28,7 @@ object Converters {
     }
 
     @TypeConverter
+    @JvmStatic
     fun fromSkinNumberList(list: List<SkinNumber>): String {
         val moshi = Moshi.Builder().build()
         val type: Type = Types.newParameterizedType(
@@ -38,6 +40,7 @@ object Converters {
     }
 
     @TypeConverter
+    @JvmStatic
     fun toTagList(value :  String):  List<String> {
         val moshi = Moshi.Builder().build()
         val type: Type = Types.newParameterizedType(
@@ -50,6 +53,7 @@ object Converters {
     }
 
     @TypeConverter
+    @JvmStatic
     fun fromTagList(list: List<String>): String {
         val moshi = Moshi.Builder().build()
         val type: Type = Types.newParameterizedType(
@@ -61,6 +65,7 @@ object Converters {
     }
 
     @TypeConverter
+    @JvmStatic
     fun toInfo(value :  String):  Info? {
         val moshi = Moshi.Builder().build()
 
@@ -70,6 +75,7 @@ object Converters {
     }
 
     @TypeConverter
+    @JvmStatic
     fun fromInfo(info: Info): String {
         val moshi = Moshi.Builder().build()
         val adapter: JsonAdapter<Info> = moshi.adapter()
@@ -77,6 +83,7 @@ object Converters {
     }
 
     @TypeConverter
+    @JvmStatic
     fun toStats(value :  String):  Stats? {
         val moshi = Moshi.Builder().add(BigDecimalAdapter).build()
         val adapter: JsonAdapter<Stats> = moshi.adapter()
@@ -85,6 +92,7 @@ object Converters {
     }
 
     @TypeConverter
+    @JvmStatic
     fun fromStats(stats: Stats): String {
         val moshi = Moshi.Builder().add(BigDecimalAdapter).build()
         val adapter: JsonAdapter<Stats> = moshi.adapter()

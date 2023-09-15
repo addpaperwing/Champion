@@ -1,21 +1,20 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id("com.google.devtools.ksp")
 }
 
 android {
     namespace 'com.zzy.champions'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.zzy.champions"
         minSdk 21
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -25,10 +24,24 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            storeFile file("release-key.jks")
+            storePassword = project.property("KEYSTORE_PASSWORD").toString()
+            keyAlias = project.property("SIGNING_KEY_ALIAS").toString()
+            keyPassword = project.property("SIGNING_KEY_PASSWORD").toString()
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            debuggable true
         }
     }
     compileOptions {
@@ -36,13 +49,13 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "1.8"
     }
     buildFeatures {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion "1.4.6"
+        kotlinCompilerExtensionVersion "1.5.3"
     }
     packagingOptions {
         resources {
@@ -51,20 +64,24 @@ android {
     }
 }
 
-tasks.withType(KotlinCompile).configureEach {
-    kotlinOptions {
-        // Treat all Kotlin warnings as errors
-//        allWarningsAsErrors = true
-
-        freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
-
-        // Set JVM target to 1.8
-        jvmTarget = "1.8"
-    }
+kapt {
+    correctErrorTypes true
 }
+//
+//tasks.withType(KotlinCompile).configureEach {
+//    kotlinOptions {
+//        // Treat all Kotlin warnings as errors
+////        allWarningsAsErrors = true
+//
+//        freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
+//
+//        // Set JVM target to 1.8
+//        jvmTarget = "1.8"
+//    }
+//}
 
 dependencies {
-    def composeBom = platform('androidx.compose:compose-bom:2023.05.01')
+    def composeBom = platform('androidx.compose:compose-bom:2023.09.00')
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
@@ -79,9 +96,10 @@ dependencies {
 
     def lifecycle_version = "2.6.1"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version"
+
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version"
 
     def nav_version = "2.6.0"
     implementation "androidx.navigation:navigation-compose:$nav_version"
@@ -90,17 +108,19 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
 
-    def moshi_version = "1.14.0"
-    implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
+    def moshi_version = "1.15.0"
+    implementation("com.squareup.moshi:moshi-kotlin:$moshi_version")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:$moshi_version")
 
     def okhttp_version = '4.10.0'
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
 
-    def hilt_version = "2.46.1"
+    def hilt_version = "2.48"
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
+
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
     def coil_version = "2.4.0"
     implementation "io.coil-kt:coil:$coil_version"
@@ -110,7 +130,7 @@ dependencies {
 
      def room_version = "2.5.2"
     implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    ksp("androidx.room:room-compiler:$room_version")
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3'
