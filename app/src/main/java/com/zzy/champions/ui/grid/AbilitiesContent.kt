@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -84,7 +85,7 @@ fun Abilities(
                 alpha = 1 - pageOffset.absoluteValue
             }) {
                 Column(
-                    modifier = Modifier
+                    modifier = Modifier.fillMaxSize()
                         .align(Alignment.TopCenter)
                         .fillMaxWidth()
                         .padding(all = 16.dp)
@@ -105,7 +106,6 @@ fun Abilities(
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 12.sp,
                         lineHeight = 14.sp,
-                        minLines = 8
                     )
                 }
             }

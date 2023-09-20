@@ -23,5 +23,17 @@
     
     <string name="move_speed">Base Move Speed: %s</string>
     <string name="attack_range">Base Attack Range: %s</string>
+    
     <string name="level">Lv. </string>
+    <string name="hp">Hp</string>
+    <string name="mp">Mp</string>
+    
+    <string name="hp_regen">Hp.Regen</string>
+    <string name="mp_regen">Mp.Regen</string>
+    
+    <string name="armor">Armor</string>
+    <string name="magic_resist">M.Resist</string>
+    
+    <string name="attack_damage">A.Damage</string>
+    <string name="attack_speed">A.Speed</string>
 </resources>
