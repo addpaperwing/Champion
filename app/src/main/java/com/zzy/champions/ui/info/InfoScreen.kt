@@ -18,7 +18,7 @@ fun InfoPie(info: Info, bMoveSpeed: BigDecimal, bAttackRange: BigDecimal) {
     Box(Modifier.padding(16.dp)) {
         AnimatedCircle(
             listOf(
-                9, 7, 5, 3, 1
+                info.attack, info.defense, bMoveSpeed.toInt(), bAttackRange.toInt(), info.magic
             ),
             modifier = Modifier
                 .height(300.dp)
@@ -33,13 +33,11 @@ fun PreviewPie() {
     MyApplicationTheme {
         AnimatedCircle(
             listOf(
-                9, 7, 5, 320, 125
+                9, 7, 320, 125, 5
             ),
             modifier = Modifier
                 .height(300.dp)
                 .fillMaxWidth()
         )
-
-
     }
 }

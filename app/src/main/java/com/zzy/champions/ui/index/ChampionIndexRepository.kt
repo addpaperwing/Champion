@@ -1,8 +1,8 @@
-package com.zzy.champions.ui.grid
+package com.zzy.champions.ui.index
 
 import com.zzy.champions.data.model.Champion
 
-interface ChampionsRepository {
+interface ChampionIndexRepository {
     suspend fun getLanguage(): String
     suspend fun getLatestVersion(): String
     suspend fun getChampions(version: String, language: String): List<Champion>

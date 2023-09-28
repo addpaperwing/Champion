@@ -1,13 +1,10 @@
-package com.zzy.champions.ui.grid
+package com.zzy.champions.ui.stats
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -28,13 +25,13 @@ import androidx.compose.ui.unit.sp
 import com.zzy.champions.R
 import com.zzy.champions.data.local.adaptiveScale
 import com.zzy.champions.data.model.Champion
+import com.zzy.champions.data.model.Image
 import com.zzy.champions.data.model.Info
 import com.zzy.champions.data.model.Stats
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import java.math.BigDecimal
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChampionLevel(modifier: Modifier = Modifier, level: Float, onLevelChange: (Float) -> Unit,) {
 //     var sliderPosition by remember { mutableFloatStateOf(1f) }
@@ -309,21 +306,6 @@ fun StatsBars(level: Float, champion: Champion) {
 }
 
 @Composable
-fun BaseStatsText(text: String) {
-    Text(
-        text = text,
-        color = MaterialTheme.colorScheme.onPrimary,
-        modifier = Modifier
-            .border(
-                border = BorderStroke(0.5.dp, Color.White),
-                shape = CutCornerShape(topEnd = 6.dp, bottomStart = 6.dp)
-            )
-            .padding(6.dp),
-        fontSize = 12.sp
-    )
-}
-
-@Composable
 fun ChampionStats(champion: Champion) {
     var level by remember { mutableFloatStateOf(0f) }
     Column {
@@ -337,9 +319,9 @@ fun ChampionStats(champion: Champion) {
 fun PreviewStats() {
     val champion = Champion(
         "aatrox",
-        1,
         "star guardian seraphine The Darkin Blade",
         "The Darkin Blade",
+        Image(""),
         listOf("Warrior", "Fighter", "Assassin"),
         "Blood Well",
         Info(difficulty = 5),

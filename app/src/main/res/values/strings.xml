@@ -2,6 +2,10 @@
     <string name="app_name">Champions</string>
     <string name="champions">Champions</string>
     
+    <string name="choose_your">Choose your</string>
+    <string name="champion">Champion</string>
+    <string name="choose_your_champion_desc">With more than 140 champions, you’ll find the perfect match for your playstyle. Master one, or master them all.</string>
+    
     <array name="tabs">
         <item>Info</item>
         <item>Abilities</item>
@@ -17,7 +21,8 @@
         <item>R</item>
     </array>
     
-    <string name="difficulty">Difficulty: </string>
+    <string name="role">Role</string>
+    <string name="difficulty">Difficulty</string>
     <string name="more">…More</string>
     <string name="less">Less</string>
     
@@ -36,4 +41,6 @@
     
     <string name="attack_damage">A.Damage</string>
     <string name="attack_speed">A.Speed</string>
+    
+    <string name="skin_name_default">Default</string>
 </resources>

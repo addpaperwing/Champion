@@ -5,6 +5,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.adapter
+import com.zzy.champions.data.model.Image
 import com.zzy.champions.data.model.Info
 import com.zzy.champions.data.model.SkinNumber
 import com.zzy.champions.data.model.Stats
@@ -96,6 +97,23 @@ object Converters {
     fun fromStats(stats: Stats): String {
         val moshi = Moshi.Builder().add(BigDecimalAdapter).build()
         val adapter: JsonAdapter<Stats> = moshi.adapter()
+        return adapter.toJson(stats)
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun toImage(value :  String):  Image? {
+        val moshi = Moshi.Builder().add(BigDecimalAdapter).build()
+        val adapter: JsonAdapter<Image> = moshi.adapter()
+
+        return adapter.fromJson(value)
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun fromImage(stats: Image): String {
+        val moshi = Moshi.Builder().add(BigDecimalAdapter).build()
+        val adapter: JsonAdapter<Image> = moshi.adapter()
         return adapter.toJson(stats)
     }
 }

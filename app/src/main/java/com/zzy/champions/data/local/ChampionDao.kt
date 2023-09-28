@@ -15,6 +15,6 @@ interface ChampionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertList(champions:  List<Champion>)
 
-    @Query("SELECT * FROM champion WHERE `key` IS :key  LIMIT 1")
-    fun findByKey(key: Int): Champion
+    @Query("SELECT * FROM champion WHERE `id` IS :id  LIMIT 1")
+    fun findById(id: String): Champion
 }

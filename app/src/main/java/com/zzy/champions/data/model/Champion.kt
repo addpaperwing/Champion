@@ -29,11 +29,11 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 @Entity(tableName = "champion")
 data class Champion(
-    val id: String,
     @PrimaryKey
-    val key: Int,
+    val id: String,
     val name: String,
     val title: String,
+    val image: Image,
     val tags: List<String>,
     val partype: String,
     val info: Info,
@@ -46,11 +46,20 @@ data class Champion(
         var version: String = "3.9.7"
     }
 
-    fun getAvatar() = "https://ddragon.leagueoflegends.com/cdn/$version/img/champion/${id}.png"
+    fun getAvatar() = "https://ddragon.leagueoflegends.com/cdn/$version/img/champion/${image.full}"
 
-    fun getP() = "https://ddragon.leagueoflegends.com/cdn/$version/img/passive/${id}_Passive.png"
-    fun getQ() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}Q.png"
-    fun getW() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}W.png"
-    fun getE() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}E.png"
-    fun getR() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}R.png"
+//    fun getAbilityImage(index: Int) = when(index) {
+//        0 -> getP()
+//        1 -> getQ()
+//        2 -> getW()
+//        3 -> getE()
+//        4 -> getR()
+//        else -> getP()
+//    }
+//
+//    private fun getP() = "https://ddragon.leagueoflegends.com/cdn/$version/img/passive/${id}_Passive.png"
+//    private fun getQ() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}Q.png"
+//    private fun getW() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}W.png"
+//    private fun getE() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}E.png"
+//    private fun getR() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}R.png"
 }
