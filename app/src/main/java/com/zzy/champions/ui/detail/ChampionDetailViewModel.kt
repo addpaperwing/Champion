@@ -1,8 +1,10 @@
-package com.zzy.champions.ui.grid
+package com.zzy.champions.ui.detail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zzy.champions.data.model.Champion
+import com.zzy.champions.data.model.ChampionDetail
 import com.zzy.champions.data.remote.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -15,26 +17,29 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class ChampionsViewModel @Inject constructor(
-    private val repository: ChampionsRepository,
+class ChampionDetailViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val repository: ChampionDetailRepository,
     private val dispatcher: CoroutineDispatcher
 ): ViewModel() {
 
-    private val _champions = MutableStateFlow<UiState<List<Champion>>>(UiState.Loading)
-    val champions: StateFlow<UiState<List<Champion>>> = _champions.asStateFlow()
+    private val _result = MutableStateFlow<UiState<Pair<Champion, ChampionDetail>>>(UiState.Loading)
+    val result: StateFlow<UiState<Pair<Champion, ChampionDetail>>> = _result.asStateFlow()
 
-    fun getAllChampions() {
+    fun getChampionAndDetail(id: String) {
         viewModelScope.launch {
             val result = withContext(dispatcher) {
                 try {
-                    UiState.Success(repository.getChampions(repository.getLatestVersion(), repository.getLanguage()))
+                    val champion = repository.getChampion(id)
+                    val detail = repository.getChampionDetail(repository.getLatestVersion(), repository.getLanguage(), id)
+                    UiState.Success(Pair(champion, detail))
                 } catch (e: Throwable) {
                     e.printStackTrace()
                     UiState.Error(e)
                 }
             }
 
-            _champions.value = result
+            _result.value = result
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.grid
+package com.zzy.champions.ui.abilities
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -6,7 +6,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,18 +37,21 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.zzy.champions.R
 import com.zzy.champions.data.model.Ability
 import com.zzy.champions.data.model.Champion
+import com.zzy.champions.data.model.ChampionDetail
+import com.zzy.champions.data.model.Image
 import com.zzy.champions.data.model.Info
+import com.zzy.champions.data.model.Passive
+import com.zzy.champions.data.model.Spell
 import com.zzy.champions.data.model.Stats
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import kotlinx.coroutines.launch
@@ -61,14 +63,13 @@ import kotlin.math.absoluteValue
 @Composable
 fun Abilities(
     modifier: Modifier = Modifier,
-    champion: Champion,
     abilities: List<Ability>
 ) {
     val pagerState = rememberPagerState { abilities.size }
     val scope = rememberCoroutineScope()
 
     Column(modifier = modifier.padding(top = 16.dp)) {
-        AbilitiesIndicator(champion = champion, abilities = abilities, initPage = pagerState.currentPage) { index ->
+        AbilitiesIndicator(abilities = abilities, initPage = pagerState.currentPage) { index ->
             scope.launch {
                 pagerState.animateScrollToPage(index)
             }
@@ -76,7 +77,8 @@ fun Abilities(
         HorizontalPager(
             modifier = Modifier,
             state = pagerState,
-            userScrollEnabled = false
+            userScrollEnabled = false,
+            verticalAlignment = Alignment.Top
         ) { page ->
             Box(modifier = Modifier.graphicsLayer {
                 val pageOffset =
@@ -116,7 +118,6 @@ fun Abilities(
 @Composable
 fun AbilitiesIndicator(
     modifier: Modifier = Modifier,
-    champion: Champion,
     abilities: List<Ability>,
     activeColor: Color = MaterialTheme.colorScheme.onTertiary,
     initPage: Int,
@@ -132,7 +133,7 @@ fun AbilitiesIndicator(
                     color = Color.White,
                     start = Offset(x = 0f, y = size.height - bottomPadding),
                     end = Offset(x = size.width, y = size.height - bottomPadding),
-                    strokeWidth = 0.5f
+                    strokeWidth = Dp.Hairline.toPx()
                 )
             }
             .fillMaxWidth()
@@ -143,15 +144,7 @@ fun AbilitiesIndicator(
         repeat(abilities.size) { index ->
             AbilityImage(
                 modifier = Modifier,
-                painter = painterResource(
-                    id = when (index) {
-                        0 -> R.drawable.aatrox_passive
-                        1 -> R.drawable.aatroxq
-                        2 -> R.drawable.aatroxw
-                        3 -> R.drawable.aatroxe
-                        else -> R.drawable.aatroxr
-                    }
-                ),
+                model = abilities[index].getAbilityImage(Champion.version),
                 contentDescription = abilities[index].name,
                 activeColor = activeColor,
                 inactiveColor = Color.White,
@@ -167,7 +160,7 @@ fun AbilitiesIndicator(
 @Composable
 fun AbilityImage(
     modifier: Modifier = Modifier,
-    painter: Painter,
+    model: String,
     contentDescription: String?,
     activeColor: Color,
     inactiveColor: Color,
@@ -204,11 +197,11 @@ fun AbilityImage(
             modifier = Modifier
                 .offset(0.dp, animatedOffsetDp)
         ) {
-            Image(
+            AsyncImage(
                 modifier = Modifier
                     .size(imageSize.dp)
                     .padding(3.dp),
-                painter = painter,
+                model = model,
                 contentDescription = contentDescription
             )
             if (isSelected) {
@@ -217,7 +210,7 @@ fun AbilityImage(
                         .size(imageSize.dp)
                         .border(
                             border = BorderStroke(
-                                0.5.dp,
+                                Dp.Hairline,
                                 Brush.horizontalGradient(listOf(activeColor, activeColor))
                             ),
                             shape = CutCornerShape(topEnd = (imageSize / 4).dp)
@@ -228,7 +221,6 @@ fun AbilityImage(
             }
         }
         Canvas(modifier = Modifier.padding(top = imageRaisedHeight.dp)) {
-//            val scale = 0.2f.coerceAtLeast(1 - pageOffsetFractionAbsoluteValue)
             val outlineStroke = Stroke(strokeWidth.dp.toPx())
 
             val x = imageSize.dp.toPx() / 2
@@ -242,7 +234,7 @@ fun AbilityImage(
                     color = activeColor,
                     start = Offset(x, y - radius),
                     end = Offset(x, 0f - y * 2),
-                    strokeWidth = strokeWidth.dp.toPx()
+                    strokeWidth = Dp.Hairline.toPx()
                 )
             }
 
@@ -267,38 +259,49 @@ fun AbilityImage(
 fun PreviewAbilities() {
     val champion = Champion(
         "aatrox",
-        1,
         "star guardian seraphine The Darkin Blade",
         "The Darkin Blade",
+        Image(""),
         listOf("Warrior", "Fighter", "Assassin"),
         "Blood Well",
         Info(difficulty = 5),
         Stats(movespeed = BigDecimal(355), attackrange = BigDecimal(120))
     )
-    val abilities = listOf(
-        Ability(
-        "p",
-        "Periodically, Aatrox's next basic attack deals bonus <physicalDamage>physical damage</physicalDamage> and heals him, based on the target's max health."
-    ),
-        Ability(
-            "q",
-            "Aatrox slams his greatsword down, dealing physical damage. He can swing three times, each with a different area of effect."
+
+    val detail = ChampionDetail(
+        "aatrox",
+        emptyList(),
+        "Once honored defenders of Shurima against the Void, Aatrox and his brethren would eventually become an even greater threat to Runeterra, and were defeated only by cunning mortal sorcery. But after centuries of imprisonment, Aatrox was the first to find freedom once more, corrupting and transforming those foolish enough to try and wield the magical weapon that contained his essence. Now, with stolen flesh, he walks Runeterra in a brutal approximation of his previous form, seeking an apocalyptic and long overdue vengeance.",
+        listOf(
+            Spell(
+                "q",
+                "Aatrox slams his greatsword down, dealing physical damage. He can swing three times, each with a different area of effect.",
+                Image("")
+            ),
+            Spell(
+                "w",
+                "Aatrox smashes the ground, dealing damage to the first enemy hit. Champions and large monsters have to leave the impact area quickly or they will be dragged to the center and take the damage again.",
+                Image("")
+            ),
+            Spell(
+                "e",
+                "Passively, Aatrox heals when damaging enemy champions. On activation, he dashes in a direction.",
+                Image("")
+            ),
+            Spell(
+                "r",
+                "Aatrox unleashes his demonic form, fearing nearby enemy minions and gaining attack damage, increased healing, and Move Speed. If he gets a takedown, this effect is extended.",
+                Image("")
+            )
         ),
-        Ability(
-            "w",
-            "Aatrox smashes the ground, dealing damage to the first enemy hit. Champions and large monsters have to leave the impact area quickly or they will be dragged to the center and take the damage again."
-        ),
-        Ability(
-            "e",
-            "Passively, Aatrox heals when damaging enemy champions. On activation, he dashes in a direction."
-        ),
-        Ability(
-            "r",
-            "Aatrox unleashes his demonic form, fearing nearby enemy minions and gaining attack damage, increased healing, and Move Speed. If he gets a takedown, this effect is extended."
+        Passive(
+            "p",
+            "Periodically, Aatrox's next basic attack deals bonus <physicalDamage>physical damage</physicalDamage> and heals him, based on the target's max health.",
+            Image("")
         )
     )
 
     MyApplicationTheme {
-        Abilities(champion = champion, abilities = abilities)
+        Abilities(abilities = detail.getAbilities())
     }
 }

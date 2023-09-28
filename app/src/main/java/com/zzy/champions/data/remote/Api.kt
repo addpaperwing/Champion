@@ -16,6 +16,6 @@ interface Api {
     @GET("/cdn/{version}/data/{language}/champion.json")
     suspend fun getChampions(@Path("version") version: String, @Path("language") language: String): ChampionResponse
 
-    @GET("/cdn/{version}/data/{language}/champion/{name}.json")
-    suspend fun getChampionDetail(@Path("version") version: String, @Path("language") language: String, @Path("name") name: String): ChampionDetailResponse
+    @GET("/cdn/{version}/data/{language}/champion/{id}.json")
+    suspend fun getChampionDetail(@Path("version") version: String, @Path("language") language: String, @Path("id") id: String): ChampionDetailResponse
 }

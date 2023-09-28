@@ -2,12 +2,12 @@ package com.zzy.champions.ui.detail
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,7 +37,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -46,35 +45,49 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.zzy.champions.R
-import com.zzy.champions.data.model.Ability
 import com.zzy.champions.data.model.Champion
 import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.data.model.ChampionDetail
+import com.zzy.champions.data.model.Image
 import com.zzy.champions.data.model.Info
+import com.zzy.champions.data.model.Passive
+import com.zzy.champions.data.model.SkinNumber
 import com.zzy.champions.data.model.Stats
+import com.zzy.champions.ui.abilities.Abilities
 import com.zzy.champions.ui.builds.ChampionBuildScreen
-import com.zzy.champions.ui.grid.Abilities
-import com.zzy.champions.ui.grid.ChampionStats
 import com.zzy.champions.ui.info.InfoPie
+import com.zzy.champions.ui.stats.ChampionStats
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BlurBanner(modifier: Modifier = Modifier) {
+fun Banner(modifier: Modifier = Modifier, detail: ChampionDetail) {
     Box(modifier = modifier) {
-        Image(
-            painter = painterResource(id = R.drawable.splash_aatrox_0),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1215 / 717f)
-//                .blur(2.dp)
-        )
+//        HorizontalPager(
+//            state = pagerState,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .aspectRatio(1215 / 717f),
+//            userScrollEnabled = false
+//        ) { page ->
+//            Column(Modifier.fillMaxHeight()) {
+                AsyncImage(
+                    model = detail.getSplash(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1215 / 717f)
+                )
+//            }
+//        }
         Box(
             Modifier
                 .align(Alignment.BottomStart)
@@ -92,7 +105,7 @@ fun BlurBanner(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun GeneralInfo(modifier: Modifier = Modifier, champion: Champion, championDetail: ChampionDetail) {
+fun GeneralInfo(modifier: Modifier = Modifier, title: String, name: String, tags: List<String>, lore: String) {
     var nameSize by remember { mutableStateOf(IntSize.Zero) }
     Column(
         modifier = modifier
@@ -102,51 +115,52 @@ fun GeneralInfo(modifier: Modifier = Modifier, champion: Champion, championDetai
                 val titleHeight = 10.sp.toPx()
                 val distanceToHorizontalEdge = (size.width - nameSize.width) / 2
                 val distanceToTopEdge = nameSize.height / 2 + titleHeight
+                val strokeWidth = Dp.Hairline.toPx()
 
                 drawLine(
                     color = Color.White,
                     start = Offset(x = distanceToHorizontalEdge, y = distanceToTopEdge),
                     end = Offset(x = 0f, y = distanceToTopEdge),
-                    strokeWidth = 0.5f
+                    strokeWidth = strokeWidth
                 )
 
                 drawLine(
                     color = Color.White,
                     start = Offset(x = 0f, y = distanceToTopEdge),
                     end = Offset(x = 0f, y = size.height),
-                    strokeWidth = 0.5f
+                    strokeWidth = strokeWidth
                 )
 
                 drawLine(
                     color = Color.White,
                     start = Offset(x = 0f, y = size.height),
                     end = Offset(x = size.width, y = size.height),
-                    strokeWidth = 0.5f
+                    strokeWidth = strokeWidth
                 )
 
                 drawLine(
                     color = Color.White,
                     start = Offset(x = size.width, y = size.height),
                     end = Offset(x = size.width, y = distanceToTopEdge),
-                    strokeWidth = 0.5f
+                    strokeWidth = strokeWidth
                 )
 
                 drawLine(
                     color = Color.White,
                     start = Offset(x = size.width, y = distanceToTopEdge),
                     end = Offset(x = size.width - distanceToHorizontalEdge, y = distanceToTopEdge),
-                    strokeWidth = 0.5f
+                    strokeWidth = strokeWidth
                 )
             },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = champion.title.uppercase(),
+            text = title.uppercase(),
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 10.sp
         )
         Text(
-            text = champion.name.uppercase(),
+            text = name.uppercase(),
             color = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier
                 .padding(horizontal = 16.dp)
@@ -163,12 +177,12 @@ fun GeneralInfo(modifier: Modifier = Modifier, champion: Champion, championDetai
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = champion.tags.reduce { acc, s -> acc.plus(" · $s") }.uppercase(),
+                text = tags.reduce { acc, s -> acc.plus(" · $s") }.uppercase(),
                 color = MaterialTheme.colorScheme.onTertiary,
                 fontSize = 12.sp
             )
             ExpandableText(
-                text = championDetail.lore,
+                text = lore,
                 modifier = Modifier.padding(top = 6.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
             )
         }
@@ -230,10 +244,10 @@ fun ExpandableText(
 @Composable
 fun TabPagerSection(
     modifier: Modifier = Modifier,
-    infoContent: @Composable PagerScope.(page: Int) -> Unit = {},
-    abilitiesContent: @Composable PagerScope.(page: Int) -> Unit = {},
-    statsContent: @Composable PagerScope.(page: Int) -> Unit = {},
-    buildContent: @Composable PagerScope.(page: Int) -> Unit = {}
+    infoContent: @Composable PagerScope.() -> Unit = {},
+    abilitiesContent: @Composable PagerScope.() -> Unit = {},
+    statsContent: @Composable PagerScope.() -> Unit = {},
+    buildContent: @Composable PagerScope.() -> Unit = {}
     ) {
     val titles = stringArrayResource(id = R.array.tabs)
     val pagerState = rememberPagerState { titles.size }
@@ -243,7 +257,6 @@ fun TabPagerSection(
         TabRow(
             selectedTabIndex = pagerState.currentPage,
             indicator = { tabPositions ->
-//                if (pagerState.currentPage < tabPositions.size) {
                     Box(
                         Modifier
                             .tabIndicatorOffset(tabPositions[pagerState.currentPage])
@@ -256,7 +269,6 @@ fun TabPagerSection(
 
 
                     )
-//                }
             },
             containerColor = MaterialTheme.colorScheme.background,
             divider = {}
@@ -275,45 +287,116 @@ fun TabPagerSection(
                 )
             }
         }
-        HorizontalPager(state = pagerState) { page ->
-            when(page) {
-                0 -> infoContent(page)
-                1 -> abilitiesContent(page)
-                2 -> statsContent(page)
-                3 -> buildContent(page)
+        HorizontalPager(
+            state = pagerState,
+            verticalAlignment = Alignment.Top,
+        ) { page ->
+            when (page) {
+                0 -> infoContent()
+                1 -> abilitiesContent()
+                2 -> statsContent()
+                3 -> buildContent()
             }
         }
     }
 }
 
+//@Composable
+//fun SwitchSkinButton(
+//    modifier: Modifier = Modifier,
+//    detail: ChampionDetail,
+//    pageSize: Int,
+//    onPrevClick: () -> Unit,
+//    onNextClick: () -> Unit
+//) {
+//    var skinNameCount by remember { mutableIntStateOf(0) }
+//    var forward by remember { mutableStateOf(true) }
+//    Surface(
+//        modifier = modifier
+//            .fillMaxWidth()
+//            .height(32.dp),
+//        shape = CutCornerShape(topStart = 16.dp, topEnd = 16.dp, bottomStart = 16.dp, bottomEnd = 16.dp),
+//        color = MaterialTheme.colorScheme.onTertiary,
+//        tonalElevation = 6.dp,
+//        shadowElevation = 6.dp,
+//    ) {
+//        Row(Modifier.fillMaxSize()) {
+//            IconButton(onClick = {
+//                if (skinNameCount > 0) {
+//                    skinNameCount--
+//                    forward = false
+//                    onPrevClick()
+//                }
+//            }) {
+//                Icon(imageVector = Icons.Filled.KeyboardArrowLeft, contentDescription = "prev")
+//            }
+//            AnimatedContent(
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .align(Alignment.CenterVertically),
+//                targetState = skinNameCount,
+//                transitionSpec = {
+//                    val forwardOffset: (fullWidth: Int) -> Int = { it/2 }
+//                    val backwardOffset: (fullWidth: Int) -> Int = { -it/2 }
+//                    slideInHorizontally(animationSpec = tween(220, delayMillis = 90), initialOffsetX = if (forward) forwardOffset else backwardOffset)
+//                        .togetherWith(slideOutHorizontally(animationSpec = tween(90), targetOffsetX = if (forward) backwardOffset else forwardOffset))
+//                },
+//                label = ""
+//            ) { state ->
+//                Text(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    text = detail.getSkinNames(state)?: stringResource(id = R.string.skin_name_default),
+//                    textAlign = TextAlign.Center
+//                )
+//            }
+//            IconButton(onClick = {
+//                if (skinNameCount < pageSize-1) {
+//                    skinNameCount++
+//                    forward = true
+//                    onNextClick()
+//                }
+//            }) {
+//                Icon(imageVector = Icons.Filled.KeyboardArrowRight, contentDescription = "next")
+//            }
+//        }
+//    }
+//}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ChampionDetailScreen(modifier: Modifier = Modifier, champion: Champion, detail: ChampionDetail) {
+fun ChampionDetail(modifier: Modifier = Modifier, champion: Champion, detail: ChampionDetail) {
+//    val pagerState = rememberPagerState { detail.skins.size + 1 }
+//    val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-    Scaffold { padding ->
+
+//    Box(modifier = modifier) {
         Column(
             modifier
-                .padding(padding)
-                .verticalScroll(scrollState)
+                .verticalScroll(scrollState),
         ) {
             Box(Modifier.aspectRatio(1f / 1f)) {
-                BlurBanner(Modifier.align(Alignment.TopCenter))
+                Banner(Modifier.align(Alignment.TopCenter), detail)
                 GeneralInfo(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .padding(bottom = 32.dp),
-                    champion = champion,
-                    championDetail = detail
+                    title = champion.title,
+                    name = champion.name,
+                    tags = champion.tags,
+                    lore = detail.lore
                 )
             }
             TabPagerSection(
                 infoContent = {
-                    InfoPie(info = champion.info, bMoveSpeed = champion.stats.movespeed, bAttackRange = champion.stats.attackrange)
+                    InfoPie(
+                        info = champion.info,
+                        bMoveSpeed = champion.stats.movespeed,
+                        bAttackRange = champion.stats.attackrange
+                    )
                 },
                 abilitiesContent = {
                     Abilities(
-                        modifier = Modifier,
-                        champion = champion,
+                        modifier = Modifier.fillMaxHeight(),
                         abilities = detail.getAbilities()
                     )
                 },
@@ -332,19 +415,38 @@ fun ChampionDetailScreen(modifier: Modifier = Modifier, champion: Champion, deta
                 }
             )
         }
-    }
+//        SwitchSkinButton(
+//            modifier = Modifier
+//                .align(Alignment.BottomCenter)
+//                .padding(all = 16.dp),
+//            detail,
+//            pagerState.pageCount,
+//            onPrevClick = {
+//                if (pagerState.currentPage > 0) {
+//                    scope.launch {
+//                        pagerState.animateScrollToPage(pagerState.currentPage - 1)
+//                    }
+//                }
+//            },
+//            onNextClick = {
+//                if (pagerState.currentPage < pagerState.pageCount)
+//                    scope.launch {
+//                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
+//                    }
+//            }
+//        )
+//    }
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true)
 @Composable
 fun PreviewDetailScreen() {
     val champion = Champion(
         "aatrox",
-        1,
         "star guardian seraphine The Darkin Blade",
         "The Darkin Blade",
+        Image("Aatrox.png"),
         listOf("Warrior", "Fighter", "Assassin"),
         "Blood Well",
         Info(difficulty = 5),
@@ -352,32 +454,18 @@ fun PreviewDetailScreen() {
     )
     val detail = ChampionDetail(
         "aatrox",
-        emptyList(),
+        listOf(SkinNumber(1, "Justicar Aatrox"), SkinNumber(2, "Mecha Aatrox"), SkinNumber(3, "Sea Hunter Aatrox"), SkinNumber(7, "Blood Moon Aatrox")),
         "Once honored defenders of Shurima against the Void, Aatrox and his brethren would eventually become an even greater threat to Runeterra, and were defeated only by cunning mortal sorcery. But after centuries of imprisonment, Aatrox was the first to find freedom once more, corrupting and transforming those foolish enough to try and wield the magical weapon that contained his essence. Now, with stolen flesh, he walks Runeterra in a brutal approximation of his previous form, seeking an apocalyptic and long overdue vengeance.",
-        listOf(
-            Ability(
-                "q",
-                "Aatrox slams his greatsword down, dealing physical damage. He can swing three times, each with a different area of effect."
-            ),
-            Ability(
-                "w",
-                "Aatrox smashes the ground, dealing damage to the first enemy hit. Champions and large monsters have to leave the impact area quickly or they will be dragged to the center and take the damage again."
-            ),
-            Ability(
-                "e",
-                "Passively, Aatrox heals when damaging enemy champions. On activation, he dashes in a direction."
-            ),
-            Ability(
-                "r",
-                "Aatrox unleashes his demonic form, fearing nearby enemy minions and gaining attack damage, increased healing, and Move Speed. If he gets a takedown, this effect is extended."
-            )
-        ),
-        Ability(
+        emptyList(),
+        Passive(
             "p",
-            "Periodically, Aatrox's next basic attack deals bonus <physicalDamage>physical damage</physicalDamage> and heals him, based on the target's max health."
+            "Periodically, Aatrox's next basic attack deals bonus <physicalDamage>physical damage</physicalDamage> and heals him, based on the target's max health.",
+            Image("")
         )
     )
     MyApplicationTheme {
-        ChampionDetailScreen(champion = champion, detail = detail)
+        Scaffold { padding ->
+            ChampionDetail(modifier = Modifier.padding(padding), champion = champion, detail = detail)
+        }
     }
 }

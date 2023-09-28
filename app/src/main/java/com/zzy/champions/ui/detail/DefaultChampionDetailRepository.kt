@@ -1,18 +1,19 @@
-package com.zzy.champions.ui.grid
+package com.zzy.champions.ui.detail
 
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import com.zzy.champions.data.local.ChampionDao
 import com.zzy.champions.data.local.DataStoreManager
 import com.zzy.champions.data.model.Champion
+import com.zzy.champions.data.model.ChampionDetail
 import com.zzy.champions.data.remote.Api
+import java.io.IOException
 import javax.inject.Inject
 
-class DefaultChampionRepository @Inject constructor(
+class DefaultChampionDetailRepository @Inject constructor(
     private val api: Api,
     private val dsManager: DataStoreManager,
     private val dao: ChampionDao
-): ChampionsRepository {
+): ChampionDetailRepository {
 
     private var useRemote = false
 
@@ -27,16 +28,12 @@ class DefaultChampionRepository @Inject constructor(
         return latestVersion
     }
 
-    override suspend fun getChampions(version: String, language: String): List<Champion> {
-        return if (useRemote) {
-            val result = api.getChampions(version, language).data.map { entry ->
-                entry.value
-            }
-            dao.insertList(result)
-            result
-        } else {
-            dao.getAll()
-        }
+    override suspend fun getChampion(id: String): Champion {
+        return dao.findById(id)
+    }
+
+    override suspend fun getChampionDetail(version: String, language: String, id: String): ChampionDetail {
+        return api.getChampionDetail(version, language, id).data[id]?: throw IOException("Champion not found")
     }
 
     @VisibleForTesting

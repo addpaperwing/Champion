@@ -1,12 +1,9 @@
-package com.zzy.champions.ui.grid
+package com.zzy.champions.ui.index
 
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.zzy.champions.data.remote.UiState
-import com.zzy.champions.ui.grid.TestUtil.aatrox
+import com.zzy.champions.ui.index.TestUtil.aatrox
 import io.mockk.MockKAnnotations
-import io.mockk.andThenJust
 import io.mockk.coEvery
-import io.mockk.coJustAwait
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,21 +18,21 @@ import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 
-class ChampionsViewModelTest {
+class ChampionIndexViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule(StandardTestDispatcher())
 
     @MockK
-    private lateinit var repository: ChampionsRepository
+    private lateinit var repository: ChampionIndexRepository
 
-    private lateinit var viewModel: ChampionsViewModel
+    private lateinit var viewModel: ChampionIndexViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = ChampionsViewModel(repository, Dispatchers.Main)
+        viewModel = ChampionIndexViewModel(repository, Dispatchers.Main)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

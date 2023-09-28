@@ -1,15 +1,11 @@
-package com.zzy.champions.ui.grid
+package com.zzy.champions.ui.index
 
 import com.zzy.champions.data.local.ChampionDao
 import com.zzy.champions.data.local.DataStoreManager
 import com.zzy.champions.data.model.Champion
 import com.zzy.champions.data.model.ChampionResponse
 import com.zzy.champions.data.remote.Api
-import com.zzy.champions.ui.grid.TestUtil.LOCAL_CHAMP_NAME
-import com.zzy.champions.ui.grid.TestUtil.REMOTE_CHAMP_NAME
-import com.zzy.champions.ui.grid.TestUtil.aatrox
-import com.zzy.champions.ui.grid.TestUtil.createChampion
-import io.mockk.Called
+import com.zzy.champions.ui.index.TestUtil.createChampion
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coJustRun
@@ -27,7 +23,7 @@ private const val VERSION_1_0 = "1.0"
 private const val VERSION_1_1 = "1.1"
 private const val LANGUAGE_US = "US"
 
-class DefaultChampionRepositoryTest {
+class DefaultChampionIndexRepositoryTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @get:Rule
@@ -40,12 +36,12 @@ class DefaultChampionRepositoryTest {
     @MockK
     private lateinit var dao: ChampionDao
 
-    private lateinit var championRepository: DefaultChampionRepository
+    private lateinit var championRepository: DefaultChampionIndexRepository
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        championRepository = DefaultChampionRepository(api, dsManager, dao)
+        championRepository = DefaultChampionIndexRepository(api, dsManager, dao)
     }
 
     @Test
