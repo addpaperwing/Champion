@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -92,13 +94,13 @@ fun StatsBar(
             text = statsName,
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 10.sp,
-            modifier = Modifier.fillMaxWidth(0.16f)
+            modifier = Modifier.fillMaxWidth(0.2f)
         )
         Text(
             text = valueToDisplay(value), //depend on stats
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 10.sp,
-            modifier = Modifier.fillMaxWidth(0.14f)
+            modifier = Modifier.fillMaxWidth(0.2f)
         )
         Slider(
             modifier = Modifier,
@@ -253,7 +255,8 @@ fun AsBar(
 
 @Composable
 fun StatsBars(level: Float, champion: Champion) {
-    Column {
+    val scrollState = rememberScrollState()
+    Column(Modifier.verticalScroll(scrollState)) {
         HpBar(
             minValue = champion.stats.hp,
             level = level,
@@ -266,18 +269,20 @@ fun StatsBars(level: Float, champion: Champion) {
             perLevel = champion.stats.hpregenperlevel,
             maxValue =30f
         )
-        MpBar(
-            minValue = champion.stats.mp,
-            level = level,
-            perLevel = champion.stats.mpperlevel,
-            maxValue = 2000f
-        )
-        MpRegenBar(
-            minValue = champion.stats.mpregen,
-            level = level,
-            perLevel = champion.stats.mpregenperlevel,
-            maxValue = 30f
-        )
+        if (champion.stats.mp != BigDecimal.ZERO) {
+            MpBar(
+                minValue = champion.stats.mp,
+                level = level,
+                perLevel = champion.stats.mpperlevel,
+                maxValue = 2000f
+            )
+            MpRegenBar(
+                minValue = champion.stats.mpregen,
+                level = level,
+                perLevel = champion.stats.mpregenperlevel,
+                maxValue = 30f
+            )
+        }
         ArmorBar(
             minValue = champion.stats.armor,
             level = level,

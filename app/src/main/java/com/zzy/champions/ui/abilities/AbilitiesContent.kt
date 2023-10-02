@@ -1,5 +1,6 @@
 package com.zzy.champions.ui.abilities
 
+import android.widget.TextView
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -43,6 +44,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImage
 import com.zzy.champions.R
 import com.zzy.champions.data.model.Ability
@@ -87,7 +91,8 @@ fun Abilities(
                 alpha = 1 - pageOffset.absoluteValue
             }) {
                 Column(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
                         .align(Alignment.TopCenter)
                         .fillMaxWidth()
                         .padding(all = 16.dp)
@@ -103,11 +108,20 @@ fun Abilities(
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.Bold
                     )
-                    Text(
-                        text = abilities[page].description,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontSize = 12.sp,
-                        lineHeight = 14.sp,
+                    AndroidView(
+                        modifier = modifier,
+                        factory = { context ->
+                            TextView(context).apply {
+                                setTextColor(ContextCompat.getColor(context, R.color.white))
+                            }
+
+                        },
+                        update = {
+                            it.text = HtmlCompat.fromHtml(
+                                abilities[page].description,
+                                HtmlCompat.FROM_HTML_MODE_COMPACT
+                            )
+                        }
                     )
                 }
             }
@@ -215,9 +229,7 @@ fun AbilityImage(
                             ),
                             shape = CutCornerShape(topEnd = (imageSize / 4).dp)
                         )
-                ) {
-
-                }
+                )
             }
         }
         Canvas(modifier = Modifier.padding(top = imageRaisedHeight.dp)) {

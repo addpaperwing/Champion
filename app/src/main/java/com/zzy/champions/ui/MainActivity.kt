@@ -67,7 +67,9 @@ fun ChampionDetailScreen(viewModel: ChampionDetailViewModel) {
     val result by viewModel.result.collectAsStateWithLifecycle()
     if (result is UiState.Success) {
         val data = (result as UiState.Success).data
-        ChampionDetail(champion = data.first, detail = data.second)
+        ChampionDetail(champion = data.first, detail = data.second) {
+
+        }
     }
 }
 
