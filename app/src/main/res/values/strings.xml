@@ -7,10 +7,10 @@
     <string name="choose_your_champion_desc">With more than 140 champions, you’ll find the perfect match for your playstyle. Master one, or master them all.</string>
     
     <array name="tabs">
-        <item>Info</item>
         <item>Abilities</item>
         <item>Stats</item>
         <item>Build</item>
+        <item>Skins</item>
     </array>
     
     <array name="abilities">

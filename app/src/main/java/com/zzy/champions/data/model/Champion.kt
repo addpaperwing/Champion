@@ -48,18 +48,5 @@ data class Champion(
 
     fun getAvatar() = "https://ddragon.leagueoflegends.com/cdn/$version/img/champion/${image.full}"
 
-//    fun getAbilityImage(index: Int) = when(index) {
-//        0 -> getP()
-//        1 -> getQ()
-//        2 -> getW()
-//        3 -> getE()
-//        4 -> getR()
-//        else -> getP()
-//    }
-//
-//    private fun getP() = "https://ddragon.leagueoflegends.com/cdn/$version/img/passive/${id}_Passive.png"
-//    private fun getQ() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}Q.png"
-//    private fun getW() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}W.png"
-//    private fun getE() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}E.png"
-//    private fun getR() = "https://ddragon.leagueoflegends.com/cdn/$version/img/spell/${id}R.png"
+
 }

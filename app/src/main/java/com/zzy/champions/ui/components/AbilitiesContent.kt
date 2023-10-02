@@ -1,5 +1,6 @@
-package com.zzy.champions.ui.abilities
+package com.zzy.champions.ui.components
 
+import android.widget.TextView
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -43,6 +44,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImage
 import com.zzy.champions.R
 import com.zzy.champions.data.model.Ability
@@ -87,27 +91,37 @@ fun Abilities(
                 alpha = 1 - pageOffset.absoluteValue
             }) {
                 Column(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
                         .align(Alignment.TopCenter)
                         .fillMaxWidth()
                         .padding(all = 16.dp)
                 ) {
                     Text(
                         text = stringArrayResource(id = R.array.abilities)[page],
-                        color = Color.LightGray,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 8.sp,
                         lineHeight = 10.sp,
                     )
                     Text(
                         text = abilities[page].name,
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold
                     )
-                    Text(
-                        text = abilities[page].description,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontSize = 12.sp,
-                        lineHeight = 14.sp,
+                    AndroidView(
+                        modifier = modifier,
+                        factory = { context ->
+                            TextView(context).apply {
+                                setTextColor(ContextCompat.getColor(context, R.color.white))
+                            }
+
+                        },
+                        update = {
+                            it.text = HtmlCompat.fromHtml(
+                                abilities[page].description,
+                                HtmlCompat.FROM_HTML_MODE_COMPACT
+                            )
+                        }
                     )
                 }
             }
@@ -119,18 +133,20 @@ fun Abilities(
 fun AbilitiesIndicator(
     modifier: Modifier = Modifier,
     abilities: List<Ability>,
-    activeColor: Color = MaterialTheme.colorScheme.onTertiary,
+    activeColor: Color = MaterialTheme.colorScheme.tertiary,
     initPage: Int,
     onPageChanged: (Int) -> Unit
 ) {
     var selectedIndex by remember { mutableIntStateOf(initPage) }
+
+    val lineColor = MaterialTheme.colorScheme.onPrimary
 
     Row(
         modifier = modifier
             .drawBehind {
                 val bottomPadding = 8.dp.toPx()
                 drawLine(
-                    color = Color.White,
+                    color = lineColor,
                     start = Offset(x = 0f, y = size.height - bottomPadding),
                     end = Offset(x = size.width, y = size.height - bottomPadding),
                     strokeWidth = Dp.Hairline.toPx()
@@ -147,7 +163,7 @@ fun AbilitiesIndicator(
                 model = abilities[index].getAbilityImage(Champion.version),
                 contentDescription = abilities[index].name,
                 activeColor = activeColor,
-                inactiveColor = Color.White,
+                inactiveColor = MaterialTheme.colorScheme.onBackground,
                 isSelected = selectedIndex == index
             ) {
                 selectedIndex = index
@@ -215,9 +231,7 @@ fun AbilityImage(
                             ),
                             shape = CutCornerShape(topEnd = (imageSize / 4).dp)
                         )
-                ) {
-
-                }
+                )
             }
         }
         Canvas(modifier = Modifier.padding(top = imageRaisedHeight.dp)) {

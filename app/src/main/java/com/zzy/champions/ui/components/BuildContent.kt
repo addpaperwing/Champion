@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.builds
+package com.zzy.champions.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -42,12 +42,12 @@ fun ChampionBuildItem(modifier: Modifier = Modifier, cb: ChampionBuild, onClick:
                     onClick(cb.url)
                 },
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.tertiary
+                containerColor = MaterialTheme.colorScheme.surface
             )
         ) {
             Text(
                 text = cb.name,
-                color = MaterialTheme.colorScheme.onTertiary,
+                color = MaterialTheme.colorScheme.tertiary,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(16.dp),
                 maxLines = 1

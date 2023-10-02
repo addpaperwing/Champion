@@ -1,5 +1,8 @@
 package com.zzy.champions.data.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 //Aatrox: {
@@ -24,36 +27,18 @@ import com.squareup.moshi.JsonClass
 //passive: {},
 //recommended: [ ]
 //}
+@Entity
 @JsonClass(generateAdapter = true)
 data class ChampionDetail(
-    val id: String,
+    //Use different name for one-to-one relationship of Room Database
+    @PrimaryKey @Json(name = "id")val championId: String,
     val skins: List<SkinNumber>,
     val lore: String,
     val spells: List<Spell>,
     val passive: Passive,
-    val splashIndex: Int = 0
+    var splashIndex: Int = 0
 ) {
-
-    fun getSplash() = "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${id}_${splashIndex}.jpg"
-
-//    fun getBanner(index: Int) = if (index == 0) R.drawable.splash_aatrox_0 else getFakeSkinSplash(skins[index - 1].num)
-
-    fun getSkinNames(index: Int) = if (index == 0) null else skins[index - 1].name
-
-//    fun getFakeSkinSplash(num: Int) = when(num){
-//        1 -> R.drawable.aatrox_1
-//        2 -> R.drawable.aatrox_2
-//        3 -> R.drawable.aatrox_3
-//        7 -> R.drawable.aatrox_7
-//        8 -> R.drawable.aatrox_8
-//        9 -> R.drawable.aatrox_9
-//        11 -> R.drawable.aatrox_11
-//        20 -> R.drawable.aatrox_20
-//        21 -> R.drawable.aatrox_21
-//        30 -> R.drawable.aatrox_30
-//        31 -> R.drawable.aatrox_31
-//        else -> R.drawable.splash_aatrox_0
-//    }
+    fun getSplash(skinNum: Int = splashIndex): String = "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${championId}_$skinNum.jpg"
 
     fun getAbilities() = buildList {
         add(passive)

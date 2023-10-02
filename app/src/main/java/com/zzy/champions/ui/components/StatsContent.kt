@@ -1,10 +1,12 @@
-package com.zzy.champions.ui.stats
+package com.zzy.champions.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -13,7 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +36,6 @@ import kotlin.math.roundToInt
 
 @Composable
 fun ChampionLevel(modifier: Modifier = Modifier, level: Float, onLevelChange: (Float) -> Unit,) {
-//     var sliderPosition by remember { mutableFloatStateOf(1f) }
     Column(modifier = modifier.padding(top = 16.dp)) {
         Row(
             modifier = Modifier.padding(horizontal = 32.dp),
@@ -58,9 +59,9 @@ fun ChampionLevel(modifier: Modifier = Modifier, level: Float, onLevelChange: (F
             value = level,
             onValueChange = onLevelChange,
             colors = SliderDefaults.colors(
-                thumbColor = MaterialTheme.colorScheme.onTertiary,
-                activeTrackColor = MaterialTheme.colorScheme.onTertiary,
-                inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+                thumbColor = MaterialTheme.colorScheme.tertiary,
+                activeTrackColor = MaterialTheme.colorScheme.tertiary,
+//                inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
                 activeTickColor = Color.Transparent,
                 inactiveTickColor = Color.Transparent
             ),
@@ -92,13 +93,13 @@ fun StatsBar(
             text = statsName,
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 10.sp,
-            modifier = Modifier.fillMaxWidth(0.16f)
+            modifier = Modifier.fillMaxWidth(0.2f)
         )
         Text(
             text = valueToDisplay(value), //depend on stats
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 10.sp,
-            modifier = Modifier.fillMaxWidth(0.14f)
+            modifier = Modifier.fillMaxWidth(0.2f)
         )
         Slider(
             modifier = Modifier,
@@ -106,8 +107,8 @@ fun StatsBar(
             enabled = false,
             onValueChange = { },
             colors = SliderDefaults.colors(
-                disabledActiveTrackColor = MaterialTheme.colorScheme.onSurface,
-                disabledInactiveTrackColor = MaterialTheme.colorScheme.secondary,
+                disabledActiveTrackColor = MaterialTheme.colorScheme.secondary,
+                disabledInactiveTrackColor = MaterialTheme.colorScheme.background,
                 disabledActiveTickColor = Color.Transparent,
                 disabledInactiveTickColor = Color.Transparent
             ),
@@ -266,18 +267,20 @@ fun StatsBars(level: Float, champion: Champion) {
             perLevel = champion.stats.hpregenperlevel,
             maxValue =30f
         )
-        MpBar(
-            minValue = champion.stats.mp,
-            level = level,
-            perLevel = champion.stats.mpperlevel,
-            maxValue = 2000f
-        )
-        MpRegenBar(
-            minValue = champion.stats.mpregen,
-            level = level,
-            perLevel = champion.stats.mpregenperlevel,
-            maxValue = 30f
-        )
+        if (champion.stats.mp != BigDecimal.ZERO) {
+            MpBar(
+                minValue = champion.stats.mp,
+                level = level,
+                perLevel = champion.stats.mpperlevel,
+                maxValue = 2000f
+            )
+            MpRegenBar(
+                minValue = champion.stats.mpregen,
+                level = level,
+                perLevel = champion.stats.mpregenperlevel,
+                maxValue = 30f
+            )
+        }
         ArmorBar(
             minValue = champion.stats.armor,
             level = level,
@@ -307,8 +310,9 @@ fun StatsBars(level: Float, champion: Champion) {
 
 @Composable
 fun ChampionStats(champion: Champion) {
-    var level by remember { mutableFloatStateOf(0f) }
-    Column {
+    val scrollState = rememberScrollState()
+    var level by rememberSaveable { mutableFloatStateOf(0f) }
+    Column(Modifier.verticalScroll(scrollState)) {
         ChampionLevel(level = level) { level = it }
         StatsBars(level = level, champion = champion)
     }
