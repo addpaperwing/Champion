@@ -7,13 +7,12 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 private const val PREFERENCE_NAME_SETTING = "com.zzy.champions.settings"
 private const val DEFAULT_LANGUAGE = "en_US"
+private const val DEFAULT_VERSION = "13.19.1"
 
 class DataStoreManager @Inject constructor(@ApplicationContext private val appContext: Context) {
 
@@ -26,7 +25,7 @@ class DataStoreManager @Inject constructor(@ApplicationContext private val appCo
     }
 
     private val VERSION = stringPreferencesKey("version")
-    suspend fun getVersion() = appContext.dataStore.data.first()[VERSION]
+    suspend fun getVersion() = appContext.dataStore.data.first()[VERSION]?: DEFAULT_VERSION
     suspend fun setVersion(version: String) = appContext.dataStore.edit { preferences ->
         preferences[VERSION] = version
     }

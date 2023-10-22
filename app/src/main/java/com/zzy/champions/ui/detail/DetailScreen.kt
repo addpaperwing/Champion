@@ -39,12 +39,12 @@ import com.zzy.champions.data.model.Info
 import com.zzy.champions.data.model.Passive
 import com.zzy.champions.data.model.SkinNumber
 import com.zzy.champions.data.model.Stats
-import com.zzy.champions.ui.abilities.Abilities
-import com.zzy.champions.ui.banner.Banner
-import com.zzy.champions.ui.banner.GeneralInfo
-import com.zzy.champions.ui.builds.ChampionBuildScreen
-import com.zzy.champions.ui.skins.ChampionSkinsScreen
-import com.zzy.champions.ui.stats.ChampionStats
+import com.zzy.champions.ui.components.Banner
+import com.zzy.champions.ui.components.GeneralInfo
+import com.zzy.champions.ui.components.ChampionBuildScreen
+import com.zzy.champions.ui.components.Abilities
+import com.zzy.champions.ui.components.ChampionStats
+import com.zzy.champions.ui.components.ChampionSkinsScreen
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -72,7 +72,7 @@ fun TabPagerSection(
                         .fillMaxWidth()
                         .height(3.dp)
                         .background(
-                            color = MaterialTheme.colorScheme.onTertiary,
+                            color = MaterialTheme.colorScheme.tertiary,
                             shape = CutCornerShape(topStart = 3.dp, bottomEnd = 3.dp)
                         )
 
@@ -114,7 +114,8 @@ fun TabPagerSection(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChampionDetail(modifier: Modifier = Modifier, champion: Champion, detail: ChampionDetail, onItemClick:(Int) -> Unit = {}) {
-    var bannerImageUrl by remember { mutableStateOf(detail.getSplash()) }
+    var bannerImageUrl by remember { mutableStateOf("") }
+    bannerImageUrl = detail.getSplash()
     Column(
         modifier
     ) {

@@ -18,21 +18,21 @@ import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 
-class ChampionIndexViewModelTest {
+class ChampionViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule(StandardTestDispatcher())
 
     @MockK
-    private lateinit var repository: ChampionIndexRepository
+    private lateinit var repository: ChampionRepository
 
-    private lateinit var viewModel: ChampionIndexViewModel
+    private lateinit var viewModel: ChampionViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = ChampionIndexViewModel(repository, Dispatchers.Main)
+        viewModel = ChampionViewModel(repository, Dispatchers.Main)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

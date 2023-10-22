@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.skins
+package com.zzy.champions.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable

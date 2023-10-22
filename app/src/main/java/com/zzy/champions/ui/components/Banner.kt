@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.banner
+package com.zzy.champions.ui.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
@@ -133,7 +133,7 @@ fun GeneralInfo(modifier: Modifier = Modifier, title: String, name: String, tags
         ) {
             Text(
                 text = tags.reduce { acc, s -> acc.plus(" · $s") }.uppercase(),
-                color = MaterialTheme.colorScheme.onTertiary,
+                color = MaterialTheme.colorScheme.tertiary,
                 fontSize = 12.sp
             )
             ExpandableText(
@@ -157,7 +157,7 @@ fun ExpandableText(
     var lastCharIndex by remember { mutableIntStateOf(0) }
 
     val actionTextStyle = SpanStyle(
-        color = MaterialTheme.colorScheme.onTertiary,
+        color = MaterialTheme.colorScheme.tertiary,
         fontWeight = FontWeight.Bold
     )
     Text(

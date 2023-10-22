@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.abilities
+package com.zzy.champions.ui.components
 
 import android.widget.TextView
 import androidx.compose.animation.animateColorAsState
@@ -99,13 +99,13 @@ fun Abilities(
                 ) {
                     Text(
                         text = stringArrayResource(id = R.array.abilities)[page],
-                        color = Color.LightGray,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 8.sp,
                         lineHeight = 10.sp,
                     )
                     Text(
                         text = abilities[page].name,
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold
                     )
                     AndroidView(
@@ -133,18 +133,20 @@ fun Abilities(
 fun AbilitiesIndicator(
     modifier: Modifier = Modifier,
     abilities: List<Ability>,
-    activeColor: Color = MaterialTheme.colorScheme.onTertiary,
+    activeColor: Color = MaterialTheme.colorScheme.tertiary,
     initPage: Int,
     onPageChanged: (Int) -> Unit
 ) {
     var selectedIndex by remember { mutableIntStateOf(initPage) }
+
+    val lineColor = MaterialTheme.colorScheme.onPrimary
 
     Row(
         modifier = modifier
             .drawBehind {
                 val bottomPadding = 8.dp.toPx()
                 drawLine(
-                    color = Color.White,
+                    color = lineColor,
                     start = Offset(x = 0f, y = size.height - bottomPadding),
                     end = Offset(x = size.width, y = size.height - bottomPadding),
                     strokeWidth = Dp.Hairline.toPx()
@@ -161,7 +163,7 @@ fun AbilitiesIndicator(
                 model = abilities[index].getAbilityImage(Champion.version),
                 contentDescription = abilities[index].name,
                 activeColor = activeColor,
-                inactiveColor = Color.White,
+                inactiveColor = MaterialTheme.colorScheme.onBackground,
                 isSelected = selectedIndex == index
             ) {
                 selectedIndex = index

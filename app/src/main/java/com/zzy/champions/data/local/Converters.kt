@@ -7,7 +7,9 @@ import com.squareup.moshi.Types
 import com.squareup.moshi.adapter
 import com.zzy.champions.data.model.Image
 import com.zzy.champions.data.model.Info
+import com.zzy.champions.data.model.Passive
 import com.zzy.champions.data.model.SkinNumber
+import com.zzy.champions.data.model.Spell
 import com.zzy.champions.data.model.Stats
 import com.zzy.champions.data.remote.BigDecimalAdapter
 import java.lang.reflect.Type
@@ -114,6 +116,48 @@ object Converters {
     fun fromImage(stats: Image): String {
         val moshi = Moshi.Builder().add(BigDecimalAdapter).build()
         val adapter: JsonAdapter<Image> = moshi.adapter()
+        return adapter.toJson(stats)
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun toSpells(value :  String):  List<Spell> {
+        val moshi = Moshi.Builder().build()
+        val type: Type = Types.newParameterizedType(
+            List::class.java,
+            Spell::class.java
+        )
+        val adapter: JsonAdapter<List<Spell>> = moshi.adapter(type)
+
+        return adapter.fromJson(value)?: emptyList()
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun fromSpells(list: List<Spell>): String {
+        val moshi = Moshi.Builder().build()
+        val type: Type = Types.newParameterizedType(
+            List::class.java,
+            Spell::class.java
+        )
+        val adapter: JsonAdapter<List<Spell>> = moshi.adapter(type)
+        return adapter.toJson(list)
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun toPassive(value :  String):  Passive? {
+        val moshi = Moshi.Builder().build()
+        val adapter: JsonAdapter<Passive> = moshi.adapter()
+
+        return adapter.fromJson(value)
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun fromPassive(stats: Passive): String {
+        val moshi = Moshi.Builder().build()
+        val adapter: JsonAdapter<Passive> = moshi.adapter()
         return adapter.toJson(stats)
     }
 }

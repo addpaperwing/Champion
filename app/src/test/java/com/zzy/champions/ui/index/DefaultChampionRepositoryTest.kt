@@ -23,7 +23,7 @@ private const val VERSION_1_0 = "1.0"
 private const val VERSION_1_1 = "1.1"
 private const val LANGUAGE_US = "US"
 
-class DefaultChampionIndexRepositoryTest {
+class DefaultChampionRepositoryTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @get:Rule
@@ -36,12 +36,12 @@ class DefaultChampionIndexRepositoryTest {
     @MockK
     private lateinit var dao: ChampionDao
 
-    private lateinit var championRepository: DefaultChampionIndexRepository
+    private lateinit var championRepository: DefaultChampionRepository
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        championRepository = DefaultChampionIndexRepository(api, dsManager, dao)
+        championRepository = DefaultChampionRepository(api, dsManager, dao)
     }
 
     @Test
