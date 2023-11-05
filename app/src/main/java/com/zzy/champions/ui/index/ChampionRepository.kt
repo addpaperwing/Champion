@@ -4,7 +4,7 @@ import com.zzy.champions.data.model.Champion
 
 interface ChampionRepository {
     suspend fun getLanguage(): String
-    suspend fun getLatestVersion(): String
+    suspend fun getVersion(): String
     suspend fun getAllChampions(version: String, language: String): List<Champion>
 
     suspend fun getPredictions(query: String): List<String>

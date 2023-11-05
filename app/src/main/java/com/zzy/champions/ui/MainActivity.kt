@@ -30,12 +30,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.zzy.champions.data.model.Champion
+import com.zzy.champions.data.model.SettingSelectable
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.ui.components.LaunchScreen
+import com.zzy.champions.ui.components.SettingsContent
 import com.zzy.champions.ui.detail.ChampionDetail
 import com.zzy.champions.ui.detail.DetailViewModel
 import com.zzy.champions.ui.index.ChampionIndex
 import com.zzy.champions.ui.index.ChampionViewModel
+import com.zzy.champions.ui.settings.SettingsViewModel
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -52,9 +55,7 @@ class MainActivity : ComponentActivity() {
                 if (showLandingScreen) {
                     LaunchScreen(modifier = Modifier, onTimeout = { showLandingScreen = false })
                 } else {
-                    Scaffold { padding ->
-                        ChampionNavHost(navController = navController, modifier = Modifier.padding(padding))
-                    }
+                    ChampionNavHost(navController = navController, modifier = Modifier)
                 }
             }
         }
@@ -62,7 +63,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ChampionIndexScreen(viewModel: ChampionViewModel, onItemClick: (Champion) -> Unit) {
+fun ChampionIndexScreen(viewModel: ChampionViewModel, onSettingClick: () -> Unit, onItemClick: (Champion) -> Unit) {
     val champions by viewModel.champions.collectAsStateWithLifecycle()
     val predictions by viewModel.predictions.collectAsStateWithLifecycle(emptyList())
 
@@ -75,21 +76,28 @@ fun ChampionIndexScreen(viewModel: ChampionViewModel, onItemClick: (Champion) ->
     }
 
     if (champions is UiState.Success) {
-        ChampionIndex(modifier = Modifier.semantics { contentDescription = "Champion Index Screen" },
-            predictions = predictions,
-            onTextChanged = {
-                viewModel.updatePredictions(it)
-            },
-            onDoneActionClick = {
-                viewModel.clearPredictions()
-                viewModel.getChampion(it)
-            },
-            onPredictionClick = {
-                viewModel.clearPredictions()
-                viewModel.getChampion(it)
-            },
-            champions = (champions as UiState.Success).data,
-            onItemClick = onItemClick)
+        Scaffold { padding ->
+            ChampionIndex(
+                modifier = Modifier
+                    .padding(padding)
+                    .semantics { contentDescription = "Champion Index Screen" },
+                predictions = predictions,
+                onTextChanged = {
+                    viewModel.updatePredictions(it)
+                },
+                onDoneActionClick = {
+                    viewModel.clearPredictions()
+                    viewModel.getChampion(it)
+                },
+                onPredictionClick = {
+                    viewModel.clearPredictions()
+                    viewModel.getChampion(it)
+                },
+                champions = (champions as UiState.Success).data,
+                onSettingClick = onSettingClick,
+                onItemClick = onItemClick
+            )
+        }
     }
 }
 
@@ -103,10 +111,44 @@ fun ChampionDetailScreen(viewModel: DetailViewModel, id: String) {
 
     if (result is UiState.Success) {
         val data = (result as UiState.Success).data
-        ChampionDetail(champion = data.champion, detail = data.detail) {
-            viewModel.saveBannerSplash(data.detail, it)
+        Scaffold { padding ->
+            ChampionDetail(modifier = Modifier.padding(padding), champion = data.champion, detail = data.detail) {
+                viewModel.saveBannerSplash(data.detail, it)
+            }
         }
     }
+}
+
+@Composable
+fun SettingsScreen(
+    modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel,
+    onBack: () -> Unit
+) {
+    val appVersion by viewModel.appVersion.collectAsStateWithLifecycle()
+    val versions by viewModel.availableVersions.collectAsStateWithLifecycle()
+
+    val languages by viewModel.languages.collectAsStateWithLifecycle()
+    val language by viewModel.language.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = 1) {
+        viewModel.initData()
+    }
+
+    SettingsContent(
+        modifier = modifier,
+        gameVersion = appVersion,
+        dataVersions = if (versions is UiState.Success) (versions as UiState.Success).data else listOf(SettingSelectable(appVersion, true)),
+        onAppVersionSelected = {
+            viewModel.saveVersion(it)
+        },
+        languages = if (languages is UiState.Success) (languages as UiState.Success).data else listOf(SettingSelectable(language, true)),
+        onLanguageSelected = {
+            viewModel.saveLanguage(it)
+        },
+        onBack = onBack,
+        showError = versions is UiState.Error || languages is UiState.Error
+    )
 }
 
 @Composable
@@ -135,13 +177,16 @@ fun ChampionNavHost(
                     )
                 ) + slideOutOfContainer(
                     animationSpec = tween(300, easing = EaseOut),
-                    towards = AnimatedContentTransitionScope.SlideDirection.End
+                    towards = AnimatedContentTransitionScope.SlideDirection.Start
                 )
             }
         ) {
-            ChampionIndexScreen(viewModel = hiltViewModel(), onItemClick = {
-                navController.navigateToChampionDetail(it.id)
-            })
+            ChampionIndexScreen(viewModel = hiltViewModel(),
+                onSettingClick = {
+                    navController.navigateSingleTopTo(Settings.route)
+                }, onItemClick = {
+                    navController.navigateToChampionDetail(it.id)
+                })
         }
 
         composable(
@@ -160,11 +205,35 @@ fun ChampionNavHost(
                     )
                 ) + slideOutOfContainer(
                     animationSpec = tween(300, easing = EaseOut),
-                    towards = AnimatedContentTransitionScope.SlideDirection.Right
+                    towards = AnimatedContentTransitionScope.SlideDirection.End
                 )
             }
         ) { entry ->
             ChampionDetailScreen(hiltViewModel(), entry.arguments?.getString(Detail.championIdArg)!!)
+        }
+
+        composable(
+            route = Settings.route,
+            enterTransition = {
+                fadeIn(animationSpec = tween(300, easing = LinearEasing)) + slideIntoContainer(
+                    animationSpec = tween(300, easing = EaseIn),
+                    towards = AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+            exitTransition = {
+                fadeOut(
+                    animationSpec = tween(
+                        300, easing = LinearEasing
+                    )
+                ) + slideOutOfContainer(
+                    animationSpec = tween(300, easing = EaseOut),
+                    towards = AnimatedContentTransitionScope.SlideDirection.End
+                )
+            }
+        ) {
+            SettingsScreen(viewModel = hiltViewModel()) {
+                navController.popBackStack()
+            }
         }
     }
 }

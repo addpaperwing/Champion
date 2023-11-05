@@ -33,10 +33,11 @@ fun ChampionIndex(
     onDoneActionClick: (String) -> Unit,
     onPredictionClick: (String) -> Unit,
     champions: List<Champion>,
-    onItemClick: (Champion) -> Unit
+    onItemClick: (Champion) -> Unit,
+    onSettingClick: () -> Unit,
 ) {
     Column(modifier = modifier) {
-        Header()
+        Header(onSettingClick = onSettingClick)
         Box {
             LazyVerticalGrid(
                 modifier = Modifier.padding(top = PREDICTION_ITEM_HEIGHT + 12.dp),
@@ -89,10 +90,13 @@ fun PreviewChampionIndex() {
                 onTextChanged = {},
                 onDoneActionClick = {},
                 onPredictionClick = {},
-                champions = champions
-            ) {
+                champions = champions,
+                onSettingClick = {
 
-            }
+                },
+                onItemClick = {
+
+            })
         }
     }
 }

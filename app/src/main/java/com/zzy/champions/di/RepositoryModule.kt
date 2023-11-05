@@ -8,6 +8,8 @@ import com.zzy.champions.ui.detail.DefaultDetailRepository
 import com.zzy.champions.ui.detail.DetailRepository
 import com.zzy.champions.ui.index.ChampionRepository
 import com.zzy.champions.ui.index.DefaultChampionRepository
+import com.zzy.champions.ui.settings.DefaultSettingsRepository
+import com.zzy.champions.ui.settings.SettingsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,4 +33,9 @@ object RepositoryModule {
         return DefaultDetailRepository(api, dsManager, db)
     }
 
+    @ViewModelScoped
+    @Provides
+    fun provideSettingsRepository(api: Api, dsManager: DataStoreManager): SettingsRepository {
+        return DefaultSettingsRepository(api, dsManager)
+    }
 }

@@ -198,7 +198,7 @@ fun ChampionSkinItem(modifier: Modifier = Modifier,
             )
             Text(
                 text = "${skinNumber.name} ${if (skinNumber.isSelected) "checked" else "uncheck"}",
-                color = MaterialTheme.colorScheme.onTertiary,
+                color = MaterialTheme.colorScheme.tertiary,
                 fontSize = 14.sp,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
