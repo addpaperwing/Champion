@@ -46,7 +46,7 @@ class ChampionViewModel @Inject constructor(
         viewModelScope.launch {
             val result = withContext(dispatcher) {
                 try {
-                    UiState.Success(repository.getAllChampions(repository.getLatestVersion(), repository.getLanguage()))
+                    UiState.Success(repository.getAllChampions(repository.getVersion(), repository.getLanguage()))
                 } catch (e: Throwable) {
                     e.printStackTrace()
                     UiState.Error(e)

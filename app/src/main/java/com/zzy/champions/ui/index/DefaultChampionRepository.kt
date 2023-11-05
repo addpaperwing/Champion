@@ -23,7 +23,7 @@ class DefaultChampionRepository @Inject constructor(
         language = it
     }
 
-    override suspend fun getLatestVersion(): String {
+    override suspend fun getVersion(): String {
         return version ?: run {
             val currentVersion = dsManager.getVersion()
             val latestVersion = try {

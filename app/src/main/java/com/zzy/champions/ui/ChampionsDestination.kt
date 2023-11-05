@@ -19,3 +19,7 @@ object Detail: ChampionsDestination {
         navArgument(championIdArg) { type = NavType.StringType }
     )
 }
+
+object Settings: ChampionsDestination {
+    override val route: String = "setting"
+}

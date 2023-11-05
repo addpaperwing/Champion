@@ -93,7 +93,8 @@ fun StatsBar(
             text = statsName,
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 10.sp,
-            modifier = Modifier.fillMaxWidth(0.2f)
+            modifier = Modifier.fillMaxWidth(0.36f),
+            maxLines = 1
         )
         Text(
             text = valueToDisplay(value), //depend on stats
@@ -156,9 +157,10 @@ fun MpBar(
     level: Float,
     perLevel: BigDecimal,
     maxValue: Float,
+    partype: String,
 ) {
     StatsBar(
-        statsName =stringResource(id = R.string.mp),
+        statsName = partype,
         baseValue = minValue,
         level = level,
         perLevel = perLevel,
@@ -172,9 +174,10 @@ fun MpRegenBar(
     level: Float,
     perLevel: BigDecimal,
     maxValue: Float,
+    partype: String,
 ) {
     StatsBar(
-        statsName =stringResource(id = R.string.mp_regen),
+        statsName =stringResource(id = R.string.mp_regen, partype),
         baseValue = minValue,
         level = level,
         perLevel = perLevel,
@@ -267,20 +270,20 @@ fun StatsBars(level: Float, champion: Champion) {
             perLevel = champion.stats.hpregenperlevel,
             maxValue =30f
         )
-        if (champion.stats.mp != BigDecimal.ZERO) {
-            MpBar(
-                minValue = champion.stats.mp,
-                level = level,
-                perLevel = champion.stats.mpperlevel,
-                maxValue = 2000f
-            )
-            MpRegenBar(
-                minValue = champion.stats.mpregen,
-                level = level,
-                perLevel = champion.stats.mpregenperlevel,
-                maxValue = 30f
-            )
-        }
+        MpBar(
+            minValue = champion.stats.mp,
+            level = level,
+            perLevel = champion.stats.mpperlevel,
+            maxValue = 2000f,
+            partype = champion.partype
+        )
+        MpRegenBar(
+            minValue = champion.stats.mpregen,
+            level = level,
+            perLevel = champion.stats.mpregenperlevel,
+            maxValue = 30f,
+            partype = champion.partype
+        )
         ArmorBar(
             minValue = champion.stats.armor,
             level = level,
