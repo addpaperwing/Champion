@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.components
+package com.zzy.champions.ui.settings.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zzy.champions.R
 import com.zzy.champions.data.model.SettingSelectable
+import com.zzy.champions.ui.components.ErrorBar
 import com.zzy.champions.ui.theme.MyApplicationTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.index
+package com.zzy.champions.ui.index.compose
 
 
 import androidx.compose.foundation.layout.Arrangement
@@ -17,12 +17,6 @@ import com.zzy.champions.data.model.Champion
 import com.zzy.champions.data.model.Image
 import com.zzy.champions.data.model.Info
 import com.zzy.champions.data.model.Stats
-import com.zzy.champions.ui.components.ChampionCard
-import com.zzy.champions.ui.components.Header
-import com.zzy.champions.ui.components.PREDICTION_ITEM_HEIGHT
-import com.zzy.champions.ui.components.PredictionSearchBar
-import com.zzy.champions.ui.components.SUPPORT
-import com.zzy.champions.ui.components.TANK
 import com.zzy.champions.ui.theme.MyApplicationTheme
 
 @Composable

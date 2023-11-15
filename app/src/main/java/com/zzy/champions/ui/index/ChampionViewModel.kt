@@ -3,6 +3,7 @@ package com.zzy.champions.ui.index
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zzy.champions.data.model.Champion
+import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.data.remote.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -41,19 +42,40 @@ class ChampionViewModel @Inject constructor(
             emptyList<String>()
         }.flowOn(dispatcher)
 
-
-    fun getAllChampions() {
+    fun insertBuildsWhenFirstOpen() {
         viewModelScope.launch {
-            val result = withContext(dispatcher) {
-                try {
+            withContext(dispatcher) {
+                val isFirstOpen = repository.isFirstOpen()
+                if (isFirstOpen) {
+                    repository.addChampionBuild(
+                        ChampionBuild(
+                            "OP.GG",
+                            "https://www.op.gg/champions/{}/build?region=global"
+                        ),
+                        ChampionBuild("U.GG", "https://u.gg/lol/champions/{}/build"),
+                        ChampionBuild(
+                            "OP.GG ARAM",
+                            "https://www.op.gg/modes/aram/{}/build?region=global"
+                        ),
+                    )
+                    repository.setNotFirstOpen()
+                }
+            }
+        }
+    }
+
+    fun loadChampions() {
+        viewModelScope.launch {
+            withContext(dispatcher) {
+                val champions = try {
                     UiState.Success(repository.getAllChampions(repository.getVersion(), repository.getLanguage()))
                 } catch (e: Throwable) {
                     e.printStackTrace()
                     UiState.Error(e)
                 }
-            }
 
-            _champions.value = result
+                _champions.value = champions
+            }
         }
     }
 

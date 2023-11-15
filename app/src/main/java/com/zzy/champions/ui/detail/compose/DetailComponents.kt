@@ -1,5 +1,8 @@
-package com.zzy.champions.ui.detail
+package com.zzy.champions.ui.detail.compose
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -11,8 +14,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerScope
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
@@ -20,10 +29,12 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,12 +50,7 @@ import com.zzy.champions.data.model.Info
 import com.zzy.champions.data.model.Passive
 import com.zzy.champions.data.model.SkinNumber
 import com.zzy.champions.data.model.Stats
-import com.zzy.champions.ui.components.Banner
-import com.zzy.champions.ui.components.GeneralInfo
-import com.zzy.champions.ui.components.ChampionBuildScreen
-import com.zzy.champions.ui.components.Abilities
-import com.zzy.champions.ui.components.ChampionStats
-import com.zzy.champions.ui.components.ChampionSkinsScreen
+import com.zzy.champions.ui.components.ChampionBuildDialog
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -53,15 +59,14 @@ import java.math.BigDecimal
 @Composable
 fun TabPagerSection(
     modifier: Modifier = Modifier,
+    titles: Array<String>,
+    pagerState: PagerState,
+    onTabClick: (Int) -> Unit,
     abilitiesContent: @Composable PagerScope.() -> Unit = {},
     skinsContent: @Composable PagerScope.() -> Unit = {},
     statsContent: @Composable PagerScope.() -> Unit = {},
     buildContent: @Composable PagerScope.() -> Unit = {}
 ) {
-    val titles = stringArrayResource(id = R.array.tabs)
-    val pagerState = rememberPagerState { titles.size }
-    val scope = rememberCoroutineScope()
-
     Column(modifier) {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
@@ -87,9 +92,7 @@ fun TabPagerSection(
                     text = { Text(title) },
                     selected = pagerState.currentPage == index,
                     onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
+                        onTabClick(index)
                     },
                     selectedContentColor = MaterialTheme.colorScheme.onPrimary,
                     unselectedContentColor = MaterialTheme.colorScheme.onSecondary
@@ -113,51 +116,110 @@ fun TabPagerSection(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ChampionDetail(modifier: Modifier = Modifier, champion: Champion, detail: ChampionDetail, onItemClick:(Int) -> Unit = {}) {
+fun ChampionDetail(modifier: Modifier = Modifier,
+                   champion: Champion,
+                   detail: ChampionDetail,
+                   onSkinClick:(Int) -> Unit = {},
+                   championBuilds: List<ChampionBuild>,
+                   onBuildClick: (String) -> Unit,
+                   onInsertBuild: (ChampionBuild) -> Unit,
+                   onEditBuild: (ChampionBuild) -> Unit,
+                   onDeleteBuild: (ChampionBuild) -> Unit
+
+) {
     var bannerImageUrl by remember { mutableStateOf("") }
-    bannerImageUrl = detail.getSplash()
-    Column(
-        modifier
-    ) {
-        Box(Modifier.aspectRatio(1215 / 717f)) {
-            Banner(Modifier.align(Alignment.TopCenter), bannerImageUrl)
-            GeneralInfo(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter),
-                title = champion.title,
-                name = champion.name,
-                tags = champion.tags,
-                lore = detail.lore
+    val titles = stringArrayResource(id = R.array.tabs)
+    val pagerState = rememberPagerState { titles.size }
+    val scope = rememberCoroutineScope()
+
+    var fabVisibility by rememberSaveable { mutableStateOf(false) }
+    var showNewBuildEditor by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = detail.championId) {
+        bannerImageUrl = detail.getSplash()
+    }
+
+    Scaffold(
+        floatingActionButton = {
+            AnimatedVisibility(
+                visible = fabVisibility,
+                 enter = scaleIn(),
+                exit = scaleOut(),
+            ) {
+                FloatingActionButton(
+                    onClick = { showNewBuildEditor = true },
+                    shape = CircleShape,
+                    containerColor = MaterialTheme.colorScheme.tertiary,
+                    contentColor = MaterialTheme.colorScheme.onTertiary
+                ) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "add")
+                }
+            }
+        }
+    ) { padding ->
+        Column(
+            modifier.padding(padding)
+        ) {
+            Box(Modifier.aspectRatio(1215 / 717f)) {
+                Banner(Modifier.align(Alignment.TopCenter), bannerImageUrl)
+                GeneralInfo(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter),
+                    title = champion.title,
+                    name = champion.name,
+                    tags = champion.tags,
+                    lore = detail.lore
+                )
+            }
+            TabPagerSection(
+                titles = titles,
+                pagerState = pagerState,
+                onTabClick = { index ->
+                    scope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
+                    fabVisibility = (index == 2)
+                },
+                abilitiesContent = {
+                    Abilities(
+                        modifier = Modifier.fillMaxHeight(),
+                        abilities = detail.getAbilities()
+                    )
+                },
+                skinsContent = {
+                    ChampionSkinsScreen(
+                        championDetail = detail,
+                        onItemClick = { skinNum ->
+                            bannerImageUrl = detail.getSplash(skinNum.num)
+                            onSkinClick(skinNum.num)
+                        }
+                    )
+                },
+                statsContent = {
+                    ChampionStats(champion = champion)
+                },
+                buildContent = {
+                    ChampionBuildScreen(
+                        modifier = Modifier.fillMaxHeight(),
+                        builds = championBuilds,
+                        onItemClick = { cb ->
+                            onBuildClick(cb.getWebUrl(champion.name))
+                        },
+                        onEditBuild = onEditBuild,
+                        onDeleteItem = onDeleteBuild
+                    )
+                }
             )
         }
-        TabPagerSection(
-            abilitiesContent = {
-                Abilities(
-                    modifier = Modifier.fillMaxHeight(),
-                    abilities = detail.getAbilities()
-                )
-            },
-            skinsContent = {
-                ChampionSkinsScreen(
-                    championDetail = detail,
-                    onItemClick = { skinNum ->
-                        bannerImageUrl = detail.getSplash(skinNum.num)
-                        onItemClick(skinNum.num)
-                    }
-                )
-            },
-            statsContent = {
-                ChampionStats(champion = champion)
-            },
-            buildContent = {
-                val list = listOf(
-                    ChampionBuild(1, "OP.GG", "123123"),
-                    ChampionBuild(2, "U.GG", "123123"),
-                    ChampionBuild(3, "WP.GG", "123123")
-                )
-                ChampionBuildScreen(builds = list) {
+    }
 
-                }
+    if (showNewBuildEditor) {
+        ChampionBuildDialog(
+            onDismissRequest = { showNewBuildEditor = false },
+            build = null,
+            onOkClick = { cb ->
+                showNewBuildEditor = false
+                onInsertBuild(cb)
             }
         )
     }
@@ -198,7 +260,23 @@ fun PreviewDetailScreen() {
             ChampionDetail(
                 modifier = Modifier.padding(padding),
                 champion = champion,
-                detail = detail
+                detail = detail,
+                onSkinClick = {
+
+                },
+                championBuilds = listOf(),
+                onBuildClick = {
+
+                },
+                onInsertBuild = {
+
+                },
+                onEditBuild = {
+
+                },
+                onDeleteBuild = {
+
+                }
             )
         }
     }

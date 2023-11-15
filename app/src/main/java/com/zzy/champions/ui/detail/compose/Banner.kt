@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.components
+package com.zzy.champions.ui.detail.compose
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.zzy.champions.R
+import com.zzy.champions.ui.components.TextDialog
 
 @Composable
 fun Banner(modifier: Modifier = Modifier, imageUrl: String) {
@@ -62,6 +63,8 @@ fun Banner(modifier: Modifier = Modifier, imageUrl: String) {
 @Composable
 fun GeneralInfo(modifier: Modifier = Modifier, title: String, name: String, tags: List<String>, lore: String) {
     var nameSize by remember { mutableStateOf(IntSize.Zero) }
+    var showLoreDialog by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .padding(horizontal = 32.dp)
@@ -136,11 +139,23 @@ fun GeneralInfo(modifier: Modifier = Modifier, title: String, name: String, tags
                 color = MaterialTheme.colorScheme.tertiary,
                 fontSize = 12.sp
             )
-            ExpandableText(
+            CollapsedText(
+                onExpandButtonClick = { /*TODO*/ },
                 text = lore,
                 modifier = Modifier.padding(top = 6.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
             )
         }
+    }
+
+    if (showLoreDialog) {
+        TextDialog(
+            onDismissRequest = { showLoreDialog = false },
+            onPositiveButtonClick = {
+                showLoreDialog = false
+            },
+            content = {
+                Text(text = lore, color = MaterialTheme.colorScheme.onBackground)
+            })
     }
 }
 
@@ -190,6 +205,43 @@ fun ExpandableText(
             if (!expanded && layoutResult.hasVisualOverflow) {
                 clickable = true
                 lastCharIndex = layoutResult.getLineEnd(maxLinesWhenCollapsed - 1)
+            }
+        },
+    )
+}
+
+@Composable
+fun CollapsedText(
+    modifier: Modifier = Modifier,
+    maxLines: Int = 3,
+    expandButtonText: String = stringResource(id = R.string.more),
+    onExpandButtonClick: () -> Unit,
+    text: String
+) {
+    var lastCharIndex by remember { mutableIntStateOf(0) }
+
+    val actionTextStyle = SpanStyle(
+        color = MaterialTheme.colorScheme.tertiary,
+        fontWeight = FontWeight.Bold
+    )
+    Text(
+        modifier = modifier
+            .clickable(onClick = onExpandButtonClick)
+            .animateContentSize(),
+        text = buildAnnotatedString {
+            val adjustText = text.substring(0, lastCharIndex)
+                .dropLast(expandButtonText.length)
+                .dropLastWhile { Character.isWhitespace(it) || it == '.' }
+            append(adjustText)
+            withStyle(actionTextStyle) { append(expandButtonText.uppercase()) }
+        },
+        color = MaterialTheme.colorScheme.onPrimary,
+        maxLines = maxLines,
+        fontSize = 10.sp,
+        lineHeight = 12.sp,
+        onTextLayout = { layoutResult ->
+            if (layoutResult.hasVisualOverflow) {
+                lastCharIndex = layoutResult.getLineEnd(maxLines - 1)
             }
         },
     )

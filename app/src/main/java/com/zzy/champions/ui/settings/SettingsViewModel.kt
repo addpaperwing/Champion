@@ -87,7 +87,7 @@ class SettingsViewModel @Inject constructor(
     fun saveLanguage(language: String) {
         viewModelScope.launch {
             withContext(dispatcher) {
-                repository.saveVersion(language)
+                repository.saveLanguage(language)
             }
         }
     }

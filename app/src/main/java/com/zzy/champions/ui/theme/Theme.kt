@@ -75,8 +75,13 @@ fun MyApplicationTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            window.statusBarColor = Color.Transparent.toArgb()
+            window.navigationBarColor = Color.Transparent.toArgb()
+
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//                window.setDecorFitsSystemWindows(false)
+//            }
+            WindowCompat.setDecorFitsSystemWindows(window, false)
         }
     }
 

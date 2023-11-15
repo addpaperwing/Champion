@@ -48,10 +48,8 @@ class RoomDatabaseTest {
     @Test
     @Throws(Exception::class)
     fun writeChampionsAndReadList_OrderedByNameASC() {
-        val key1 = 1
-        val key2 = 2
-        val ahri: Champion = AndroidTestUtil.createChampion("Ahri", key1)
-        val aatrox: Champion = AndroidTestUtil.createChampion("Aatrox", key2)
+        val ahri: Champion = AndroidTestUtil.createChampion("Ahri")
+        val aatrox: Champion = AndroidTestUtil.createChampion("Aatrox")
         dao.insertList(listOf(ahri, aatrox))
         val result = dao.getAll()
         assertThat(result[0], equalTo(aatrox))

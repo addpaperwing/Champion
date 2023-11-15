@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.components
+package com.zzy.champions.ui.index.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.components
+package com.zzy.champions.ui.detail.compose
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
