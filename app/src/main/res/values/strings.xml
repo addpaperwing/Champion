@@ -49,4 +49,10 @@
     <string name="language">Language</string>
     
     <string name="internet_connection_error">Internet connection error.</string>
+    
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    
+    <string name="build_name">Build Name</string>
+    <string name="build_content">Build Content</string>
 </resources>

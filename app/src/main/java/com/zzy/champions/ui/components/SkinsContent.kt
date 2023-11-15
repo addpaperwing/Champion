@@ -14,11 +14,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -168,10 +170,7 @@ fun ChampionSkinItem(modifier: Modifier = Modifier,
 //    val elevation by remember { mutableStateOf(if (checkState) 6.dp else 1.dp) }
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .clickable {
-                onClick(skinNumber)
-            },
+            .fillMaxWidth(),
         border = if (skinNumber.isSelected) BorderStroke(width = Dp.Hairline, color = Golden) else null,
         elevation = CardDefaults.cardElevation(
             defaultElevation = if (skinNumber.isSelected) 6.dp else 1.dp
@@ -197,7 +196,7 @@ fun ChampionSkinItem(modifier: Modifier = Modifier,
                 alignment = Alignment.TopCenter
             )
             Text(
-                text = "${skinNumber.name} ${if (skinNumber.isSelected) "checked" else "uncheck"}",
+                text = skinNumber.name,
                 color = MaterialTheme.colorScheme.tertiary,
                 fontSize = 14.sp,
                 modifier = Modifier
@@ -205,6 +204,15 @@ fun ChampionSkinItem(modifier: Modifier = Modifier,
                     .padding(16.dp),
                 maxLines = 1
             )
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(CardDefaults.shape)
+                    .clickable {
+                        onClick(skinNumber)
+                    },
+                color = Color.Transparent,
+            ) {}
         }
     }
 }

@@ -30,6 +30,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.zzy.champions.data.model.Champion
+import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.data.model.SettingSelectable
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.ui.components.LaunchScreen
@@ -111,11 +112,28 @@ fun ChampionDetailScreen(viewModel: DetailViewModel, id: String) {
 
     if (result is UiState.Success) {
         val data = (result as UiState.Success).data
-        Scaffold { padding ->
-            ChampionDetail(modifier = Modifier.padding(padding), champion = data.champion, detail = data.detail) {
+        ChampionDetail(
+            modifier = Modifier,
+            champion = data.champion,
+            detail = data.detail,
+            onSkinClick = {
                 viewModel.saveBannerSplash(data.detail, it)
+            },
+            championBuilds = listOf(
+                ChampionBuild("OP.GG", "123123"),
+                ChampionBuild("U.GG", "123123"),
+                ChampionBuild("WP.GG", "123123")
+            ),
+            onBuildClick = {
+
+            },
+            onInsertBuild = { id, name, url ->
+
+            },
+            onDeleteBuild = {
+
             }
-        }
+        )
     }
 }
 
