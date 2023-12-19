@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.components
+package com.zzy.champions.ui.settings.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

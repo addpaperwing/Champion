@@ -12,7 +12,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,19 +37,19 @@ class ChampionViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun getAllChampions_From_LoadingState_To_SuccessState() {
+    fun loadChampions_From_LoadingState_To_SuccessState() {
         val listOfChampion = listOf(aatrox())
-        coEvery { repository.getLatestVersion() } returns ""
+        coEvery { repository.getVersion() } returns ""
         coEvery { repository.getLanguage() } returns ""
         coEvery {
-            repository.getChampions("","")
+            repository.getAllChampions("", "")
         } coAnswers {
             delay(200)
             listOfChampion
         }
 
         runTest {
-            viewModel.getAllChampions()
+            viewModel.loadChampions()
 
             advanceTimeBy(199)
             assertEquals(UiState.Loading, viewModel.champions.value)
@@ -61,20 +61,20 @@ class ChampionViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun getAllChampions_When_getLatestVersion_error() {
+    fun loadChampions_When_getLatestVersion_error() {
         val listOfChampion = listOf(aatrox())
         val ioException = IOException("error")
-        coEvery { repository.getLatestVersion() } coAnswers {
+        coEvery { repository.getVersion() } coAnswers {
             delay(200)
             throw ioException
         }
         coEvery { repository.getLanguage() } returns ""
         coEvery {
-            repository.getChampions("","")
+            repository.getAllChampions("", "")
         } returns listOfChampion
 
         runTest {
-            viewModel.getAllChampions()
+            viewModel.loadChampions()
 
             advanceTimeBy(199)
             assertEquals(UiState.Loading, viewModel.champions.value)
@@ -86,20 +86,20 @@ class ChampionViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun getAllChampions_When_getLanguage_error() {
+    fun loadChampions_When_getLanguage_error() {
         val listOfChampion = listOf(aatrox())
         val ioException = IOException("error")
-        coEvery { repository.getLatestVersion() } returns ""
+        coEvery { repository.getVersion() } returns ""
         coEvery { repository.getLanguage() } coAnswers {
             delay(200)
             throw ioException
         }
         coEvery {
-            repository.getChampions("","")
+            repository.getAllChampions("","")
         } returns listOfChampion
 
         runTest {
-            viewModel.getAllChampions()
+            viewModel.loadChampions()
 
             advanceTimeBy(199)
             assertEquals(UiState.Loading, viewModel.champions.value)
@@ -113,17 +113,17 @@ class ChampionViewModelTest {
     @Test
     fun getAllChampions_When_getChampions_error() {
         val ioException = IOException("error")
-        coEvery { repository.getLatestVersion() } returns ""
+        coEvery { repository.getVersion() } returns ""
         coEvery { repository.getLanguage() } returns ""
         coEvery {
-            repository.getChampions("","")
+            repository.getAllChampions("","")
         } coAnswers {
             delay(200)
             throw ioException
         }
 
         runTest {
-            viewModel.getAllChampions()
+            viewModel.loadChampions()
 
             advanceTimeBy(199)
             assertEquals(UiState.Loading, viewModel.champions.value)

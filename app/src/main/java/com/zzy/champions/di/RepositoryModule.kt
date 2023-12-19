@@ -1,6 +1,5 @@
 package com.zzy.champions.di
 
-import com.zzy.champions.data.local.ChampionDao
 import com.zzy.champions.data.local.ChampionDataBase
 import com.zzy.champions.data.local.DataStoreManager
 import com.zzy.champions.data.remote.Api
@@ -23,8 +22,8 @@ object RepositoryModule {
 
     @ViewModelScoped
     @Provides
-    fun provideRepository(api: Api, dsManager: DataStoreManager, dao: ChampionDao): ChampionRepository {
-        return DefaultChampionRepository(api, dsManager, dao)
+    fun provideRepository(api: Api, dsManager: DataStoreManager, db: ChampionDataBase): ChampionRepository {
+        return DefaultChampionRepository(api, dsManager, db.championDao(), db.championBuildDao())
     }
 
     @ViewModelScoped

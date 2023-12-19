@@ -1,9 +1,11 @@
 package com.zzy.champions.ui.index
 
 import androidx.annotation.VisibleForTesting
+import com.zzy.champions.data.local.ChampionBuildDao
 import com.zzy.champions.data.local.ChampionDao
 import com.zzy.champions.data.local.DataStoreManager
 import com.zzy.champions.data.model.Champion
+import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.data.remote.Api
 import java.io.IOException
 import javax.inject.Inject
@@ -11,13 +13,25 @@ import javax.inject.Inject
 class DefaultChampionRepository @Inject constructor(
     private val api: Api,
     private val dsManager: DataStoreManager,
-    private val dao: ChampionDao
+    private val cDao: ChampionDao,
+    private val cbDao: ChampionBuildDao
 ): ChampionRepository {
 
     private var useRemote = false
 
     private var version: String? = null
     private var language: String? = null
+
+    override suspend fun isFirstOpen(): Boolean = dsManager.isFirstOpen()
+
+    override suspend fun setNotFirstOpen() {
+        dsManager.setNotFirstOpen()
+    }
+
+    override suspend fun addChampionBuild(vararg builds: ChampionBuild) {
+        cbDao.addNewBuild(*builds)
+    }
+
 
     override suspend fun getLanguage(): String = language?:dsManager.getLanguage().also {
         language = it
@@ -47,22 +61,22 @@ class DefaultChampionRepository @Inject constructor(
                 val result = api.getChampions(version, language).data.map { entry ->
                     entry.value
                 }
-                dao.insertList(result)
+                cDao.insertList(result)
                 result
             } catch (e: IOException) {
-                dao.getAll()
+                cDao.getAll()
             }
         } else {
-            dao.getAll()
+            cDao.getAll()
         }
     }
 
     override suspend fun getPredictions(query: String): List<String> {
-        return dao.findChampion(query).map { it.name }
+        return cDao.findChampion(query).map { it.name }
     }
 
     override suspend fun getChampions(name: String): List<Champion> {
-        return dao.findChampion(name)
+        return cDao.findChampion(name)
     }
 
     @VisibleForTesting

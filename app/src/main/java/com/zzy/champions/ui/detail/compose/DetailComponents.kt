@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.detail
+package com.zzy.champions.ui.detail.compose
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
@@ -50,13 +50,7 @@ import com.zzy.champions.data.model.Info
 import com.zzy.champions.data.model.Passive
 import com.zzy.champions.data.model.SkinNumber
 import com.zzy.champions.data.model.Stats
-import com.zzy.champions.ui.components.Abilities
-import com.zzy.champions.ui.components.Banner
 import com.zzy.champions.ui.components.ChampionBuildDialog
-import com.zzy.champions.ui.components.ChampionBuildScreen
-import com.zzy.champions.ui.components.ChampionSkinsScreen
-import com.zzy.champions.ui.components.ChampionStats
-import com.zzy.champions.ui.components.GeneralInfo
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -122,11 +116,14 @@ fun TabPagerSection(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ChampionDetail(modifier: Modifier = Modifier, champion: Champion, detail: ChampionDetail,
+fun ChampionDetail(modifier: Modifier = Modifier,
+                   champion: Champion,
+                   detail: ChampionDetail,
                    onSkinClick:(Int) -> Unit = {},
                    championBuilds: List<ChampionBuild>,
                    onBuildClick: (String) -> Unit,
-                   onInsertBuild: (Int?, String, String) -> Unit,
+                   onInsertBuild: (ChampionBuild) -> Unit,
+                   onEditBuild: (ChampionBuild) -> Unit,
                    onDeleteBuild: (ChampionBuild) -> Unit
 
 ) {
@@ -202,9 +199,15 @@ fun ChampionDetail(modifier: Modifier = Modifier, champion: Champion, detail: Ch
                     ChampionStats(champion = champion)
                 },
                 buildContent = {
-                    ChampionBuildScreen(builds = championBuilds, onItemClick = { cb ->
-                        onBuildClick(cb.getWebUrl(champion.name))
-                    }, onInsertItem = onInsertBuild, onDeleteItem = onDeleteBuild)
+                    ChampionBuildScreen(
+                        modifier = Modifier.fillMaxHeight(),
+                        builds = championBuilds,
+                        onItemClick = { cb ->
+                            onBuildClick(cb.getWebUrl(champion.name))
+                        },
+                        onEditBuild = onEditBuild,
+                        onDeleteItem = onDeleteBuild
+                    )
                 }
             )
         }
@@ -213,11 +216,10 @@ fun ChampionDetail(modifier: Modifier = Modifier, champion: Champion, detail: Ch
     if (showNewBuildEditor) {
         ChampionBuildDialog(
             onDismissRequest = { showNewBuildEditor = false },
-            initTitle = "",
-            initContent = "",
-            onOkClick = { title, content ->
+            build = null,
+            onOkClick = { cb ->
                 showNewBuildEditor = false
-                onInsertBuild(null, title, content)
+                onInsertBuild(cb)
             }
         )
     }
@@ -266,7 +268,10 @@ fun PreviewDetailScreen() {
                 onBuildClick = {
 
                 },
-                onInsertBuild = { a, b, c ->
+                onInsertBuild = {
+
+                },
+                onEditBuild = {
 
                 },
                 onDeleteBuild = {

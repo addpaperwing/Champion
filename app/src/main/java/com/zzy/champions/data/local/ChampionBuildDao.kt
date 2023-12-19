@@ -5,18 +5,44 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.zzy.champions.data.model.ChampionBuild
 
 
 @Dao
-interface ChampionBuildDao {
+abstract class ChampionBuildDao {
 
     @Query("SELECT * FROM ChampionBuild")
-    fun getBuilds(): List<ChampionBuild>
+    abstract fun getBuilds(): List<ChampionBuild>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addNewBuild(build: ChampionBuild)
+    abstract fun addNewBuild(vararg build: ChampionBuild)
+
+    @Insert
+    abstract fun addNewBuild(builds: List<ChampionBuild>)
+
+    @Update
+    abstract fun updateBuild(build: ChampionBuild)
 
     @Delete
-    fun deleteBuild(build: ChampionBuild)
+    abstract fun deleteBuild(build: ChampionBuild)
+
+    @Transaction
+    open fun addNewAndRefreshBuilds(build: ChampionBuild): List<ChampionBuild> {
+        addNewBuild(build)
+        return getBuilds()
+    }
+
+    @Transaction
+    open fun updateAndRefreshBuilds(build: ChampionBuild): List<ChampionBuild> {
+        updateBuild(build = build)
+        return getBuilds()
+    }
+
+    @Transaction
+    open fun deleteAndRefreshBuilds(build: ChampionBuild): List<ChampionBuild> {
+        deleteBuild(build)
+        return getBuilds()
+    }
 }

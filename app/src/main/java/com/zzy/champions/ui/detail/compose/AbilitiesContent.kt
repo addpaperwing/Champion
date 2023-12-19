@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.components
+package com.zzy.champions.ui.detail.compose
 
 import android.widget.TextView
 import androidx.compose.animation.animateColorAsState

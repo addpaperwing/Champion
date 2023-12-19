@@ -1,4 +1,4 @@
-package com.zzy.champions.ui
+package com.zzy.champions.ui.navigation
 
 import androidx.navigation.NavType
 import androidx.navigation.navArgument

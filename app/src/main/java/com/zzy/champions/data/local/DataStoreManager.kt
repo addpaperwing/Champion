@@ -3,6 +3,7 @@ package com.zzy.champions.data.local
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -28,5 +29,11 @@ class DataStoreManager @Inject constructor(@ApplicationContext private val appCo
     suspend fun getVersion() = appContext.dataStore.data.first()[VERSION]?: DEFAULT_VERSION
     suspend fun setVersion(version: String) = appContext.dataStore.edit { preferences ->
         preferences[VERSION] = version
+    }
+
+    private val FIRST_OPEN = booleanPreferencesKey("first_open")
+    suspend fun isFirstOpen() = appContext.dataStore.data.first()[FIRST_OPEN]?: true
+    suspend fun setNotFirstOpen() = appContext.dataStore.edit { preferences ->
+        preferences[FIRST_OPEN] = false
     }
 }

@@ -1,5 +1,6 @@
 package com.zzy.champions.ui.index
 
+import com.zzy.champions.data.local.ChampionBuildDao
 import com.zzy.champions.data.local.ChampionDao
 import com.zzy.champions.data.local.DataStoreManager
 import com.zzy.champions.data.model.Champion
@@ -14,7 +15,7 @@ import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,14 +35,16 @@ class DefaultChampionRepositoryTest {
     @MockK
     private lateinit var dsManager: DataStoreManager
     @MockK
-    private lateinit var dao: ChampionDao
+    private lateinit var cDao: ChampionDao
+    @MockK
+    private lateinit var cbDao: ChampionBuildDao
 
     private lateinit var championRepository: DefaultChampionRepository
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        championRepository = DefaultChampionRepository(api, dsManager, dao)
+        championRepository = DefaultChampionRepository(api, dsManager, cDao, cbDao)
     }
 
     @Test
@@ -51,7 +54,7 @@ class DefaultChampionRepositoryTest {
         coJustRun { dsManager.setVersion(VERSION_1_0) }
 
         runTest {
-            championRepository.getLatestVersion()
+            championRepository.getVersion()
         }
 
         coVerify(exactly = 0) { dsManager.setVersion(VERSION_1_0) }
@@ -67,7 +70,7 @@ class DefaultChampionRepositoryTest {
         coJustRun { dsManager.setVersion(VERSION_1_1) }
 
         runTest {
-            championRepository.getLatestVersion()
+            championRepository.getVersion()
         }
 
         coVerify { dsManager.setVersion(VERSION_1_1) }
@@ -78,45 +81,45 @@ class DefaultChampionRepositoryTest {
 
     @Test
     fun getLocalChampions_When_UseRemote_Is_False() {
-        val aatrox = createChampion("aatrox", 1)
-        val ahri = createChampion("ahri", 2)
+        val aatrox = createChampion("aatrox")
+        val ahri = createChampion("ahri")
         coEvery {
             api.getChampions(VERSION_1_0, LANGUAGE_US)
         } returns ChampionResponse(HashMap<String, Champion>().apply { this["aatrox"] = aatrox })
 
-        coJustRun { dao.insertList(listOf(aatrox)) }
-        coEvery { dao.getAll() } returns listOf(ahri)
+        coJustRun { cDao.insertList(listOf(aatrox)) }
+        coEvery { cDao.getAll() } returns listOf(ahri)
 
         runTest {
             championRepository.setUseRemote(false)
 
-            val result = championRepository.getChampions(VERSION_1_0, LANGUAGE_US)
+            val result = championRepository.getAllChampions(VERSION_1_0, LANGUAGE_US)
 
             assertEquals(ahri, result[0])
         }
 
         assertEquals(false, championRepository.getUseRemote())
         coVerify(exactly = 0) { api.getChampions(VERSION_1_0, LANGUAGE_US) }
-        coVerify(exactly = 0) { dao.insertList(listOf(aatrox)) }
+        coVerify(exactly = 0) { cDao.insertList(listOf(aatrox)) }
     }
 
     @Test
     fun getRemoteChampions_When_UseRemote_Is_True_And_UpdateDataBase() {
-        val aatrox = createChampion("aatrox", 1)
-        val ahri = createChampion("ahri", 2)
+        val aatrox = createChampion("aatrox")
+        val ahri = createChampion("ahri")
 
         coEvery { api.getChampions(VERSION_1_0, LANGUAGE_US) } returns ChampionResponse(HashMap<String, Champion>().apply { this["aatrox"] = aatrox })
-        coJustRun { dao.insertList(listOf(aatrox)) }
-        coEvery { dao.getAll() } returns listOf(ahri)
+        coJustRun { cDao.insertList(listOf(aatrox)) }
+        coEvery { cDao.getAll() } returns listOf(ahri)
 
         runTest {
             championRepository.setUseRemote(true)
 
-            val result = championRepository.getChampions(VERSION_1_0, LANGUAGE_US)
+            val result = championRepository.getAllChampions(VERSION_1_0, LANGUAGE_US)
 
             assertEquals(aatrox, result[0])
         }
 
-        coVerify { dao.insertList(listOf(aatrox)) }
+        coVerify { cDao.insertList(listOf(aatrox)) }
     }
 }

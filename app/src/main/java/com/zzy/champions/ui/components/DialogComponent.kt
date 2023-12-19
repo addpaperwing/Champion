@@ -23,27 +23,71 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.zzy.champions.R
+import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.ui.theme.MyApplicationTheme
 
 @Composable
 fun TextDialog(
     onDismissRequest: () -> Unit,
-    title: @Composable ColumnScope.() -> Unit?,
-    content: @Composable ColumnScope.() -> Unit
+    title: String? = null,
+    onPositiveButtonClick: (() -> Unit)? = null,
+    onNegativeButtonClick: (() -> Unit)? = null,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     LDialog(
         onDismissRequest = onDismissRequest,
+        onPositiveButtonClick = onPositiveButtonClick,
+        onNegativeButtonClick = onNegativeButtonClick
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            title()
+            title?.let {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    text = it.uppercase(),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center
+                )
+            }
             content()
         }
     }
 }
+
+//@Composable
+//fun WarningDialog(
+//    onDismissRequest: () -> Unit,
+//    title: String? = null,
+//    onPositiveButtonClick: (() -> Unit)? = null,
+//    content: @Composable ColumnScope.() -> Unit,
+//) {
+//    LDialog(
+//        onDismissRequest = onDismissRequest,
+//        positiveButtonColor = Color.Red,
+//        onPositiveButtonClick = onPositiveButtonClick,
+//        onNegativeButtonClick = onDismissRequest
+//    ) {
+//        Column(modifier = Modifier.padding(16.dp)) {
+//            title?.let {
+//                Text(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(bottom = 16.dp),
+//                    text = it.uppercase(),
+//                    color = MaterialTheme.colorScheme.onBackground,
+//                    textAlign = TextAlign.Center
+//                )
+//            }
+//            content()
+//        }
+//    }
+//}
 
 @Composable
 fun MenuDialog(
@@ -53,7 +97,6 @@ fun MenuDialog(
 ) {
     LDialog(
         onDismissRequest = onDismissRequest,
-        buttons = false
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -86,16 +129,17 @@ fun MenuItem(modifier: Modifier = Modifier, text: String, onClick: () -> Unit) {
 @Composable
 fun ChampionBuildDialog(
     onDismissRequest: () -> Unit,
-    initTitle: String,
-    initContent: String,
-    onOkClick: (String, String) -> Unit,
+    build: ChampionBuild?,
+    onOkClick: (ChampionBuild) -> Unit,
 ) {
-    var title by remember { mutableStateOf(initTitle) }
-    var content by remember { mutableStateOf(initContent) }
+    var title by remember { mutableStateOf(build?.nameOfBuild?:"") }
+    var content by remember { mutableStateOf(build?.url?:"") }
     LDialog(
         onDismissRequest = onDismissRequest,
         onPositiveButtonClick = {
-            onOkClick(title, content)
+            build?.nameOfBuild = title
+            build?.url = content
+            onOkClick(build?:ChampionBuild(title, content))
         },
         onNegativeButtonClick = onDismissRequest,
         content = {
@@ -103,7 +147,7 @@ fun ChampionBuildDialog(
                 modifier = Modifier
                     .padding(16.dp),
                 label = { Text(text = stringResource(id = R.string.build_name)) },
-                value = initTitle,
+                value = title,
                 onValueChange = {
                     title = it
                 },
@@ -148,7 +192,10 @@ fun ChampionBuildDialog(
 @Composable
 fun LDialog(
     onDismissRequest: () -> Unit,
-    buttons: Boolean = true,
+    positiveButtonText: String =  stringResource(id = android.R.string.ok),
+    positiveButtonColor: Color = MaterialTheme.colorScheme.tertiary,
+    negativeButtonText: String = stringResource(id = android.R.string.cancel),
+    negativeButtonColor: Color = MaterialTheme.colorScheme.tertiary,
     onPositiveButtonClick: (() -> Unit)? = null,
     onNegativeButtonClick: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit = {},
@@ -161,26 +208,24 @@ fun LDialog(
         ) {
             Column {
                 content()
-                if (buttons) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        onNegativeButtonClick?.let {
-                            TextButton(onClick = it) {
-                                Text(
-                                    text = stringResource(id = android.R.string.cancel),
-                                    color = MaterialTheme.colorScheme.tertiary
-                                )
-                            }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    onNegativeButtonClick?.let {
+                        TextButton(onClick = it) {
+                            Text(
+                                text = negativeButtonText,
+                                color = negativeButtonColor
+                            )
                         }
-                        onPositiveButtonClick?.let {
-                            TextButton(onClick = it) {
-                                Text(
-                                    text = stringResource(id = android.R.string.ok),
-                                    color = MaterialTheme.colorScheme.tertiary
-                                )
-                            }
+                    }
+                    onPositiveButtonClick?.let {
+                        TextButton(onClick = it) {
+                            Text(
+                                text = positiveButtonText,
+                                color = positiveButtonColor
+                            )
                         }
                     }
                 }
@@ -200,13 +245,41 @@ fun PreviewMenuDialog() {
             onDelete = {
 
             })
-//        ChampionBuildDialog(
-//            onDismissRequest = { /*TODO*/ },
-//            initTitle = "OP.GG ARAM",
-//            initContent = "https://www.op.gg/modes/aram/ksante/build?region=kr",
-//            onOkClick = { title, content ->
-//
-//            }
-//        )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewEditBuildDialog() {
+    MyApplicationTheme {
+        ChampionBuildDialog(
+            onDismissRequest = { /*TODO*/ },
+            ChampionBuild(
+                nameOfBuild = "OP.GG ARAM",
+                url = "https://www.op.gg/modes/aram/ksante/build?region=kr",
+            ),
+            onOkClick = { cb ->
+
+            }
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewTextDialog() {
+    MyApplicationTheme {
+        TextDialog(
+            onDismissRequest = { /*TODO*/ },
+            title = "Confirm",
+            onPositiveButtonClick = {
+
+            },
+            onNegativeButtonClick = {
+
+            },
+            content = {
+                Text(text = stringResource(id = R.string.do_you_want_to_delete_this_build))
+            })
     }
 }
