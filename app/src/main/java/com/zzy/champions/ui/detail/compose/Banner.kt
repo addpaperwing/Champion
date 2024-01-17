@@ -140,7 +140,9 @@ fun GeneralInfo(modifier: Modifier = Modifier, title: String, name: String, tags
                 fontSize = 12.sp
             )
             CollapsedText(
-                onExpandButtonClick = { /*TODO*/ },
+                onExpandButtonClick = {
+                    showLoreDialog = true
+                },
                 text = lore,
                 modifier = Modifier.padding(top = 6.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
             )
@@ -219,21 +221,24 @@ fun CollapsedText(
     text: String
 ) {
     var lastCharIndex by remember { mutableIntStateOf(0) }
-
+    var clickable by remember { mutableStateOf(false) }
     val actionTextStyle = SpanStyle(
         color = MaterialTheme.colorScheme.tertiary,
         fontWeight = FontWeight.Bold
     )
     Text(
         modifier = modifier
-            .clickable(onClick = onExpandButtonClick)
-            .animateContentSize(),
+            .clickable(onClick = onExpandButtonClick),
         text = buildAnnotatedString {
-            val adjustText = text.substring(0, lastCharIndex)
-                .dropLast(expandButtonText.length)
-                .dropLastWhile { Character.isWhitespace(it) || it == '.' }
-            append(adjustText)
-            withStyle(actionTextStyle) { append(expandButtonText.uppercase()) }
+            if (clickable) {
+                val adjustText = text.substring(0, lastCharIndex)
+                    .dropLast(expandButtonText.length)
+                    .dropLastWhile { Character.isWhitespace(it) || it == '.' }
+                append(adjustText)
+                withStyle(actionTextStyle) { append(expandButtonText.uppercase()) }
+            } else {
+                append(text)
+            }
         },
         color = MaterialTheme.colorScheme.onPrimary,
         maxLines = maxLines,
@@ -241,6 +246,7 @@ fun CollapsedText(
         lineHeight = 12.sp,
         onTextLayout = { layoutResult ->
             if (layoutResult.hasVisualOverflow) {
+                clickable = true
                 lastCharIndex = layoutResult.getLineEnd(maxLines - 1)
             }
         },

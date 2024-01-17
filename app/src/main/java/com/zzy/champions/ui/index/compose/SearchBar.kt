@@ -33,9 +33,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -126,7 +128,7 @@ fun PredictionItem(modifier: Modifier, name: String, onClick: (String) -> Unit) 
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun PredictionSearchBar(
     modifier: Modifier,
@@ -137,6 +139,8 @@ fun PredictionSearchBar(
 ) {
     val view = LocalView.current
     val lazyListState = rememberLazyListState()
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     LazyColumn(
         state = lazyListState,
         modifier = modifier
@@ -147,7 +151,7 @@ fun PredictionSearchBar(
             SearchTextField(
                 onTextChanged = onTextChanged,
                 onDone = {
-                    view.clearFocus()
+                    keyboardController?.hide()
                     onDoneActionClick(it)
                 }
             )
@@ -156,7 +160,7 @@ fun PredictionSearchBar(
         if (predictions.isNotEmpty()) {
             items(predictions) {
                 PredictionItem(modifier = Modifier, name = it) { prediction ->
-                    view.clearFocus()
+                    keyboardController?.hide()
                     onPredictionClick(prediction)
                 }
             }
@@ -168,8 +172,6 @@ fun PredictionSearchBar(
 @Composable
 fun PreviewPrediction() {
     MyApplicationTheme {
-
-
         Column {
             PredictionSearchBar(
                 modifier = Modifier,
