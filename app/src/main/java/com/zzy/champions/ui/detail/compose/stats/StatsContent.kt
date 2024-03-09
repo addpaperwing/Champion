@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.detail.compose
+package com.zzy.champions.ui.detail.compose.stats
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +35,7 @@ import java.math.BigDecimal
 import kotlin.math.roundToInt
 
 @Composable
-fun ChampionLevel(modifier: Modifier = Modifier, level: Float, onLevelChange: (Float) -> Unit,) {
+fun ChampionLevel(modifier: Modifier = Modifier, level: Float, onLevelChange: (Float) -> Unit) {
     Column(modifier = modifier.padding(top = 16.dp)) {
         Row(
             modifier = Modifier.padding(horizontal = 32.dp),
@@ -82,7 +82,7 @@ fun StatsBar(
     calculation: (BigDecimal, BigDecimal, Float) -> BigDecimal = { base, per, lv ->
         base + per * BigDecimal(lv.toDouble())
     },
-    valueToDisplay: @Composable (BigDecimal) -> String = { value -> "$value"}
+    valueToDisplay: @Composable (BigDecimal) -> String = { value -> "$value" }
 ) {
     val value = calculation(baseValue, perLevel, level).adaptiveScale()
     Row(
@@ -127,7 +127,7 @@ fun HpBar(
     maxValue: Float,
 ) {
     StatsBar(
-        statsName =stringResource(id = R.string.hp),
+        statsName = stringResource(id = R.string.hp),
         baseValue = minValue,
         level = level,
         perLevel = perLevel,
@@ -143,7 +143,7 @@ fun HpRegenBar(
     maxValue: Float,
 ) {
     StatsBar(
-        statsName =stringResource(id = R.string.hp_regen),
+        statsName = stringResource(id = R.string.hp_regen),
         baseValue = minValue,
         level = level,
         perLevel = perLevel,
@@ -177,7 +177,7 @@ fun MpRegenBar(
     partype: String,
 ) {
     StatsBar(
-        statsName =stringResource(id = R.string.mp_regen, partype),
+        statsName = stringResource(id = R.string.mp_regen, partype),
         baseValue = minValue,
         level = level,
         perLevel = perLevel,
@@ -193,7 +193,7 @@ fun ArmorBar(
     maxValue: Float,
 ) {
     StatsBar(
-        statsName =stringResource(id = R.string.armor),
+        statsName = stringResource(id = R.string.armor),
         baseValue = minValue,
         level = level,
         perLevel = perLevel,
@@ -209,7 +209,7 @@ fun MagicResistanceBar(
     maxValue: Float,
 ) {
     StatsBar(
-        statsName =stringResource(id = R.string.magic_resist),
+        statsName = stringResource(id = R.string.magic_resist),
         baseValue = minValue,
         level = level,
         perLevel = perLevel,
@@ -225,7 +225,7 @@ fun AdBar(
     maxValue: Float,
 ) {
     StatsBar(
-        statsName =stringResource(id = R.string.attack_damage),
+        statsName = stringResource(id = R.string.attack_damage),
         baseValue = minValue,
         level = level,
         perLevel = perLevel,
@@ -241,7 +241,7 @@ fun AsBar(
     maxValue: Float,
 ) {
     StatsBar(
-        statsName =stringResource(id = R.string.attack_speed),
+        statsName = stringResource(id = R.string.attack_speed),
         baseValue = minValue,
         level = level,
         perLevel = perLevel,
@@ -268,7 +268,7 @@ fun StatsBars(level: Float, champion: Champion) {
             minValue = champion.stats.hpregen,
             level = level,
             perLevel = champion.stats.hpregenperlevel,
-            maxValue =30f
+            maxValue = 30f
         )
         MpBar(
             minValue = champion.stats.mp,

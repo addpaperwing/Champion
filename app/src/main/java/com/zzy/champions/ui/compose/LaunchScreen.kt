@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.components
+package com.zzy.champions.ui.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

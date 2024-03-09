@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.index
+package com.zzy.champions.ui
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

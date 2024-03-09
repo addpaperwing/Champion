@@ -23,7 +23,7 @@ object RepositoryModule {
     @ViewModelScoped
     @Provides
     fun provideRepository(api: Api, dsManager: DataStoreManager, db: ChampionDataBase): ChampionRepository {
-        return DefaultChampionRepository(api, dsManager, db.championDao(), db.championBuildDao())
+        return DefaultChampionRepository(api, dsManager, db.championDao(), db.championDetailDao(), db.championBuildDao())
     }
 
     @ViewModelScoped
