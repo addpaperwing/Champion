@@ -16,6 +16,7 @@ class DefaultDetailRepository @Inject constructor(
 ): DetailRepository {
 
     override suspend fun getChampionAndDetail(id: String): ChampionAndDetail {
+        //TODO Version first
         db.championDetailDao().getDetail(id)?: kotlin.run {
             val detail = api.getChampionDetail(dsManager.getVersion(), dsManager.getLanguage(), id).data[id]?: throw IOException("Champion not found")
             db.championDetailDao().insert(detail = detail)
@@ -23,9 +24,7 @@ class DefaultDetailRepository @Inject constructor(
         return db.championDao().getChampionAndDetail(id)
     }
 
-    override suspend fun updateChampionDetailSplash(detail: ChampionDetail) {
-        db.championDetailDao().insert(detail)
-    }
+    override suspend fun updateChampionDetailSplash(detail: ChampionDetail) = db.championDetailDao().insert(detail)
 
     override suspend fun getBuilds(): List<ChampionBuild> = db.championBuildDao().getBuilds()
 

@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.components
+package com.zzy.champions.ui.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -28,6 +28,6 @@ fun ErrorScreen(modifier: Modifier = Modifier, errorMessage: String) {
 @Composable
 fun PreviewErrorScreen() {
     MyApplicationTheme {
-        ErrorScreen(errorMessage = "Error loading")
+        ErrorScreen(errorMessage = "Error")
     }
 }

@@ -9,21 +9,22 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.zzy.champions.ui.detail.compose.ChampionDetailScreen
+import com.zzy.champions.ui.index.ChampionViewModel
 import com.zzy.champions.ui.index.compose.ChampionIndexScreen
 
-internal val ARG_KEY_VERSION_AND_LANGUAGE = "version_and_language"
+internal const val ARG_KEY_VERSION_AND_LANGUAGE = "version_and_language"
 
 @Composable
 fun ChampionNavHost(
     navController: NavHostController,
     onLinkClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ChampionViewModel
 ) {
     NavHost(
         modifier = modifier,
@@ -50,7 +51,7 @@ fun ChampionNavHost(
                 )
             }
         ) { entry ->
-            ChampionIndexScreen(viewModel = hiltViewModel(),
+            ChampionIndexScreen(viewModel = viewModel,
                 onSettingClick = {
                     navController.navigateSingleTopTo(Settings.route)
                 }, onItemClick = {
@@ -79,7 +80,7 @@ fun ChampionNavHost(
                 )
             }
         ) { entry ->
-            ChampionDetailScreen(hiltViewModel(), entry.arguments?.getString(Detail.championIdArg)!!, onLinkClick)
+            ChampionDetailScreen(viewModel, entry.arguments?.getString(Detail.championIdArg)!!, onLinkClick)
         }
 
 //        composable(
@@ -112,7 +113,7 @@ fun ChampionNavHost(
 fun NavHostController.navigateSingleTopTo(route: String) =
     this.navigate(route) {
         popUpTo(this@navigateSingleTopTo.graph.findStartDestination().id) { saveState = true }
-        launchSingleTop = true
+//        launchSingleTop = true
         restoreState = true
     }
 

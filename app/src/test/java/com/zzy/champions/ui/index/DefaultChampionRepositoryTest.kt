@@ -3,10 +3,14 @@ package com.zzy.champions.ui.index
 import com.zzy.champions.data.local.ChampionBuildDao
 import com.zzy.champions.data.local.ChampionDao
 import com.zzy.champions.data.local.DataStoreManager
+import com.zzy.champions.data.model.BUILD_OP_GG
+import com.zzy.champions.data.model.BUILD_OP_GG_ARAM
+import com.zzy.champions.data.model.BUILD_UGG
 import com.zzy.champions.data.model.Champion
 import com.zzy.champions.data.model.ChampionResponse
 import com.zzy.champions.data.remote.Api
-import com.zzy.champions.ui.index.TestUtil.createChampion
+import com.zzy.champions.ui.MainDispatcherRule
+import com.zzy.champions.ui.TestUtil.createChampion
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coJustRun
@@ -48,7 +52,47 @@ class DefaultChampionRepositoryTest {
     }
 
     @Test
-    fun currentVersion_Is_latestVersion_useRemoteFalse_updateChampionCompanionObject() {
+    fun preloadDataForFirstOpen_whenItIsFirstOpen() {
+        coEvery { dsManager.isFirstOpen() } returns true
+        coJustRun { cbDao.addNewBuild(
+            BUILD_OP_GG,
+            BUILD_UGG,
+            BUILD_OP_GG_ARAM) }
+        coJustRun { dsManager.setNotFirstOpen() }
+
+        runTest {
+            championRepository.preloadDataForFirstOpen()
+        }
+
+        coVerify { cbDao.addNewBuild(
+            BUILD_OP_GG,
+            BUILD_UGG,
+            BUILD_OP_GG_ARAM) }
+        coVerify { dsManager.setNotFirstOpen() }
+    }
+
+    @Test
+    fun preloadDataForFirstOpen_whenItIsNotFirstOpen() {
+        coEvery { dsManager.isFirstOpen() } returns false
+        coJustRun { cbDao.addNewBuild(
+            BUILD_OP_GG,
+            BUILD_UGG,
+            BUILD_OP_GG_ARAM) }
+        coJustRun { dsManager.setNotFirstOpen() }
+
+        runTest {
+            championRepository.preloadDataForFirstOpen()
+        }
+
+        coVerify(exactly = 0) { cbDao.addNewBuild(
+            BUILD_OP_GG,
+            BUILD_UGG,
+            BUILD_OP_GG_ARAM) }
+        coVerify(exactly = 0) { dsManager.setNotFirstOpen() }
+    }
+
+    @Test
+    fun getVersion_whenLocalVersionIsRemoteVersion_localVersionNotUpdate_useRemoteIsFalse() {
         coEvery { api.getVersions() } returns listOf(VERSION_1_0)
         coEvery { dsManager.getVersion() } returns VERSION_1_0
         coJustRun { dsManager.setVersion(VERSION_1_0) }
@@ -64,7 +108,7 @@ class DefaultChampionRepositoryTest {
     }
 
     @Test
-    fun currentVersion_Is_Not_latestVersion_updateCurrentVersion_useRemoteTrue_updateChampionCompanionObject() {
+    fun getVersion_whenLocalVersionLowerThanRemoteVersion_localVersionUpdate_useRemoteIsTrue() {
         coEvery { api.getVersions() } returns listOf(VERSION_1_1)
         coEvery { dsManager.getVersion() } returns VERSION_1_0
         coJustRun { dsManager.setVersion(VERSION_1_1) }
@@ -80,7 +124,7 @@ class DefaultChampionRepositoryTest {
     }
 
     @Test
-    fun getLocalChampions_When_UseRemote_Is_False() {
+    fun getLocalChampions_When_UseRemoteIsFalse() {
         val aatrox = createChampion("aatrox")
         val ahri = createChampion("ahri")
         coEvery {
@@ -104,7 +148,7 @@ class DefaultChampionRepositoryTest {
     }
 
     @Test
-    fun getRemoteChampions_When_UseRemote_Is_True_And_UpdateDataBase() {
+    fun getRemoteChampions_When_UseRemoteIsTrue_And_UpdateDataBase() {
         val aatrox = createChampion("aatrox")
         val ahri = createChampion("ahri")
 

@@ -15,7 +15,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zzy.champions.data.model.Champion
 import com.zzy.champions.data.remote.UiState
-import com.zzy.champions.ui.components.LaunchScreen
+import com.zzy.champions.ui.compose.LaunchScreen
 import com.zzy.champions.ui.index.ChampionViewModel
 
 @Composable

@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.detail.compose
+package com.zzy.champions.ui.detail.compose.cb
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
@@ -25,36 +23,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zzy.champions.R
 import com.zzy.champions.data.model.ChampionBuild
-import com.zzy.champions.ui.components.ChampionBuildDialog
-import com.zzy.champions.ui.components.MenuDialog
-import com.zzy.champions.ui.components.TextDialog
-import com.zzy.champions.ui.theme.MyApplicationTheme
+import com.zzy.champions.ui.compose.ChampionBuildDialog
+import com.zzy.champions.ui.compose.MenuDialog
+import com.zzy.champions.ui.compose.TextDialog
 
 @Composable
-fun ChampionBuildScreen(
-    modifier: Modifier = Modifier,
-    builds: List<ChampionBuild>,
-    onItemClick: (ChampionBuild) -> Unit,
-    onEditBuild: (ChampionBuild) -> Unit,
-    onDeleteItem: (ChampionBuild) -> Unit,
-) {
-    LazyColumn(
-        modifier = modifier.padding(16.dp),
-    ) {
-        items(builds) {
-            ChampionBuildItem(cb = it, onClick = onItemClick, onEditClick = onEditBuild, onDeleteClick = onDeleteItem)
-        }
-    }
-}
-
-@Composable
-fun ChampionBuildItem(
+fun BuildItem(
     modifier: Modifier = Modifier,
     cb: ChampionBuild,
     onClick: (ChampionBuild) -> Unit,
@@ -69,6 +49,7 @@ fun ChampionBuildItem(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
+                .clip(CardDefaults.shape)
                 .clickable { onClick(cb) },
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface
@@ -95,13 +76,6 @@ fun ChampionBuildItem(
                         )
                     }
                 }
-
-//                Surface(
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .clip(CardDefaults.shape),
-//                    color = Color.Transparent,
-//                ) {}
             }
         }
         Spacer(modifier = Modifier.padding(8.dp))
@@ -136,29 +110,10 @@ fun ChampionBuildItem(
         ChampionBuildDialog(
             onDismissRequest = { showEditor = false },
             build = cb,
-            onOkClick = { cb ->
+            onOkClick = {
                 showEditor = false
                 onEditClick(cb)
             }
         )
-    }
-}
-
-@Composable
-@Preview
-fun PreviewBuilds() {
-    val list = listOf(
-        ChampionBuild( "OP.GG", "123123"),
-        ChampionBuild( "U.GG", "123123"),
-        ChampionBuild( "WP.GG", "123123")
-    )
-    MyApplicationTheme {
-        ChampionBuildScreen(builds = list, onItemClick = {
-
-        }, onEditBuild = { c ->
-
-        }, onDeleteItem = {
-
-        })
     }
 }

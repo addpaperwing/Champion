@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.index
+package com.zzy.champions.ui
 
 import com.zzy.champions.data.model.Champion
 import com.zzy.champions.data.model.Image
