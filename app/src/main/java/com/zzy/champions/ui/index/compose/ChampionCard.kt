@@ -30,20 +30,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.zzy.champions.R
 import com.zzy.champions.data.model.Champion
-import com.zzy.champions.ui.theme.AssassinPurple
-import com.zzy.champions.ui.theme.FighterRed
-import com.zzy.champions.ui.theme.MageBlue
-import com.zzy.champions.ui.theme.MarksmanOrange
-import com.zzy.champions.ui.theme.SupportGreen
-import com.zzy.champions.ui.theme.TankSliver
+import com.zzy.champions.ui.theme.getChampionTagColor
 
-
-internal const val FIGHTER = "Fighter"
-internal const val MARKSMAN = "Marksman"
-internal const val ASSASSIN = "Assassin"
-internal const val MAGE = "Mage"
-internal const val SUPPORT = "Support"
-internal const val TANK = "Tank"
 @Composable
 fun ChampionCard(
     modifier: Modifier = Modifier,
@@ -63,17 +51,7 @@ fun ChampionCard(
             modifier = Modifier
                 .padding(3.dp)
                 .fillMaxWidth()
-                .background(
-                    when (champion.tags[0]) {
-                        FIGHTER -> FighterRed
-                        ASSASSIN -> AssassinPurple
-                        MAGE -> MageBlue
-                        MARKSMAN -> MarksmanOrange
-                        SUPPORT -> SupportGreen
-                        TANK -> TankSliver
-                        else -> TankSliver
-                    }
-                )
+                .background(getChampionTagColor(champion.tags[0]))
                 .clip(CutCornerShape(topEnd = 16.dp, bottomStart = 16.dp))
                 .padding(6.dp)
         ) {

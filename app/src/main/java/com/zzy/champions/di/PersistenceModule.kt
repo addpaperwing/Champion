@@ -3,9 +3,9 @@ package com.zzy.champions.di
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
-import com.zzy.champions.data.local.ChampionDao
-import com.zzy.champions.data.local.ChampionDataBase
 import com.zzy.champions.data.local.DataStoreManager
+import com.zzy.champions.data.local.db.ChampionDataBase
+import com.zzy.champions.data.local.db.ChampionDatabaseHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,7 +37,11 @@ object PersistenceModule {
 
     @Provides
     @Singleton
-    fun provideChampionDao(db: ChampionDataBase): ChampionDao {
-        return db.championDao()
+    fun provideChampionDatabaseHelper(db: ChampionDataBase): ChampionDatabaseHelper {
+        return ChampionDatabaseHelper(
+            db.championDao(),
+            db.championDetailDao(),
+            db.championBuildDao()
+        )
     }
 }

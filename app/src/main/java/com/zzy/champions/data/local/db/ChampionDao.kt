@@ -1,4 +1,4 @@
-package com.zzy.champions.data.local
+package com.zzy.champions.data.local.db
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -12,18 +12,18 @@ import com.zzy.champions.data.model.ChampionAndDetail
 interface ChampionDao {
 
     @Query("SELECT * FROM champion ORDER BY name ASC")
-    fun getAll(): List<Champion>
+    suspend fun getAll(): List<Champion>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertList(champions:  List<Champion>)
+    suspend fun insertList(champions:  List<Champion>)
 
     @Query("SELECT * FROM champion WHERE `id` IS :id  LIMIT 1")
-    fun findById(id: String): Champion
+    suspend fun getChampion(id: String): Champion
 
     @Query("SELECT * FROM champion WHERE name LIKE :query || '%'")
-    fun findChampion(query: String): List<Champion>
+    suspend fun queryChampions(query: String): List<Champion>
 
     @Transaction
     @Query("SELECT * FROM champion WHERE `id` IS :id  LIMIT 1")
-    fun getChampionAndDetail(id: String): ChampionAndDetail
+    suspend fun getChampionAndDetail(id: String): ChampionAndDetail
 }

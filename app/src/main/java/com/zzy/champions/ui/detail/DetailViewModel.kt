@@ -39,7 +39,6 @@ class DetailViewModel @Inject constructor(
                     UiState.Error(e)
                 }
             }
-
             _result.value = result
         }
     }

@@ -18,6 +18,8 @@ import com.zzy.champions.data.model.Image
 import com.zzy.champions.data.model.Info
 import com.zzy.champions.data.model.Stats
 import com.zzy.champions.ui.theme.MyApplicationTheme
+import com.zzy.champions.ui.theme.SUPPORT
+import com.zzy.champions.ui.theme.TANK
 
 @Composable
 fun ChampionIndex(

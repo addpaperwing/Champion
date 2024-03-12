@@ -1,4 +1,4 @@
-package com.zzy.champions.data.local
+package com.zzy.champions.data.local.db
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -14,34 +14,34 @@ import com.zzy.champions.data.model.ChampionBuild
 abstract class ChampionBuildDao {
 
     @Query("SELECT * FROM ChampionBuild")
-    abstract fun getBuilds(): List<ChampionBuild>
+    abstract suspend fun getBuilds(): List<ChampionBuild>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun addNewBuild(vararg build: ChampionBuild)
+    abstract suspend fun addNewBuild(vararg build: ChampionBuild)
 
     @Insert
-    abstract fun addNewBuild(builds: List<ChampionBuild>)
+    abstract suspend fun addNewBuild(builds: List<ChampionBuild>)
 
     @Update
-    abstract fun updateBuild(build: ChampionBuild)
+    abstract suspend fun updateBuild(build: ChampionBuild)
 
     @Delete
-    abstract fun deleteBuild(build: ChampionBuild)
+    abstract suspend fun deleteBuild(build: ChampionBuild)
 
     @Transaction
-    open fun addNewAndRefreshBuilds(build: ChampionBuild): List<ChampionBuild> {
+    open suspend fun addNewAndRefreshBuilds(build: ChampionBuild): List<ChampionBuild> {
         addNewBuild(build)
         return getBuilds()
     }
 
     @Transaction
-    open fun updateAndRefreshBuilds(build: ChampionBuild): List<ChampionBuild> {
+    open suspend fun updateAndRefreshBuilds(build: ChampionBuild): List<ChampionBuild> {
         updateBuild(build = build)
         return getBuilds()
     }
 
     @Transaction
-    open fun deleteAndRefreshBuilds(build: ChampionBuild): List<ChampionBuild> {
+    open suspend fun deleteAndRefreshBuilds(build: ChampionBuild): List<ChampionBuild> {
         deleteBuild(build)
         return getBuilds()
     }

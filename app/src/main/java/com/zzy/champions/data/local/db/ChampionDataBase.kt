@@ -1,4 +1,4 @@
-package com.zzy.champions.data.local
+package com.zzy.champions.data.local.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

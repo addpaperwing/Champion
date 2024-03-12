@@ -1,4 +1,4 @@
-package com.zzy.champions.data.local
+package com.zzy.champions.data.local.db
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -10,10 +10,10 @@ import com.zzy.champions.data.model.ChampionDetail
 interface ChampionDetailDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(detail: ChampionDetail)
+    suspend fun insert(detail: ChampionDetail)
     @Query("SELECT * FROM ChampionDetail WHERE `championId` IS :id  LIMIT 1")
-    fun getDetail(id: String): ChampionDetail?
-//
-//    @Query("UPDATE ChampionDetail SET splashIndex=:index WHERE id = :id")
-//    fun updateSplashIndex(id: String, index: Int)
+    suspend fun getDetail(id: String): ChampionDetail?
+
+    @Query("DELETE FROM championdetail")
+    suspend fun clearDetailData()
 }

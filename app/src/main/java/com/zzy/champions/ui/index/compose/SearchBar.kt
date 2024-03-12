@@ -44,6 +44,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.zzy.champions.ui.theme.ASSASSIN
+import com.zzy.champions.ui.theme.MAGE
+import com.zzy.champions.ui.theme.MARKSMAN
 import com.zzy.champions.ui.theme.MyApplicationTheme
 
 internal val PREDICTION_ITEM_HEIGHT = 56.dp

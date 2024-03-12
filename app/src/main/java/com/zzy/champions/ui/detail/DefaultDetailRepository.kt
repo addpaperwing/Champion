@@ -1,7 +1,7 @@
 package com.zzy.champions.ui.detail
 
-import com.zzy.champions.data.local.ChampionDataBase
 import com.zzy.champions.data.local.DataStoreManager
+import com.zzy.champions.data.local.db.ChampionDatabaseHelper
 import com.zzy.champions.data.model.ChampionAndDetail
 import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.data.model.ChampionDetail
@@ -12,25 +12,24 @@ import javax.inject.Inject
 class DefaultDetailRepository @Inject constructor(
     private val api: Api,
     private val dsManager: DataStoreManager,
-    private val db: ChampionDataBase
+    private val dbHelper: ChampionDatabaseHelper
 ): DetailRepository {
 
     override suspend fun getChampionAndDetail(id: String): ChampionAndDetail {
-        //TODO Version first
-        db.championDetailDao().getDetail(id)?: kotlin.run {
+        dbHelper.getChampionDetail(id)?: kotlin.run {
             val detail = api.getChampionDetail(dsManager.getVersion(), dsManager.getLanguage(), id).data[id]?: throw IOException("Champion not found")
-            db.championDetailDao().insert(detail = detail)
+            dbHelper.updateChampionDetailData(detail)
         }
-        return db.championDao().getChampionAndDetail(id)
+        return dbHelper.getChampionBasicAndDetailData(id)
     }
 
-    override suspend fun updateChampionDetailSplash(detail: ChampionDetail) = db.championDetailDao().insert(detail)
+    override suspend fun updateChampionDetailSplash(detail: ChampionDetail) = dbHelper.updateChampionDetailData(detail)
 
-    override suspend fun getBuilds(): List<ChampionBuild> = db.championBuildDao().getBuilds()
+    override suspend fun getBuilds(): List<ChampionBuild> = dbHelper.getChampionBuilds()
 
-    override suspend fun addBuild(build: ChampionBuild): List<ChampionBuild> = db.championBuildDao().addNewAndRefreshBuilds(build)
+    override suspend fun addBuild(build: ChampionBuild): List<ChampionBuild> = dbHelper.addChampionBuild(build)
 
-    override suspend fun editBuild(build: ChampionBuild): List<ChampionBuild> = db.championBuildDao().updateAndRefreshBuilds(build)
+    override suspend fun editBuild(build: ChampionBuild): List<ChampionBuild> = dbHelper.editChampionBuild(build)
 
-    override suspend fun deleteBuild(build: ChampionBuild): List<ChampionBuild> = db.championBuildDao().deleteAndRefreshBuilds(build)
+    override suspend fun deleteBuild(build: ChampionBuild): List<ChampionBuild> = dbHelper.deleteChampionBuild(build)
 }
