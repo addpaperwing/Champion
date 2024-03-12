@@ -1,8 +1,10 @@
 package com.zzy.champions.ui
 
 import com.zzy.champions.data.model.Champion
+import com.zzy.champions.data.model.ChampionDetail
 import com.zzy.champions.data.model.Image
 import com.zzy.champions.data.model.Info
+import com.zzy.champions.data.model.Passive
 import com.zzy.champions.data.model.Stats
 
 object TestUtil {
@@ -30,5 +32,15 @@ object TestUtil {
         "",
         Info(),
         Stats()
+    )
+
+    fun createChampionDetail(id: String): ChampionDetail = ChampionDetail(
+        championId = id,
+        skins = emptyList(),
+        lore = "",
+        spells = emptyList(),
+        passive = Passive(
+            name = "", description = "", image = Image(full = "")
+        )
     )
 }

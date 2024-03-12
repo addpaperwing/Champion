@@ -142,7 +142,7 @@ class ChampionViewModelTest {
         val aatroxName = "aatrox"
         val champions = listOf(aatrox())
         coEvery {
-            repository.getChampions(aatroxName)
+            repository.searchChampionsBy(aatroxName)
         } coAnswers {
             delay(200)
             champions
@@ -165,7 +165,7 @@ class ChampionViewModelTest {
         val aatroxName = "aatrox"
         val ioException = IOException("error")
         coEvery {
-            repository.getChampions(aatroxName)
+            repository.searchChampionsBy(aatroxName)
         } coAnswers {
             delay(200)
             throw ioException
@@ -188,7 +188,7 @@ class ChampionViewModelTest {
         val aatroxName = "aatrox"
         val champions = listOf(aatrox())
         coEvery {
-            repository.getChampions(aatroxName)
+            repository.searchChampionsBy(aatroxName)
         } coAnswers {
             champions
         }
@@ -209,7 +209,7 @@ class ChampionViewModelTest {
         val aatroxName = "aatrox"
         val ioException = IOException("error")
         coEvery {
-            repository.getChampions(aatroxName)
+            repository.searchChampionsBy(aatroxName)
         } coAnswers {
             throw ioException
         }

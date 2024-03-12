@@ -6,11 +6,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zzy.champions.data.remote.UiState
-import com.zzy.champions.ui.index.ChampionViewModel
+import com.zzy.champions.ui.detail.DetailViewModel
 
 @Composable
 fun ChampionDetailScreen(
-    viewModel: ChampionViewModel,
+    viewModel: DetailViewModel,
     id: String,
     onOpenBrowser: (String) -> Unit,
 ) {

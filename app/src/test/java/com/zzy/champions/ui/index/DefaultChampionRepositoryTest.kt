@@ -1,11 +1,7 @@
 package com.zzy.champions.ui.index
 
-import com.zzy.champions.data.local.ChampionBuildDao
-import com.zzy.champions.data.local.ChampionDao
 import com.zzy.champions.data.local.DataStoreManager
-import com.zzy.champions.data.model.BUILD_OP_GG
-import com.zzy.champions.data.model.BUILD_OP_GG_ARAM
-import com.zzy.champions.data.model.BUILD_UGG
+import com.zzy.champions.data.local.db.ChampionDatabaseHelper
 import com.zzy.champions.data.model.Champion
 import com.zzy.champions.data.model.ChampionResponse
 import com.zzy.champions.data.remote.Api
@@ -39,55 +35,41 @@ class DefaultChampionRepositoryTest {
     @MockK
     private lateinit var dsManager: DataStoreManager
     @MockK
-    private lateinit var cDao: ChampionDao
-    @MockK
-    private lateinit var cbDao: ChampionBuildDao
+    private lateinit var dbHelper: ChampionDatabaseHelper
 
     private lateinit var championRepository: DefaultChampionRepository
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        championRepository = DefaultChampionRepository(api, dsManager, cDao, cbDao)
+        championRepository = DefaultChampionRepository(api, dsManager, dbHelper)
     }
 
     @Test
-    fun preloadDataForFirstOpen_whenItIsFirstOpen() {
+    fun presetDataForLaunching_whenItIsFirstOpen() {
         coEvery { dsManager.isFirstOpen() } returns true
-        coJustRun { cbDao.addNewBuild(
-            BUILD_OP_GG,
-            BUILD_UGG,
-            BUILD_OP_GG_ARAM) }
+        coJustRun { dbHelper.addPresetBuildData() }
         coJustRun { dsManager.setNotFirstOpen() }
 
         runTest {
             championRepository.preloadDataForFirstOpen()
         }
 
-        coVerify { cbDao.addNewBuild(
-            BUILD_OP_GG,
-            BUILD_UGG,
-            BUILD_OP_GG_ARAM) }
+        coVerify { dbHelper.addPresetBuildData() }
         coVerify { dsManager.setNotFirstOpen() }
     }
 
     @Test
-    fun preloadDataForFirstOpen_whenItIsNotFirstOpen() {
+    fun notAddingPresetDataForLaunching_whenItIsNotFirstOpen() {
         coEvery { dsManager.isFirstOpen() } returns false
-        coJustRun { cbDao.addNewBuild(
-            BUILD_OP_GG,
-            BUILD_UGG,
-            BUILD_OP_GG_ARAM) }
+        coJustRun {  dbHelper.addPresetBuildData() }
         coJustRun { dsManager.setNotFirstOpen() }
 
         runTest {
             championRepository.preloadDataForFirstOpen()
         }
 
-        coVerify(exactly = 0) { cbDao.addNewBuild(
-            BUILD_OP_GG,
-            BUILD_UGG,
-            BUILD_OP_GG_ARAM) }
+        coVerify(exactly = 0) {  dbHelper.addPresetBuildData() }
         coVerify(exactly = 0) { dsManager.setNotFirstOpen() }
     }
 
@@ -131,8 +113,8 @@ class DefaultChampionRepositoryTest {
             api.getChampions(VERSION_1_0, LANGUAGE_US)
         } returns ChampionResponse(HashMap<String, Champion>().apply { this["aatrox"] = aatrox })
 
-        coJustRun { cDao.insertList(listOf(aatrox)) }
-        coEvery { cDao.getAll() } returns listOf(ahri)
+        coJustRun { dbHelper.updateChampionBasicData(listOf(aatrox)) }
+        coEvery { dbHelper.getAllChampionData() } returns listOf(ahri)
 
         runTest {
             championRepository.setUseRemote(false)
@@ -144,7 +126,7 @@ class DefaultChampionRepositoryTest {
 
         assertEquals(false, championRepository.getUseRemote())
         coVerify(exactly = 0) { api.getChampions(VERSION_1_0, LANGUAGE_US) }
-        coVerify(exactly = 0) { cDao.insertList(listOf(aatrox)) }
+        coVerify(exactly = 0) { dbHelper.updateChampionBasicData(listOf(aatrox)) }
     }
 
     @Test
@@ -153,8 +135,8 @@ class DefaultChampionRepositoryTest {
         val ahri = createChampion("ahri")
 
         coEvery { api.getChampions(VERSION_1_0, LANGUAGE_US) } returns ChampionResponse(HashMap<String, Champion>().apply { this["aatrox"] = aatrox })
-        coJustRun { cDao.insertList(listOf(aatrox)) }
-        coEvery { cDao.getAll() } returns listOf(ahri)
+        coJustRun { dbHelper.updateChampionBasicData(listOf(aatrox)) }
+        coEvery { dbHelper.getAllChampionData() } returns listOf(ahri)
 
         runTest {
             championRepository.setUseRemote(true)
@@ -164,6 +146,6 @@ class DefaultChampionRepositoryTest {
             assertEquals(aatrox, result[0])
         }
 
-        coVerify { cDao.insertList(listOf(aatrox)) }
+        coVerify { dbHelper.updateChampionBasicData(listOf(aatrox)) }
     }
 }

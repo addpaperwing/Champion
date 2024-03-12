@@ -9,12 +9,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.zzy.champions.ui.detail.compose.ChampionDetailScreen
-import com.zzy.champions.ui.index.ChampionViewModel
 import com.zzy.champions.ui.index.compose.ChampionIndexScreen
 
 internal const val ARG_KEY_VERSION_AND_LANGUAGE = "version_and_language"
@@ -23,8 +23,7 @@ internal const val ARG_KEY_VERSION_AND_LANGUAGE = "version_and_language"
 fun ChampionNavHost(
     navController: NavHostController,
     onLinkClick: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: ChampionViewModel
+    modifier: Modifier = Modifier
 ) {
     NavHost(
         modifier = modifier,
@@ -51,7 +50,7 @@ fun ChampionNavHost(
                 )
             }
         ) { entry ->
-            ChampionIndexScreen(viewModel = viewModel,
+            ChampionIndexScreen(viewModel = hiltViewModel(),
                 onSettingClick = {
                     navController.navigateSingleTopTo(Settings.route)
                 }, onItemClick = {
@@ -80,7 +79,7 @@ fun ChampionNavHost(
                 )
             }
         ) { entry ->
-            ChampionDetailScreen(viewModel, entry.arguments?.getString(Detail.championIdArg)!!, onLinkClick)
+            ChampionDetailScreen(hiltViewModel(), entry.arguments?.getString(Detail.championIdArg)!!, onLinkClick)
         }
 
 //        composable(

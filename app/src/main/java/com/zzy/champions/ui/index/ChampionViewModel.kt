@@ -3,9 +3,6 @@ package com.zzy.champions.ui.index
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zzy.champions.data.model.Champion
-import com.zzy.champions.data.model.ChampionAndDetail
-import com.zzy.champions.data.model.ChampionBuild
-import com.zzy.champions.data.model.ChampionDetail
 import com.zzy.champions.data.remote.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -39,17 +36,17 @@ class ChampionViewModel @Inject constructor(
         .distinctUntilChanged()
         .map {
             if (it.isBlank()) return@map emptyList()
-            else repository.getChampions(it).map { champion -> champion.name }
+            else repository.searchChampionsBy(it).map { champion -> champion.name }
         }.catch {
             emit(emptyList())
         }.flowOn(dispatcher)
 
 
-    private val _result = MutableStateFlow<UiState<ChampionAndDetail>>(UiState.Loading)
-    val result: StateFlow<UiState<ChampionAndDetail>> = _result.asStateFlow()
-
-    private val _builds = MutableStateFlow<List<ChampionBuild>>(emptyList())
-    val builds: StateFlow<List<ChampionBuild>> = _builds.asStateFlow()
+//    private val _result = MutableStateFlow<UiState<ChampionAndDetail>>(UiState.Loading)
+//    val result: StateFlow<UiState<ChampionAndDetail>> = _result.asStateFlow()
+//
+//    private val _builds = MutableStateFlow<List<ChampionBuild>>(emptyList())
+//    val builds: StateFlow<List<ChampionBuild>> = _builds.asStateFlow()
 
 
 
@@ -86,7 +83,7 @@ class ChampionViewModel @Inject constructor(
         viewModelScope.launch {
             val result = withContext(dispatcher) {
                 try {
-                    UiState.Success(repository.getChampions(name))
+                    UiState.Success(repository.searchChampionsBy(name))
                 } catch (e: Throwable) {
                     e.printStackTrace()
                     UiState.Error(e)
@@ -98,63 +95,63 @@ class ChampionViewModel @Inject constructor(
     }
 
 
-    fun getChampionAndDetail(id: String) {
-        viewModelScope.launch {
-            val result = withContext(dispatcher) {
-                try {
-                    val championAndDetail = repository.getChampionAndDetail(id)
-                    UiState.Success(championAndDetail)
-                } catch (e: Throwable) {
-                    e.printStackTrace()
-                    UiState.Error(e)
-                }
-            }
-
-            _result.value = result
-        }
-    }
-
-    fun saveBannerSplash(detail: ChampionDetail, skinNum: Int) {
-        viewModelScope.launch {
-            withContext(dispatcher) {
-                detail.splashIndex = skinNum
-                detail.skins.forEach {
-                    it.initSelectState = skinNum == it.num
-                }
-                repository.updateChampionDetailSplash(detail)
-            }
-        }
-    }
-
-    fun getChampionBuilds() {
-        viewModelScope.launch {
-            _builds.value = withContext(dispatcher) {
-                repository.getBuilds()
-            }
-        }
-    }
-
-    fun addChampionBuild(build: ChampionBuild) {
-        viewModelScope.launch {
-            _builds.value = withContext(dispatcher) {
-                repository.addBuild(build)
-            }
-        }
-    }
-
-    fun updateChampionBuild(build: ChampionBuild) {
-        viewModelScope.launch {
-            _builds.value = withContext(dispatcher) {
-                repository.editBuild(build)
-            }
-        }
-    }
-
-    fun deleteChampionBuild(build: ChampionBuild) {
-        viewModelScope.launch {
-            _builds.value = withContext(dispatcher) {
-                repository.deleteBuild(build)
-            }
-        }
-    }
+//    fun getChampionAndDetail(id: String) {
+//        viewModelScope.launch {
+//            val result = withContext(dispatcher) {
+//                try {
+//                    val championAndDetail = repository.getChampionAndDetail(id)
+//                    UiState.Success(championAndDetail)
+//                } catch (e: Throwable) {
+//                    e.printStackTrace()
+//                    UiState.Error(e)
+//                }
+//            }
+//
+//            _result.value = result
+//        }
+//    }
+//
+//    fun saveBannerSplash(detail: ChampionDetail, skinNum: Int) {
+//        viewModelScope.launch {
+//            withContext(dispatcher) {
+//                detail.splashIndex = skinNum
+//                detail.skins.forEach {
+//                    it.initSelectState = skinNum == it.num
+//                }
+//                repository.updateChampionDetailSplash(detail)
+//            }
+//        }
+//    }
+//
+//    fun getChampionBuilds() {
+//        viewModelScope.launch {
+//            _builds.value = withContext(dispatcher) {
+//                repository.getBuilds()
+//            }
+//        }
+//    }
+//
+//    fun addChampionBuild(build: ChampionBuild) {
+//        viewModelScope.launch {
+//            _builds.value = withContext(dispatcher) {
+//                repository.addBuild(build)
+//            }
+//        }
+//    }
+//
+//    fun updateChampionBuild(build: ChampionBuild) {
+//        viewModelScope.launch {
+//            _builds.value = withContext(dispatcher) {
+//                repository.editBuild(build)
+//            }
+//        }
+//    }
+//
+//    fun deleteChampionBuild(build: ChampionBuild) {
+//        viewModelScope.launch {
+//            _builds.value = withContext(dispatcher) {
+//                repository.deleteBuild(build)
+//            }
+//        }
+//    }
 }
