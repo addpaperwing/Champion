@@ -26,4 +26,7 @@ interface ChampionDao {
     @Transaction
     @Query("SELECT * FROM champion WHERE `id` IS :id  LIMIT 1")
     suspend fun getChampionAndDetail(id: String): ChampionAndDetail
+
+    @Query("DELETE FROM champion")
+    suspend fun clearChampions()
 }

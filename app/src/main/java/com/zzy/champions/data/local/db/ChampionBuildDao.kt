@@ -28,6 +28,9 @@ abstract class ChampionBuildDao {
     @Delete
     abstract suspend fun deleteBuild(build: ChampionBuild)
 
+    @Query("DELETE FROM championbuild")
+    abstract suspend fun clearBuilds()
+
     @Transaction
     open suspend fun addNewAndRefreshBuilds(build: ChampionBuild): List<ChampionBuild> {
         addNewBuild(build)

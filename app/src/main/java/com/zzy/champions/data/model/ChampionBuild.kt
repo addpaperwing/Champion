@@ -11,10 +11,8 @@ internal val BUILD_OP_GG_ARAM = ChampionBuild("OP.GG ARAM", "https://www.op.gg/m
 
 @Entity
 data class ChampionBuild(
-    var nameOfBuild: String,
+    @PrimaryKey var nameOfBuild: String,
     var url: String
 ) {
-
-    @PrimaryKey(autoGenerate = true) var id: Int = 0
     fun getWebUrl(championName: String) = url.replace("{}", championName, true)
 }
