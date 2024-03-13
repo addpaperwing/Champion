@@ -31,7 +31,7 @@ class DatabaseTest {
 
     private val ahriId = "ahri"
     private val ahri = AndroidTestUtil.createChampion(ahriId)
-    private val ahriDetail = AndroidTestUtil.createChampionDetail(ahriId)
+//    private val ahriDetail = AndroidTestUtil.createChampionDetail(ahriId)
 
     @Before
     fun createDb() {
