@@ -1,5 +1,6 @@
 package com.zzy.champions.ui.compose
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -29,7 +30,7 @@ import kotlinx.coroutines.delay
 
 private const val SPLASH_WAIT_TIME: Long = 2000
 @Composable
-fun LaunchScreen(modifier: Modifier, onTimeout: () -> Unit) {
+fun LaunchScreen(modifier: Modifier = Modifier, onTimeout: () -> Unit) {
     Box(
         modifier
             .fillMaxSize()
@@ -55,7 +56,7 @@ fun LaunchScreen(modifier: Modifier, onTimeout: () -> Unit) {
         if (showWaitText) {
             Text(
                 modifier = Modifier.padding(32.dp).align(Alignment.BottomCenter),
-                text = stringResource(id = R.string.it_might_take_a_bit_while_for_the_first_load),
+                text = stringResource(id = R.string.loading_data_),
                 color = Color.White,
                 fontSize = 10.sp
             )
@@ -72,3 +73,6 @@ fun PreviewLaunchScreen() {
         }
     }
 }
+
+@VisibleForTesting
+fun getLaunchScreenSplashWaitTime() = SPLASH_WAIT_TIME

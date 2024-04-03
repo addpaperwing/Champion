@@ -1,15 +1,13 @@
 package com.zzy.champions.ui.detail.compose
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,9 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.zzy.champions.R
 import com.zzy.champions.data.model.Champion
 import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.data.model.ChampionDetail
@@ -31,24 +27,20 @@ import com.zzy.champions.data.model.Info
 import com.zzy.champions.data.model.Passive
 import com.zzy.champions.data.model.SkinNumber
 import com.zzy.champions.data.model.Stats
-import com.zzy.champions.ui.detail.compose.ability.Abilities
-import com.zzy.champions.ui.detail.compose.cb.ChampionBuildScreen
 import com.zzy.champions.ui.detail.compose.header.GradientBannerImage
 import com.zzy.champions.ui.detail.compose.header.InfoBox
-import com.zzy.champions.ui.detail.compose.skin.SkinsContent
-import com.zzy.champions.ui.detail.compose.stats.ChampionStats
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import java.math.BigDecimal
 
-@OptIn(ExperimentalFoundationApi::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ChampionDetail(modifier: Modifier = Modifier,
                    champion: Champion,
                    detail: ChampionDetail,
                    onSkinClick:(Int) -> Unit = {},
                    championBuilds: List<ChampionBuild>,
+                   onAddNewBuild: (ChampionBuild) -> Unit,
                    onBuildClick: (String) -> Unit,
-                   onInsertBuild: (ChampionBuild) -> Unit,
                    onEditBuild: (ChampionBuild) -> Unit,
                    onDeleteBuild: (ChampionBuild) -> Unit
 
@@ -60,6 +52,7 @@ fun ChampionDetail(modifier: Modifier = Modifier,
         bannerImageUrl = detail.getSplash()
     }
 
+    //For fab only
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
@@ -68,16 +61,16 @@ fun ChampionDetail(modifier: Modifier = Modifier,
                 enter = scaleIn(),
                 exit = scaleOut(),
             ) {
-                AddChampionBuildFAB(onInsertBuild = { build ->
-                    onInsertBuild(build)
+                AddChampionBuildFAB(onAddNewBuild = { build ->
+                    onAddNewBuild(build)
                 })
             }
         }
-    ) { padding ->
+    ) { _ ->
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(bottom = padding.calculateBottomPadding())
+
         ) {
             Box(Modifier.aspectRatio(1215 / 717f)) {
                 GradientBannerImage(Modifier.align(Alignment.TopCenter), bannerImageUrl)
@@ -91,40 +84,19 @@ fun ChampionDetail(modifier: Modifier = Modifier,
                 )
             }
             ChampionDetailTabPager(
-                titles = stringArrayResource(id = R.array.tabs),
                 onTabClick = { index ->
                     fabVisibility = (index == 2)
                 },
-                content = { page ->
-                    when (page) {
-                        0 -> {
-                            Abilities(abilities = detail.getAbilities())
-                        }
-                        1 -> {
-                            ChampionStats(champion = champion)
-                        }
-                        2 -> {
-                            ChampionBuildScreen(
-                                modifier = Modifier.fillMaxHeight(),
-                                builds = championBuilds,
-                                onItemClick = { cb ->
-                                    onBuildClick(cb.getWebUrl(champion.name))
-                                },
-                                onEditBuild = onEditBuild,
-                                onDeleteItem = onDeleteBuild
-                            )
-                        }
-                        3 -> {
-                            SkinsContent(
-                                championDetail = detail,
-                                onItemClick = { skinNum ->
-                                    bannerImageUrl = detail.getSplash(skinNum.num)
-                                    onSkinClick(skinNum.num)
-                                }
-                            )
-                        }
-                    }
-                }
+                champion = champion,
+                detail = detail,
+                onSkinClick = {
+                    bannerImageUrl = detail.getSplash(it.num)
+                    onSkinClick(it.num)
+                },
+                championBuilds = championBuilds,
+                onBuildClick = onBuildClick,
+                onEditBuild = onEditBuild,
+                onDeleteBuild = onDeleteBuild
             )
         }
     }
@@ -170,10 +142,10 @@ fun PreviewDetailScreen() {
 
                 },
                 championBuilds = listOf(),
-                onBuildClick = {
+                onAddNewBuild = {
 
                 },
-                onInsertBuild = {
+                onBuildClick = {
 
                 },
                 onEditBuild = {

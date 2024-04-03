@@ -24,8 +24,8 @@ class ChampionDatabaseHelper @Inject constructor(
         return cDao.getAll()
     }
 
-    suspend fun searchChampions(query: String) : List<Champion> {
-        return cDao.queryChampions(query)
+    suspend fun searchChampionsById(id: String) : List<Champion> {
+        return cDao.queryChampionsById(id)
     }
 
 
@@ -42,8 +42,6 @@ class ChampionDatabaseHelper @Inject constructor(
     suspend fun updateChampionDetailData(championDetail: ChampionDetail) = cdDao.insert(championDetail)
 
     suspend fun getChampionBasicAndDetailData(id: String) : ChampionAndDetail  = cDao.getChampionAndDetail(id)
-
-
 
     suspend fun getChampionBuilds(): List<ChampionBuild> = cbDao.getBuilds()
 

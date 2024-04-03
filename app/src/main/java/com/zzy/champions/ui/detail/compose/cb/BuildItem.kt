@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -56,7 +57,7 @@ fun BuildItem(
             )
         ) {
             Box(modifier = Modifier.height(IntrinsicSize.Min)) {
-                Row {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = cb.nameOfBuild,
                         color = MaterialTheme.colorScheme.tertiary,
@@ -66,12 +67,13 @@ fun BuildItem(
                             .weight(1f),
                         maxLines = 1
                     )
-                    IconButton(onClick = {
+                    IconButton(
+                        onClick = {
                         showMenu = true
                     }) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
-                            contentDescription = "menu",
+                            contentDescription = "Build item menu",
                             tint = MaterialTheme.colorScheme.tertiary
                         )
                     }

@@ -30,7 +30,7 @@ fun SettingsScreen(
         onBack(appVersion, language)
     }
 
-    SettingsContent(
+    Settings(
         modifier = modifier,
         gameVersion = appVersion,
         dataVersions = if (versions is UiState.Success) (versions as UiState.Success).data else listOf(
@@ -42,9 +42,6 @@ fun SettingsScreen(
         languages = if (languages is UiState.Success) (languages as UiState.Success).data else listOf(SettingSelectable(language, true)),
         onLanguageSelected = {
             viewModel.saveLanguage(it)
-        },
-        onBack = {
-            onBack(appVersion, language)
         },
         showError = versions is UiState.Error || languages is UiState.Error
     )

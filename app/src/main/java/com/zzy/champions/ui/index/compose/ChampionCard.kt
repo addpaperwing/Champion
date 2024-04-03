@@ -31,12 +31,13 @@ import coil.compose.AsyncImage
 import com.zzy.champions.R
 import com.zzy.champions.data.model.Champion
 import com.zzy.champions.ui.theme.getChampionTagColor
+import kotlin.math.roundToInt
 
 @Composable
 fun ChampionCard(
     modifier: Modifier = Modifier,
     champion: Champion,
-    onClick: () -> Unit
+    onClick: () -> Unit = {}
 ) {
     Box(
         modifier = modifier
@@ -115,12 +116,12 @@ fun RoleAndDifficulty(modifier: Modifier = Modifier , role: String, difficulty: 
             fontSize = 10.sp,
             lineHeight = 12.sp
         )
-        Difficulty(modifier = Modifier.padding(top = 6.dp), difficulty = difficulty)
+        DifficultyStepBar(modifier = Modifier.padding(top = 6.dp), difficulty = difficulty)
     }
 }
 
 @Composable
-fun Difficulty(modifier : Modifier= Modifier, difficulty: Int) {
+fun DifficultyStepBar(modifier : Modifier= Modifier, difficulty: Int) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.End
@@ -133,14 +134,14 @@ fun Difficulty(modifier : Modifier= Modifier, difficulty: Int) {
             lineHeight = 12.sp
         )
         Row {
-            (0..2).forEach { times ->
+            (0..2).forEach { step ->
                 Box(
                     Modifier
                         .padding(top = 2.dp)
                         .size(20.dp, 6.dp)
-                        .clip(CutCornerShape(topStart = 6.dp, bottomEnd = 6.dp))
+                        .clip(CutCornerShape(topStart = 4.dp, bottomEnd = 4.dp))
                         .background(
-                            if (difficulty - (times * 3.5).toInt() > 0) {
+                            if (highlightForStep(difficulty, step)) {
                                 MaterialTheme.colorScheme.secondary
                             } else {
                                 MaterialTheme.colorScheme.primary
@@ -150,3 +151,5 @@ fun Difficulty(modifier : Modifier= Modifier, difficulty: Int) {
         }
     }
 }
+
+fun highlightForStep(difficulty: Int, step: Int, maxStep: Int = 3) = difficulty - (step * 10.0 / maxStep).roundToInt() > 0

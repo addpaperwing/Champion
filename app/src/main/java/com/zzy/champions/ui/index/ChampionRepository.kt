@@ -14,7 +14,7 @@ interface ChampionRepository {
 
     suspend fun getLanguage(): String
     suspend fun getAllChampions(version: String, language: String): List<Champion>
-    suspend fun searchChampionsBy(name: String): List<Champion>
+    suspend fun searchChampionsBy(id: String): List<Champion>
 
 //    suspend fun getChampionAndDetail(id: String): ChampionAndDetail
 //

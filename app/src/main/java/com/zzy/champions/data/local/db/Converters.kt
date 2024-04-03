@@ -105,7 +105,7 @@ object Converters {
     @TypeConverter
     @JvmStatic
     fun toImage(value :  String):  Image? {
-        val moshi = Moshi.Builder().add(BigDecimalAdapter).build()
+        val moshi = Moshi.Builder().build()
         val adapter: JsonAdapter<Image> = moshi.adapter()
 
         return adapter.fromJson(value)
@@ -114,7 +114,7 @@ object Converters {
     @TypeConverter
     @JvmStatic
     fun fromImage(stats: Image): String {
-        val moshi = Moshi.Builder().add(BigDecimalAdapter).build()
+        val moshi = Moshi.Builder().build()
         val adapter: JsonAdapter<Image> = moshi.adapter()
         return adapter.toJson(stats)
     }

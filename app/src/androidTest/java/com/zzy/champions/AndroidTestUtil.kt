@@ -9,16 +9,15 @@ import com.zzy.champions.data.model.Stats
 
 object AndroidTestUtil {
 
-    fun createChampion(name: String = "Aatrox"): Champion = Champion(
-        name,
-        name,
-        "the Darkin Blade",
-        Image(""),
-        emptyList(),
-        "",
-        Info(),
-        Stats()
-    )
+    fun createChampion(
+        name: String = "Aatrox",
+        title: String = "the Darkin Blade",
+        image: Image = Image(""),
+        tags: List<String> = emptyList(),
+        partype: String = "",
+        info: Info = Info(),
+        stats: Stats = Stats(),
+    ): Champion = Champion(name, name, title, image, tags, partype, info, stats)
 
     fun createChampionDetail(id: String): ChampionDetail = ChampionDetail(
         championId = id,

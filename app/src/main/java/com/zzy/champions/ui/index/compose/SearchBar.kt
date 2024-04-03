@@ -33,12 +33,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,10 +52,11 @@ internal val PREDICTION_ITEM_HEIGHT = 56.dp
 @Composable
 fun SearchTextField(
     modifier: Modifier = Modifier,
+    text: String,
     onTextChanged: (String) -> Unit,
+    onClearText: (() -> Unit)? = null,
     onDone: (String) -> Unit
 ) {
-    var text by rememberSaveable { mutableStateOf("") }
     Surface(modifier = modifier, color = MaterialTheme.colorScheme.background) {
         TextField(
             modifier = Modifier
@@ -76,8 +75,8 @@ fun SearchTextField(
                 )
             },
             trailingIcon = {
-                if (text.isNotBlank()) {
-                    IconButton(onClick = { text = "" }) {
+                if (onClearText != null && text.isNotBlank()) {
+                    IconButton(onClick = onClearText) {
                         Icon(imageVector = Icons.Default.Clear, contentDescription = "Clear")
                     }
                 }
@@ -96,7 +95,6 @@ fun SearchTextField(
             ),
             value = text,
             onValueChange = { newValue ->
-                text = newValue
                 onTextChanged(newValue)
             },
             singleLine = true,
@@ -112,37 +110,38 @@ fun SearchTextField(
 }
 
 @Composable
-fun PredictionItem(modifier: Modifier, name: String, onClick: (String) -> Unit) {
+fun <T> PredictionItem(modifier: Modifier = Modifier, item: T, onDisplay: (T) -> String = {it.toString()}, onClick: (T) -> Unit) {
     Row(
         modifier = modifier
             .height(PREDICTION_ITEM_HEIGHT)
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface)
             .clickable {
-                onClick(name)
+                onClick(item)
             },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = name.uppercase(),
+            text = onDisplay(item).uppercase(),
             color = MaterialTheme.colorScheme.onSurface
             )
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PredictionSearchBar(
+fun <T> PredictionSearchBar(
     modifier: Modifier,
-    predictions: List<String>,
+    predictions: List<T>,
     onTextChanged: (String) -> Unit,
     onDoneActionClick: (String) -> Unit,
-    onPredictionClick: (String) -> Unit
+    onPredictionClick: (T) -> Unit,
+    getDisplayText: (T) -> String = { it.toString() }
 ) {
-    val view = LocalView.current
     val lazyListState = rememberLazyListState()
     val keyboardController = LocalSoftwareKeyboardController.current
+    var text by rememberSaveable { mutableStateOf("") }
 
     LazyColumn(
         state = lazyListState,
@@ -152,7 +151,11 @@ fun PredictionSearchBar(
     ) {
         stickyHeader {
             SearchTextField(
-                onTextChanged = onTextChanged,
+                text = text,
+                onTextChanged = {
+                    text = it
+                    onTextChanged(text)
+                },
                 onDone = {
                     keyboardController?.hide()
                     onDoneActionClick(it)
@@ -162,7 +165,7 @@ fun PredictionSearchBar(
 
         if (predictions.isNotEmpty()) {
             items(predictions) {
-                PredictionItem(modifier = Modifier, name = it) { prediction ->
+                PredictionItem(modifier = Modifier, it, onDisplay = getDisplayText) { prediction ->
                     keyboardController?.hide()
                     onPredictionClick(prediction)
                 }

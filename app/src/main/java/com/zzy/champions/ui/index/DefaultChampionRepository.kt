@@ -64,8 +64,8 @@ class DefaultChampionRepository @Inject constructor(
         }
     }
 
-    override suspend fun searchChampionsBy(name: String): List<Champion> {
-        return dbHelper.searchChampions(name)
+    override suspend fun searchChampionsBy(id : String): List<Champion> {
+        return dbHelper.searchChampionsById(id)
     }
 
 //    override suspend fun getChampionAndDetail(id: String): ChampionAndDetail {

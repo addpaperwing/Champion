@@ -15,7 +15,7 @@ import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.ui.compose.ChampionBuildDialog
 
 @Composable
-fun AddChampionBuildFAB(onInsertBuild: (ChampionBuild) -> Unit) {
+fun AddChampionBuildFAB(onAddNewBuild: (ChampionBuild) -> Unit) {
     var showNewBuildEditor by remember { mutableStateOf(false) }
 
     FloatingActionButton(
@@ -33,7 +33,7 @@ fun AddChampionBuildFAB(onInsertBuild: (ChampionBuild) -> Unit) {
             build = null,
             onOkClick = { cb ->
                 showNewBuildEditor = false
-                onInsertBuild(cb)
+                onAddNewBuild(cb)
             }
         )
     }

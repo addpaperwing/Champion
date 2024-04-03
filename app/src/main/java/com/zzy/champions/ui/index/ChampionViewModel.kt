@@ -6,16 +6,11 @@ import com.zzy.champions.data.model.Champion
 import com.zzy.champions.data.remote.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -30,16 +25,17 @@ class ChampionViewModel @Inject constructor(
     private val _champions = MutableStateFlow<UiState<List<Champion>>>(UiState.Loading)
     val champions: StateFlow<UiState<List<Champion>>> = _champions.asStateFlow()
 
-    private val _query: MutableStateFlow<String> = MutableStateFlow("")
-    @OptIn(FlowPreview::class)
-    val predictions: Flow<List<String>> = _query.debounce(300)
-        .distinctUntilChanged()
-        .map {
-            if (it.isBlank()) return@map emptyList()
-            else repository.searchChampionsBy(it).map { champion -> champion.name }
-        }.catch {
-            emit(emptyList())
-        }.flowOn(dispatcher)
+//    private val _query: MutableStateFlow<String> = MutableStateFlow("")
+
+//    @OptIn(FlowPreview::class)
+//    val predictions: Flow<List<Champion>> = _query.debounce(300)
+//        .distinctUntilChanged()
+//        .map {
+//            if (it.isBlank()) return@map emptyList()
+//            else repository.searchChampionsBy(it)
+//        }.catch {
+//            emit(emptyList())
+//        }.flowOn(dispatcher)
 
 
 //    private val _result = MutableStateFlow<UiState<ChampionAndDetail>>(UiState.Loading)
@@ -47,6 +43,8 @@ class ChampionViewModel @Inject constructor(
 //
 //    private val _builds = MutableStateFlow<List<ChampionBuild>>(emptyList())
 //    val builds: StateFlow<List<ChampionBuild>> = _builds.asStateFlow()
+
+    private var getChampionJob: Job? = null
 
 
 
@@ -73,17 +71,23 @@ class ChampionViewModel @Inject constructor(
         }
     }
 
-    fun updatePredictions(query: String) {
-        _query.value = query
+//    fun updatePredictions(query: String) {
+//        _query.value = query
+//        viewModelScope.launch {
+//
+//        }
+//    }
+    fun clearSearchResults() {
+        loadChampions()
     }
-    fun clearPredictions() {
-        _query.value = ""
-    }
-    fun getChampion(name: String) {
-        viewModelScope.launch {
+
+    fun getChampion(id: String) {
+        getChampionJob = viewModelScope.launch {
+            getChampionJob?.cancel()
+            delay(300)
             val result = withContext(dispatcher) {
                 try {
-                    UiState.Success(repository.searchChampionsBy(name))
+                    UiState.Success(repository.searchChampionsBy(id))
                 } catch (e: Throwable) {
                     e.printStackTrace()
                     UiState.Error(e)
