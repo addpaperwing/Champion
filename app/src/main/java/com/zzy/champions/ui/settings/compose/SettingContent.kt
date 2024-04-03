@@ -30,10 +30,11 @@ import com.zzy.champions.ui.theme.MyApplicationTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Appbar(modifier: Modifier = Modifier, onBack: () -> Unit) {
-    TopAppBar(modifier = modifier, title = {
-        Text(text = stringResource(id = R.string.settings))
-    },
+fun SettingAppbar(modifier: Modifier = Modifier, onBack: () -> Unit) {
+    TopAppBar(
+        modifier = modifier, title = {
+            Text(text = stringResource(id = R.string.settings))
+        },
         navigationIcon = {
             IconButton(onClick = onBack) {
                 Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back")
@@ -64,43 +65,38 @@ fun SettingItem(modifier: Modifier = Modifier, itemName: String, content: @Compo
 }
 
 @Composable
-fun SettingsContent(
+fun Settings(
     modifier: Modifier = Modifier,
     gameVersion: String,
     dataVersions: List<SettingSelectable>,
     onAppVersionSelected: (String) -> Unit,
     languages: List<SettingSelectable>,
     onLanguageSelected: (String) -> Unit,
-    onBack: () -> Unit,
     showError: Boolean = false
 ) {
-    Scaffold(topBar = {
-        Appbar(onBack = onBack)
-    }) { padding ->
-        Column(modifier.padding(padding)) {
-            if (showError) ErrorBar()
-            SettingItem(
-                itemName = stringResource(id = R.string.latest_game_version)
-            ) {
-                Text(
-                    text = gameVersion,
-                    color = MaterialTheme.colorScheme.onSecondary
-                )
-            }
-            SettingItem(
-                itemName = stringResource(id = R.string.app_data_version)
-            ) {
-                SelectableBottomMenu(
-                    list = dataVersions, onItemSelected = onAppVersionSelected
-                )
-            }
-            SettingItem(
-                itemName = stringResource(id = R.string.language)
-            ) {
-                SelectableBottomMenu(
-                    list = languages, onItemSelected = onLanguageSelected
-                )
-            }
+    Column(modifier) {
+        if (showError) ErrorBar()
+        SettingItem(
+            itemName = stringResource(id = R.string.latest_game_version)
+        ) {
+            Text(
+                text = gameVersion,
+                color = MaterialTheme.colorScheme.onSecondary
+            )
+        }
+        SettingItem(
+            itemName = stringResource(id = R.string.app_data_version)
+        ) {
+            SelectableBottomMenu(
+                list = dataVersions, onItemSelected = onAppVersionSelected
+            )
+        }
+        SettingItem(
+            itemName = stringResource(id = R.string.language)
+        ) {
+            SelectableBottomMenu(
+                list = languages, onItemSelected = onLanguageSelected
+            )
         }
     }
 }
@@ -109,9 +105,13 @@ fun SettingsContent(
 @Preview
 fun PreviewItem() {
     MyApplicationTheme {
-        SettingsContent(
-            gameVersion = "1.13.1",
-            dataVersions = listOf(
+        Scaffold(topBar = {
+            SettingAppbar(onBack = {})
+        }) { padding ->
+            Settings(
+                modifier = Modifier.padding(padding),
+                gameVersion = "1.13.1",
+                dataVersions = listOf(
                     SettingSelectable("1.13.1", false),
                     SettingSelectable("1.13.2", false),
                     SettingSelectable("1.13.3", true),
@@ -119,15 +119,13 @@ fun PreviewItem() {
                     SettingSelectable("1.13.5", false),
                     SettingSelectable("1.13.6", false),
                 ),
-            onAppVersionSelected = {
+                onAppVersionSelected = {
 
-            },
-            languages = emptyList(),
-            onLanguageSelected = {
+                },
+                languages = emptyList(),
+                onLanguageSelected = {
 
-            },
-            onBack = {
-            
-        })
+                })
+        }
     }
 }

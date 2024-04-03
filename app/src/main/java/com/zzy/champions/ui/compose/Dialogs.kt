@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -23,6 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,6 +35,8 @@ import com.zzy.champions.ui.theme.MyApplicationTheme
 
 @Composable
 fun TextDialog(
+    modifier: Modifier = Modifier,
+    textModifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
     title: String? = null,
     onPositiveButtonClick: (() -> Unit)? = null,
@@ -40,11 +44,12 @@ fun TextDialog(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     LDialog(
+        modifier = modifier.semantics { contentDescription = "Champion build text dialog" },
         onDismissRequest = onDismissRequest,
         onPositiveButtonClick = onPositiveButtonClick,
         onNegativeButtonClick = onNegativeButtonClick
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = textModifier.padding(16.dp)) {
             title?.let {
                 Text(
                     modifier = Modifier
@@ -91,22 +96,30 @@ fun TextDialog(
 
 @Composable
 fun MenuDialog(
+    modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
     onEdit: (() -> Unit)? = null,
     onDelete: (() -> Unit)? = null,
 ) {
     LDialog(
+        modifier = modifier.semantics { contentDescription = "Champion build menu dialog" },
         onDismissRequest = onDismissRequest,
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
             onEdit?.let {
-                MenuItem(text = stringResource(id = R.string.edit), onClick = it)
+                MenuItem(
+                    modifier = Modifier.semantics { contentDescription = "Edit champion build" },
+                    text = stringResource(id = R.string.edit),
+                    onClick = it
+                )
             }
-            Divider(modifier = Modifier.padding(horizontal = 16.dp))
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
             onDelete?.let {
-                MenuItem(text = stringResource(id = R.string.delete), onClick = it)
+                MenuItem(
+                    modifier = Modifier.semantics { contentDescription = "Delete champion build" },
+                    text = stringResource(id = R.string.delete), onClick = it)
             }
         }
     }
@@ -128,6 +141,7 @@ fun MenuItem(modifier: Modifier = Modifier, text: String, onClick: () -> Unit) {
 
 @Composable
 fun ChampionBuildDialog(
+    modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
     build: ChampionBuild?,
     onOkClick: (ChampionBuild) -> Unit,
@@ -135,6 +149,7 @@ fun ChampionBuildDialog(
     var title by remember { mutableStateOf(build?.nameOfBuild?:"") }
     var content by remember { mutableStateOf(build?.url?:"") }
     LDialog(
+        modifier = modifier.semantics { contentDescription = "Champion build dialog" },
         onDismissRequest = onDismissRequest,
         onPositiveButtonClick = {
             build?.nameOfBuild = title
@@ -143,6 +158,9 @@ fun ChampionBuildDialog(
         },
         onNegativeButtonClick = onDismissRequest,
         content = {
+            Text(modifier = Modifier
+                    .padding(16.dp),
+                text = stringResource(id = R.string.add_weblink_build_desc))
             OutlinedTextField(
                 modifier = Modifier
                     .padding(16.dp),
@@ -167,7 +185,7 @@ fun ChampionBuildDialog(
             OutlinedTextField(
                 modifier = Modifier
                     .padding(16.dp),
-                label = { Text(text = stringResource(id = R.string.build_content)) },
+                label = { Text(text = stringResource(id = R.string.build_weblink)) },
                 value = content,
                 onValueChange = {
                     content = it
@@ -191,6 +209,7 @@ fun ChampionBuildDialog(
 
 @Composable
 fun LDialog(
+    modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
     positiveButtonText: String =  stringResource(id = android.R.string.ok),
     positiveButtonColor: Color = MaterialTheme.colorScheme.tertiary,
@@ -203,7 +222,7 @@ fun LDialog(
     Dialog(
         onDismissRequest = onDismissRequest,
     ) {
-        Surface(
+        Surface(modifier = modifier,
             shape = RoundedCornerShape(12.dp),
         ) {
             Column {
@@ -254,7 +273,7 @@ fun PreviewEditBuildDialog() {
     MyApplicationTheme {
         ChampionBuildDialog(
             onDismissRequest = { /*TODO*/ },
-            ChampionBuild(
+            build = ChampionBuild(
                 nameOfBuild = "OP.GG ARAM",
                 url = "https://www.op.gg/modes/aram/ksante/build?region=kr",
             ),

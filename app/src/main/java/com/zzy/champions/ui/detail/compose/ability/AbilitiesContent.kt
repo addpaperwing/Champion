@@ -24,6 +24,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -51,7 +53,7 @@ fun Abilities(
     val pagerState = rememberPagerState { abilities.size }
     val scope = rememberCoroutineScope()
 
-    Column(modifier = modifier.padding(top = 16.dp)) {
+    Column(modifier = modifier.padding(top = 16.dp).semantics { contentDescription = "Champion abilities" }) {
         AbilitiesIndicator(abilities = abilities, initPage = pagerState.currentPage) { index ->
             scope.launch {
                 pagerState.animateScrollToPage(index)
@@ -70,7 +72,7 @@ fun Abilities(
                 alpha = 1 - pageOffset.absoluteValue
             }) {
                 AbilityText(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().semantics { contentDescription = "ability content $page" },
                     type = stringArrayResource(id = R.array.abilities)[page],
                     name = abilities[page].name,
                     description = abilities[page].description
@@ -109,7 +111,7 @@ fun AbilitiesIndicator(
     ) {
         repeat(abilities.size) { index ->
             AbilityImage(
-                modifier = Modifier,
+                modifier = Modifier.semantics { contentDescription = "ability icon $index" },
                 model = abilities[index].getAbilityImage(Champion.version),
                 contentDescription = abilities[index].name,
                 activeColor = activeColor,

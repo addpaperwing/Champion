@@ -1,86 +1,89 @@
 package com.zzy.champions.ui.navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import com.zzy.champions.ui.detail.compose.ChampionDetailScreen
-import com.zzy.champions.ui.index.compose.ChampionIndexScreen
+import com.zzy.champions.ui.detail.compose.championDetailScreen
+import com.zzy.champions.ui.index.compose.championIndexScreen
 
-internal const val ARG_KEY_VERSION_AND_LANGUAGE = "version_and_language"
 
 @Composable
 fun ChampionNavHost(
     navController: NavHostController,
-    onLinkClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showLandingScreen: Boolean,
+    onLandingScreenTimeout: () -> Unit,
+    onLinkClick: (String) -> Unit
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = Index.route
     ) {
-
-        composable(
-            route = Index.route,
-            enterTransition = {
-                fadeIn(animationSpec = tween(300, easing = LinearEasing)) + slideIntoContainer(
-                    animationSpec = tween(300, easing = EaseIn),
-                    towards = AnimatedContentTransitionScope.SlideDirection.Right
-                )
+        championIndexScreen(
+            showLandingScreen = showLandingScreen,
+            onLandingScreenTimeout = onLandingScreenTimeout,
+            onItemClick = {
+                navController.navigateToChampionDetail(it.id)
             },
-            exitTransition = {
-                fadeOut(
-                    animationSpec = tween(
-                        300, easing = LinearEasing
-                    )
-                ) + slideOutOfContainer(
-                    animationSpec = tween(300, easing = EaseOut),
-                    towards = AnimatedContentTransitionScope.SlideDirection.Start
-                )
+            onSettingClick = {
+                navController.navigateSingleTopTo(Settings.route)
             }
-        ) { entry ->
-            ChampionIndexScreen(viewModel = hiltViewModel(),
-                onSettingClick = {
-                    navController.navigateSingleTopTo(Settings.route)
-                }, onItemClick = {
-                    navController.navigateToChampionDetail(it.id)
-                },
-                versionAndLanguage = entry.savedStateHandle[ARG_KEY_VERSION_AND_LANGUAGE] ?:"")
-        }
+        )
 
-        composable(
-            route = Detail.routWithArgs,
-            arguments = Detail.arguments,
-            enterTransition = {
-                fadeIn(animationSpec = tween(300, easing = LinearEasing)) + slideIntoContainer(
-                    animationSpec = tween(300, easing = EaseIn),
-                    towards = AnimatedContentTransitionScope.SlideDirection.Left
-                )
-            },
-            exitTransition = {
-                fadeOut(
-                    animationSpec = tween(
-                        300, easing = LinearEasing
-                    )
-                ) + slideOutOfContainer(
-                    animationSpec = tween(300, easing = EaseOut),
-                    towards = AnimatedContentTransitionScope.SlideDirection.End
-                )
-            }
-        ) { entry ->
-            ChampionDetailScreen(hiltViewModel(), entry.arguments?.getString(Detail.championIdArg)!!, onLinkClick)
-        }
+        championDetailScreen(onLinkClick)
+//        composable(
+//            route = Index.route,
+//            enterTransition = {
+//                fadeIn(animationSpec = tween(300, easing = LinearEasing)) + slideIntoContainer(
+//                    animationSpec = tween(300, easing = EaseIn),
+//                    towards = AnimatedContentTransitionScope.SlideDirection.Right
+//                )
+//            },
+//            exitTransition = {
+//                fadeOut(
+//                    animationSpec = tween(
+//                        300, easing = LinearEasing
+//                    )
+//                ) + slideOutOfContainer(
+//                    animationSpec = tween(300, easing = EaseOut),
+//                    towards = AnimatedContentTransitionScope.SlideDirection.Start
+//                )
+//            }
+//        ) { entry ->
+//            ChampionIndexScreen(viewModel = hiltViewModel(),
+//                onSettingClick = {
+//
+//                }, onItemClick = {
+//
+//                },
+//                versionAndLanguage = entry.savedStateHandle[ARG_KEY_VERSION_AND_LANGUAGE] ?:"")
+//        }
+
+//        composable(
+//            route = Detail.routWithArgs,
+//            arguments = Detail.arguments,
+//            enterTransition = {
+//                fadeIn(animationSpec = tween(300, easing = LinearEasing)) + slideIntoContainer(
+//                    animationSpec = tween(300, easing = EaseIn),
+//                    towards = AnimatedContentTransitionScope.SlideDirection.Left
+//                )
+//            },
+//            exitTransition = {
+//                fadeOut(
+//                    animationSpec = tween(
+//                        300, easing = LinearEasing
+//                    )
+//                ) + slideOutOfContainer(
+//                    animationSpec = tween(300, easing = EaseOut),
+//                    towards = AnimatedContentTransitionScope.SlideDirection.End
+//                )
+//            }
+//        ) { entry ->
+//            ChampionDetailScreen(entry.arguments?.getString(Detail.championIdArg)!!, onLinkClick)
+//        }
 
 //        composable(
 //            route = Settings.route,

@@ -2,7 +2,8 @@
     <string name="app_name">Champions</string>
     <string name="champions">Champions</string>
     
-    <string name="it_might_take_a_bit_while_for_the_first_load">It might take a bit while for the first load</string>
+    <string name="it_might_take_a_bit_while_for_the_first_load">It might take a bit while for the first load or patch update</string>
+    <string name="loading_data_">Loading champion\'s data…</string>
     
     <string name="choose_your">Choose your</string>
     <string name="champion">Champion</string>
@@ -11,7 +12,7 @@
     <array name="tabs">
         <item>Abilities</item>
         <item>Stats</item>
-        <item>Build</item>
+        <item>Builds</item>
         <item>Skins</item>
     </array>
     
@@ -57,9 +58,12 @@
     
     <string name="build_name">Build Name</string>
     <string name="build_content">Build Content</string>
+    <string name="build_weblink">Build weblink</string>
     
     <string name="no_app_for_link">No app found for content</string>
     
     <string name="confirmation">Confirmation</string>
     <string name="do_you_want_to_delete_this_build">Do you want to delete this build?</string>
+    
+    <string name="add_weblink_build_desc">Replace the champion\'s name with the place holder \"{}\" to add the universal champion build weblink to the app.</string>
 </resources>

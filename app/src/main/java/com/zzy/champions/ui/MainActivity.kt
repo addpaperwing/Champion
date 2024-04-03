@@ -10,16 +10,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
-import androidx.navigation.compose.rememberNavController
 import com.zzy.champions.R
-import com.zzy.champions.ui.navigation.ChampionNavHost
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-//    private val viewModel: ChampionViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,14 +23,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyApplicationTheme {
-                val navController = rememberNavController()
-                ChampionNavHost(
-                    navController = navController,
-                    onLinkClick = {
-                        goWebUrl(it)
-                    },
-                    modifier = Modifier
-                )
+                ChampionApp(modifier = Modifier) {
+                    goWebUrl(it)
+                }
             }
         }
     }

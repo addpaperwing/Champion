@@ -9,7 +9,6 @@ import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -183,68 +182,68 @@ class ChampionViewModelTest {
     }
 
 
-    @Test
-    fun updatePrediction_successful() {
-        val aatroxName = "aatrox"
-        val champions = listOf(aatrox())
-        coEvery {
-            repository.searchChampionsBy(aatroxName)
-        } coAnswers {
-            champions
-        }
-
-        runTest {
-            viewModel.updatePredictions(aatroxName)
-            advanceUntilIdle()
-            val predictions = viewModel.predictions.first()
-            val championsNames = champions.map { it.name }
-
-            assertEquals(championsNames, predictions)
-        }
-    }
-
-
-    @Test
-    fun updatePrediction_when_error() {
-        val aatroxName = "aatrox"
-        val ioException = IOException("error")
-        coEvery {
-            repository.searchChampionsBy(aatroxName)
-        } coAnswers {
-            throw ioException
-        }
-
-        runTest {
-            viewModel.updatePredictions(aatroxName)
-            advanceUntilIdle()
-            val predictions = viewModel.predictions.first()
-            assertEquals(true, predictions.isEmpty())
-        }
-    }
-
-
-    @Test
-    fun updatePrediction_empty_result_when_query_is_blank() {
-        val query = ""
-
-        runTest {
-            viewModel.updatePredictions(query)
-            advanceUntilIdle()
-            val predictions = viewModel.predictions.first()
-
-            assertEquals(true, predictions.isEmpty())
-        }
-    }
-
-
-    @Test
-    fun clearPrediction__empty_result() {
-        runTest {
-            viewModel.clearPredictions()
-            advanceUntilIdle()
-            val predictions = viewModel.predictions.first()
-
-            assertEquals(true, predictions.isEmpty())
-        }
-    }
+//    @Test
+//    fun updatePrediction_successful() {
+//        val aatroxName = "aatrox"
+//        val champions = listOf(aatrox())
+//        coEvery {
+//            repository.searchChampionsBy(aatroxName)
+//        } coAnswers {
+//            champions
+//        }
+//
+//        runTest {
+//            viewModel.updatePredictions(aatroxName)
+//            advanceUntilIdle()
+//            val predictions = viewModel.predictions.first()
+//            val championsNames = champions.map { it.name }
+//
+//            assertEquals(championsNames, predictions)
+//        }
+//    }
+//
+//
+//    @Test
+//    fun updatePrediction_when_error() {
+//        val aatroxName = "aatrox"
+//        val ioException = IOException("error")
+//        coEvery {
+//            repository.searchChampionsBy(aatroxName)
+//        } coAnswers {
+//            throw ioException
+//        }
+//
+//        runTest {
+//            viewModel.updatePredictions(aatroxName)
+//            advanceUntilIdle()
+//            val predictions = viewModel.predictions.first()
+//            assertEquals(true, predictions.isEmpty())
+//        }
+//    }
+//
+//
+//    @Test
+//    fun updatePrediction_empty_result_when_query_is_blank() {
+//        val query = ""
+//
+//        runTest {
+//            viewModel.updatePredictions(query)
+//            advanceUntilIdle()
+//            val predictions = viewModel.predictions.first()
+//
+//            assertEquals(true, predictions.isEmpty())
+//        }
+//    }
+//
+//
+//    @Test
+//    fun clearPrediction__empty_result() {
+//        runTest {
+//            viewModel.clearPredictions()
+//            advanceUntilIdle()
+//            val predictions = viewModel.predictions.first()
+//
+//            assertEquals(true, predictions.isEmpty())
+//        }
+//    }
 }

@@ -5,12 +5,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zzy.champions.data.model.Champion
@@ -24,15 +31,17 @@ import com.zzy.champions.ui.theme.TANK
 @Composable
 fun ChampionIndex(
     modifier: Modifier = Modifier,
-    predictions: List<String>,
+    searchText: String,
     onTextChanged: (String) -> Unit,
     onDoneActionClick: (String) -> Unit,
-    onPredictionClick: (String) -> Unit,
+    onClearSearchText: () -> Unit,
     champions: List<Champion>,
     onItemClick: (Champion) -> Unit,
-    onSettingClick: () -> Unit,
+    onSettingClick: () -> Unit = {},
 ) {
-    Column(modifier = modifier) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    Column(modifier = modifier.windowInsetsPadding(WindowInsets.statusBars)) {
         Header(onSettingClick = onSettingClick)
         Box {
             LazyVerticalGrid(
@@ -48,13 +57,24 @@ fun ChampionIndex(
                     }
                 }
             }
-            PredictionSearchBar(
-                modifier = Modifier,
-                predictions = predictions,
+            SearchTextField(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                text = searchText,
                 onTextChanged = onTextChanged,
-                onDoneActionClick = onDoneActionClick,
-                onPredictionClick = onPredictionClick
+                onClearText = onClearSearchText,
+                onDone = {
+                    keyboardController?.hide()
+                    onDoneActionClick(it)
+                }
             )
+//            PredictionSearchBar(
+//                modifier = Modifier,
+//                predictions = predictions,
+//                onTextChanged = onTextChanged,
+//                onDoneActionClick = onDoneActionClick,
+//                onPredictionClick = onPredictionClick,
+//                getDisplayText = { champion -> champion.name }
+//            )
         }
     }
 }
@@ -75,6 +95,7 @@ fun PreviewChampionIndex() {
     )
     MyApplicationTheme {
         val champions: ArrayList<Champion> = ArrayList()
+        val text by rememberSaveable { mutableStateOf("") }
 
         for (i in 0..10) {
             champions.add(aatrox)
@@ -82,10 +103,10 @@ fun PreviewChampionIndex() {
         Scaffold { padding ->
             ChampionIndex(
                 modifier = Modifier.padding(padding),
-                predictions = emptyList(),
+                searchText = text,
                 onTextChanged = {},
+                onClearSearchText = {},
                 onDoneActionClick = {},
-                onPredictionClick = {},
                 champions = champions,
                 onSettingClick = {
 

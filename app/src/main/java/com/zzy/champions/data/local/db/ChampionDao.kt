@@ -20,8 +20,8 @@ interface ChampionDao {
     @Query("SELECT * FROM champion WHERE `id` IS :id  LIMIT 1")
     suspend fun getChampion(id: String): Champion
 
-    @Query("SELECT * FROM champion WHERE name LIKE :query || '%'")
-    suspend fun queryChampions(query: String): List<Champion>
+    @Query("SELECT * FROM champion WHERE id LIKE '%' || :query || '%'")
+    suspend fun queryChampionsById(query: String): List<Champion>
 
     @Transaction
     @Query("SELECT * FROM champion WHERE `id` IS :id  LIMIT 1")

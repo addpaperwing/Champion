@@ -1,10 +1,11 @@
-package com.zzy.champions
+package com.zzy.champions.components
 
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.zzy.champions.AndroidTestUtil
 import com.zzy.champions.data.local.db.ChampionDataBase
 import com.zzy.champions.data.local.db.ChampionDatabaseHelper
 import com.zzy.champions.data.model.BUILD_OP_GG
@@ -75,13 +76,13 @@ class DatabaseTest {
 
 
             //Test 'searchChampions'
-            val searchAResult = dbHelper.searchChampions("a")
+            val searchAResult = dbHelper.searchChampionsById("a")
             assertThat(searchAResult.size, equalTo(2))
 
-            val searchBResult = dbHelper.searchChampions("b")
+            val searchBResult = dbHelper.searchChampionsById("b")
             assertThat(searchBResult.size, equalTo(0))
 
-            val searchAatroxResult = dbHelper.searchChampions("aatrox")
+            val searchAatroxResult = dbHelper.searchChampionsById("aatrox")
             assertThat(searchAatroxResult[0], equalTo(aatrox))
             assertThat(searchAatroxResult.size, equalTo(1))
         }

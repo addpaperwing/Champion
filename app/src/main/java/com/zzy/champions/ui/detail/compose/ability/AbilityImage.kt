@@ -56,9 +56,7 @@ fun AbilityImage(
     val circleSize = 10.dp
     val innerCircle = 6.dp
 
-    Column(modifier = modifier
-        .clickable(onClick = onClick)
-        .height(composableHeight.dp)) {
+    Column(modifier = modifier.clickable(onClick = onClick).height(composableHeight.dp)) {
         Box(
             modifier = Modifier
                 .offset(0.dp, animatedOffsetDp)
