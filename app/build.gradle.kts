@@ -63,6 +63,13 @@ android {
 //            excludes.add("/META-INF/{AL2.0,LGPL2.1}")
 //        }
 //    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            merges += "META-INF/LICENSE.md"
+            merges += "META-INF/LICENSE-notice.md"
+        }
+    }
 }
 
 //kapt {
@@ -86,15 +93,14 @@ dependencies {
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
-    implementation("androidx.compose.runtime:runtime")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.foundation:foundation")
-    implementation("androidx.compose.ui:ui-tooling")
-    implementation("androidx.compose.ui:ui-test-manifest")
-
-    androidTestImplementation("androidx.compose.ui:ui-test")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation(libs.android.compose.runtime)
+    implementation(libs.android.compose.foundation)
+    implementation(libs.android.compose.ui)
+    implementation(libs.android.compose.ui.tooling)
+    implementation(libs.android.compose.ui.test.manifest)
+    androidTestImplementation(libs.android.compose.ui.test)
+    androidTestImplementation(libs.android.compose.ui.test.junit4)
+    debugImplementation(libs.android.compose.ui.test.manifest)
 
     implementation(libs.android.appcompat)
     implementation(libs.android.ktx)
@@ -133,10 +139,9 @@ dependencies {
     ksp(libs.room.compiler)
     testImplementation(libs.room.testing)
 
+
     testImplementation(libs.junit)
-
     testImplementation(libs.coroutine.test)
-
     testImplementation(libs.mockk.android)
     testImplementation(libs.mockk.agent)
 
@@ -144,6 +149,8 @@ dependencies {
     androidTestImplementation(libs.android.test.espresso)
     androidTestImplementation(libs.android.test.runner)
     androidTestImplementation(libs.android.test.rules)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.mockk.agent)
 
 //    implementation("androidx.appcompat:appcompat:1.6.1")
 //    implementation("androidx.core:core-ktx:1.12.0")

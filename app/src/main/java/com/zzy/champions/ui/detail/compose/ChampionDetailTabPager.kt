@@ -30,8 +30,9 @@ import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.data.model.ChampionDetail
 import com.zzy.champions.data.model.SkinNumber
 import com.zzy.champions.ui.detail.compose.ability.Abilities
-import com.zzy.champions.ui.detail.compose.cb.ChampionBuildScreen
-import com.zzy.champions.ui.detail.compose.skin.SkinsContent
+import com.zzy.champions.ui.detail.compose.build.ChampionBuildList
+import com.zzy.champions.ui.detail.compose.skin.SkinList
+import com.zzy.champions.ui.detail.compose.skin.rememberSkinListState
 import com.zzy.champions.ui.detail.compose.stats.ChampionStats
 import kotlinx.coroutines.launch
 
@@ -47,7 +48,7 @@ fun ChampionDetailTabPager(
     championBuilds: List<ChampionBuild> = emptyList(),
     onBuildClick: (String) -> Unit = {},
     onEditBuild: (ChampionBuild) -> Unit = {},
-    onDeleteBuild: (ChampionBuild) -> Unit = {}
+    onDeleteBuild: (Int) -> Unit = {}
     ) {
     val titles = stringArrayResource(id = R.array.tabs)
     val pagerState = rememberPagerState { titles.size }
@@ -101,19 +102,21 @@ fun ChampionDetailTabPager(
                     ChampionStats(champion = champion)
                 }
                 2 -> {
-                    ChampionBuildScreen(
+                    ChampionBuildList(
                         modifier = Modifier.fillMaxHeight(),
                         builds = championBuilds,
-                        onItemClick = { cb ->
-                            onBuildClick(cb.getWebUrl(champion.name))
+                        onItemClick = { build ->
+                            onBuildClick(build.getWebUrl(champion.name))
                         },
                         onEditBuild = onEditBuild,
                         onDeleteItem = onDeleteBuild
                     )
                 }
                 3 -> {
-                    SkinsContent(
-                        championDetail = detail,
+                    SkinList(
+                        state = rememberSkinListState(detail.splashIndex),
+                        championId = detail.championId,
+                        skins = detail.skins,
                         onItemClick = onSkinClick
                     )
                 }

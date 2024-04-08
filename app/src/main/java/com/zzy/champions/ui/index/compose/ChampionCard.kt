@@ -36,6 +36,7 @@ import kotlin.math.roundToInt
 @Composable
 fun ChampionCard(
     modifier: Modifier = Modifier,
+    version: String,
     champion: Champion,
     onClick: () -> Unit = {}
 ) {
@@ -67,14 +68,15 @@ fun ChampionCard(
             Text(
                 text = champion.title.uppercase(),
                 color = MaterialTheme.colorScheme.onPrimary,
-                fontSize = 8.sp,
+                fontSize = if (champion.title.length > 27) 7.sp else 8.sp,
+                maxLines = 1,
                 modifier = Modifier.fillMaxWidth(),
                 fontWeight = FontWeight(700),
                 textAlign = TextAlign.End
             )
             Row {
                 AsyncImage(
-                    model = champion.getAvatar(),
+                    model = champion.getAvatar(version),
                     modifier = Modifier
                         .padding(top = 6.dp)
                         .clip(RoundedCornerShape(corner = CornerSize(6.dp)))

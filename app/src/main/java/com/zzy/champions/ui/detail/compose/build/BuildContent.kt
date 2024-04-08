@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.detail.compose.cb
+package com.zzy.champions.ui.detail.compose.build
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,18 +13,25 @@ import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.ui.theme.MyApplicationTheme
 
 @Composable
-fun ChampionBuildScreen(
+fun ChampionBuildList(
     modifier: Modifier = Modifier,
     builds: List<ChampionBuild>,
     onItemClick: (ChampionBuild) -> Unit,
     onEditBuild: (ChampionBuild) -> Unit,
-    onDeleteItem: (ChampionBuild) -> Unit,
+    onDeleteItem: (Int) -> Unit,
 ) {
     LazyColumn(
-        modifier = modifier.padding(16.dp).semantics { contentDescription = "Champion build" },
+        modifier = modifier
+            .padding(16.dp)
+            .semantics { contentDescription = "Champion build" },
     ) {
         items(builds) {
-            BuildItem(cb = it, onClick = onItemClick, onEditClick = onEditBuild, onDeleteClick = onDeleteItem)
+            BuildItem(
+                build = it,
+                onClick = onItemClick,
+                onEditClick = onEditBuild,
+                onDeleteClick = onDeleteItem
+            )
         }
     }
 }
@@ -38,9 +45,9 @@ fun PreviewBuilds() {
         ChampionBuild( "WP.GG", "123123")
     )
     MyApplicationTheme {
-        ChampionBuildScreen(builds = list, onItemClick = {
+        ChampionBuildList(builds = list, onItemClick = {
 
-        }, onEditBuild = { c ->
+        }, onEditBuild = {
 
         }, onDeleteItem = {
 

@@ -26,12 +26,10 @@ class DatabaseTest {
     private lateinit var db: ChampionDataBase
     private lateinit var dbHelper: ChampionDatabaseHelper
 
-    private val aatroxId = "aatrox"
-    private val aatrox = AndroidTestUtil.createChampion(aatroxId)
-    private val aatroxDetail = AndroidTestUtil.createChampionDetail(aatroxId)
+    private val aatrox = AndroidTestUtil.createChampion(AndroidTestUtil.AATROX, AndroidTestUtil.AATROX_TITLE)
+    private val aatroxDetail = AndroidTestUtil.createChampionDetail(AndroidTestUtil.AATROX)
 
-    private val ahriId = "ahri"
-    private val ahri = AndroidTestUtil.createChampion(ahriId)
+    private val ahri = AndroidTestUtil.createChampion(AndroidTestUtil.AHRI, AndroidTestUtil.AHRI_TITLE)
 //    private val ahriDetail = AndroidTestUtil.createChampionDetail(ahriId)
 
     @Before
@@ -57,7 +55,7 @@ class DatabaseTest {
 
             //Test 'updateChampionDetailData' result
             //Test 'getChampionDetail' function
-            val detailBeforeUpdateChampions = dbHelper.getChampionDetail(aatroxId)
+            val detailBeforeUpdateChampions = dbHelper.getChampionDetail(AndroidTestUtil.AATROX)
             assertThat(detailBeforeUpdateChampions?.championId, equalTo(aatroxDetail.championId))
 
 
@@ -71,7 +69,7 @@ class DatabaseTest {
             assertThat(all[1], equalTo(ahri))
 
             //Test 'updateChampionBasicData' result2 - clear detail table
-            val detailAfterUpdateChampions = dbHelper.getChampionDetail(aatroxId)
+            val detailAfterUpdateChampions = dbHelper.getChampionDetail(AndroidTestUtil.AATROX)
             assertThat(detailAfterUpdateChampions, equalTo(null))
 
 
@@ -99,17 +97,20 @@ class DatabaseTest {
             assertThat(builds[1], equalTo(BUILD_UGG))
             assertThat(builds[2], equalTo(BUILD_OP_GG_ARAM))
 
-            val editedBuild = BUILD_OP_GG.copy(url = "url")
+            val newUrl = "url"
+            val editedBuild = builds[0].apply {
+                url = newUrl
+            }
             builds = dbHelper.editChampionBuild(editedBuild)
-            assertThat(builds[0], equalTo(editedBuild))
+            assertThat(builds[0].url, equalTo(newUrl))
             assertThat(builds.size, equalTo(3))
 
-            val newBuild = BUILD_OP_GG.copy(nameOfBuild = "new")
+            val newBuild = ChampionBuild("new", "url")
             builds = dbHelper.addChampionBuild(newBuild)
             assertThat(builds.size, equalTo(4))
             assertThat(builds[3], equalTo(newBuild))
 
-            builds = dbHelper.deleteChampionBuild(newBuild)
+            builds = dbHelper.deleteChampionBuild(builds[3].id)
             assertThat(builds.size, equalTo(3))
         }
     }

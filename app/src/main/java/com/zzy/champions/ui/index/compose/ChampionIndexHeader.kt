@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zzy.champions.R
@@ -19,10 +20,11 @@ import com.zzy.champions.R
 @Composable
 fun Header(
     modifier: Modifier = Modifier,
+    version: String,
     onSettingClick: () -> Unit,
 ) {
     Box(modifier = modifier
-        .padding(vertical = 16.dp)
+        .padding(top = 16.dp)
         .fillMaxWidth()) {
         Column(
             modifier = Modifier,
@@ -44,8 +46,15 @@ fun Header(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 text = stringResource(id = R.string.choose_your_champion_desc),
                 color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 8.sp,
+                fontSize = 10.sp,
                 lineHeight = 10.sp
+            )
+            Text(
+                modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
+                textAlign = TextAlign.End,
+                text = stringResource(id = R.string.v_, version),
+                color = MaterialTheme.colorScheme.tertiary,
+                fontSize = 8.sp,
             )
         }
 //        IconButton(

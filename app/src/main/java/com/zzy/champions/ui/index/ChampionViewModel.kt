@@ -2,30 +2,36 @@ package com.zzy.champions.ui.index
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zzy.champions.data.model.Champion
+import com.zzy.champions.data.model.ChampionData
 import com.zzy.champions.data.remote.UiState
+import com.zzy.champions.domain.GetAndSaveChampionBasicDataUseCase
+import com.zzy.champions.domain.InsertBuildsForFirstOpenUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
 @HiltViewModel
 class ChampionViewModel @Inject constructor(
-    private val repository: ChampionRepository,
-    private val dispatcher: CoroutineDispatcher
+    private val insertBuildsForFirstOpenUseCase: InsertBuildsForFirstOpenUseCase,
+    private val getAndSaveChampionBasicDataUseCase: GetAndSaveChampionBasicDataUseCase,
 ): ViewModel() {
 
-    private val _champions = MutableStateFlow<UiState<List<Champion>>>(UiState.Loading)
-    val champions: StateFlow<UiState<List<Champion>>> = _champions.asStateFlow()
+//    private val _champions = MutableStateFlow<UiState<List<Champion>>>(UiState.Loading)
+//    val champions: StateFlow<UiState<List<Champion>>> = _champions.asStateFlow()
 
-//    private val _query: MutableStateFlow<String> = MutableStateFlow("")
+    private val _query: MutableStateFlow<String> = MutableStateFlow("")
 
 //    @OptIn(FlowPreview::class)
 //    val predictions: Flow<List<Champion>> = _query.debounce(300)
@@ -44,59 +50,74 @@ class ChampionViewModel @Inject constructor(
 //    private val _builds = MutableStateFlow<List<ChampionBuild>>(emptyList())
 //    val builds: StateFlow<List<ChampionBuild>> = _builds.asStateFlow()
 
-    private var getChampionJob: Job? = null
+    //Debounce
+//    private var getChampionJob: Job? = null
 
+
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+    val champions: StateFlow<UiState<ChampionData>> =
+        _query.asStateFlow().debounce(300).distinctUntilChanged().flatMapLatest {
+            getAndSaveChampionBasicDataUseCase(it)
+        }.onStart {
+            emit(UiState.Loading)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = UiState.Loading
+        )
 
 
     fun insertBuildsWhenFirstOpen() {
         viewModelScope.launch {
-            withContext(dispatcher) {
-                repository.preloadDataForFirstOpen()
-            }
+//            withContext(dispatcher) {
+//                repository.preloadDataForFirstOpen()
+//            }
+            insertBuildsForFirstOpenUseCase()
         }
+
     }
 
-    fun loadChampions() {
-        viewModelScope.launch {
-            withContext(dispatcher) {
-                val champions = try {
-                    UiState.Success(repository.getAllChampions(repository.getVersion(), repository.getLanguage()))
-                } catch (e: Throwable) {
-                    e.printStackTrace()
-                    UiState.Error(e)
-                }
+//    fun loadChampions() {
+//        viewModelScope.launch {
+//            withContext(dispatcher) {
+//                val champions = try {
+//                    UiState.Success(repository.getAllChampions(repository.getVersion(), repository.getLanguage()))
+//                } catch (e: Throwable) {
+//                    e.printStackTrace()
+//                    UiState.Error(e)
+//                }
+//
+//                _champions.value = champions
+//            }
+//        }
+//    }
 
-                _champions.value = champions
-            }
-        }
-    }
-
-//    fun updatePredictions(query: String) {
-//        _query.value = query
+    fun updateSearchKeyword(query: String) {
+        _query.value = query
 //        viewModelScope.launch {
 //
 //        }
+    }
+//    fun clearSearchResults() {
+//        loadChampions()
 //    }
-    fun clearSearchResults() {
-        loadChampions()
-    }
 
-    fun getChampion(id: String) {
-        getChampionJob = viewModelScope.launch {
-            getChampionJob?.cancel()
-            delay(300)
-            val result = withContext(dispatcher) {
-                try {
-                    UiState.Success(repository.searchChampionsBy(id))
-                } catch (e: Throwable) {
-                    e.printStackTrace()
-                    UiState.Error(e)
-                }
-            }
-
-            _champions.value = result
-        }
-    }
+//    fun getChampion(id: String) {
+//        getChampionJob?.cancel()
+//        getChampionJob = viewModelScope.launch {
+//            val result = withContext(dispatcher) {
+//                delay(300)
+//                try {
+//                    UiState.Success(repository.searchChampionsBy(id))
+//                } catch (e: Throwable) {
+//                    e.printStackTrace()
+//                    UiState.Error(e)
+//                }
+//            }
+//
+//            _champions.value = result
+//        }
+//    }
 
 
 //    fun getChampionAndDetail(id: String) {

@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.toMutableStateList
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -18,23 +21,28 @@ import com.zzy.champions.data.model.SkinNumber
 import com.zzy.champions.ui.theme.MyApplicationTheme
 
 @Composable
-fun SkinsContent(
+fun rememberSkinListState(initSelection: Int = 0) = remember { SkinListState(initSelection) }
+class SkinListState(initSelection: Int) {
+    var selection by mutableIntStateOf(initSelection)
+}
+
+@Composable
+fun SkinList(
     modifier: Modifier = Modifier,
-    championDetail: ChampionDetail,
+    state: SkinListState,
+    championId: String,
+    skins: List<SkinNumber>,
     onItemClick: (SkinNumber) -> Unit
 ) {
-    val skins = championDetail.skins.toMutableStateList()
     LazyColumn(
         modifier = modifier.semantics { contentDescription = "Champion skins" },
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(skins) { sn ->
-            SkinItem(skinNumber = sn, cd = championDetail, onClick = {
-                skins.forEach {
-                    it.isSelected = it.num == sn.num
-                }
-                onItemClick(sn)
+        items(skins) { skin ->
+            SkinItem(skinNumber = skin, championId = championId, isSelected = state.selection == skin.num, onClick = {
+                state.selection = skin.num
+                onItemClick(skin)
             })
         }
     }
@@ -55,8 +63,13 @@ fun PreviewSkins() {
         )
     )
     MyApplicationTheme {
-        SkinsContent(championDetail = detail) {
+        SkinList(
+            championId = detail.championId,
+            state = rememberSkinListState(),
+            skins = detail.skins,
+            onItemClick = {
 
-        }
+            }
+        )
     }
 }

@@ -1,7 +1,6 @@
 package com.zzy.champions.data.local.db
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -25,8 +24,8 @@ abstract class ChampionBuildDao {
     @Update
     abstract suspend fun updateBuild(build: ChampionBuild)
 
-    @Delete
-    abstract suspend fun deleteBuild(build: ChampionBuild)
+    @Query("DELETE FROM championbuild WHERE id == :id")
+    abstract suspend fun deleteBuild(id: Int)
 
     @Query("DELETE FROM championbuild")
     abstract suspend fun clearBuilds()
@@ -44,8 +43,8 @@ abstract class ChampionBuildDao {
     }
 
     @Transaction
-    open suspend fun deleteAndRefreshBuilds(build: ChampionBuild): List<ChampionBuild> {
-        deleteBuild(build)
+    open suspend fun deleteAndRefreshBuilds(id: Int): List<ChampionBuild> {
+        deleteBuild(id)
         return getBuilds()
     }
 }

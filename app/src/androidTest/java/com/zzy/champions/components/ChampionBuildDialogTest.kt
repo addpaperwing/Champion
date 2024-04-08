@@ -1,31 +1,33 @@
 package com.zzy.champions.components
 
-import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.isDisplayed
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import com.zzy.champions.data.model.ChampionBuild
-import com.zzy.champions.ui.detail.compose.cb.BuildItem
+import com.zzy.champions.ui.detail.compose.build.BuildItem
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class ChampionBuildDialogTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+    val composeTestRule = createComposeRule()
 
-    @Test
-    fun testBuildItemDialogs() {
+    @Before
+    fun setupBuildItem() {
         composeTestRule.setContent {
             BuildItem(
-                cb = ChampionBuild("", ""),
+                build = ChampionBuild("", ""),
                 onClick = {},
                 onEditClick = {},
                 onDeleteClick = {}
             )
         }
-
+    }
+    @Test
+    fun testBuildDialogShow_whenClickEdit() {
         composeTestRule
             .onNodeWithContentDescription("Build item menu")
             .performClick()
@@ -42,29 +44,31 @@ class ChampionBuildDialogTest {
             .onNodeWithContentDescription( "Champion build dialog")
             .isDisplayed()
 
+        composeTestRule
+            .onNodeWithContentDescription("LDialog negative button")
+            .performClick()
+    }
 
-        composeTestRule.activityRule.scenario.onActivity { activity ->
-            activity.onBackPressedDispatcher.onBackPressed()
-        }
-
-//        composeTestRule
-//            .onNodeWithContentDescription( "Champion build dialog")
-//            .isNotDisplayed()
+    @Test
+    fun testDeleteTextDialogShow_whenClickDelete() {
+        composeTestRule
+            .onNodeWithContentDescription("Build item menu")
+            .performClick()
 
         composeTestRule
-            .onNodeWithContentDescription( "Delete champion build")
+            .onNodeWithContentDescription("Champion build menu dialog")
+            .isDisplayed()
+
+        composeTestRule
+            .onNodeWithContentDescription("Delete champion build")
             .performClick()
 
         composeTestRule
             .onNodeWithContentDescription( "Champion build text dialog")
             .isDisplayed()
 
-        composeTestRule.activityRule.scenario.onActivity { activity ->
-            activity.onBackPressedDispatcher.onBackPressed()
-        }
-
-//        composeTestRule
-//            .onNodeWithContentDescription( "Champion build text dialog")
-//            .isNotDisplayed()
+        composeTestRule
+            .onNodeWithContentDescription("LDialog positive button")
+            .performClick()
     }
 }

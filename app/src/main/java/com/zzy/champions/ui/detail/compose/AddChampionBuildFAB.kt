@@ -11,11 +11,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.ui.compose.ChampionBuildDialog
 
 @Composable
-fun AddChampionBuildFAB(onAddNewBuild: (ChampionBuild) -> Unit) {
+fun AddChampionBuildFAB(onAddNewBuild: (String, String) -> Unit) {
     var showNewBuildEditor by remember { mutableStateOf(false) }
 
     FloatingActionButton(
@@ -30,10 +29,9 @@ fun AddChampionBuildFAB(onAddNewBuild: (ChampionBuild) -> Unit) {
     if (showNewBuildEditor) {
         ChampionBuildDialog(
             onDismissRequest = { showNewBuildEditor = false },
-            build = null,
-            onOkClick = { cb ->
+            onOkClick = { name, url ->
                 showNewBuildEditor = false
-                onAddNewBuild(cb)
+                onAddNewBuild(name, url)
             }
         )
     }
