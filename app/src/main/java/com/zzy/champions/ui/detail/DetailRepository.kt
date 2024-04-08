@@ -16,5 +16,5 @@ interface DetailRepository {
 
     suspend fun editBuild(build: ChampionBuild): List<ChampionBuild>
 
-    suspend fun deleteBuild(build: ChampionBuild): List<ChampionBuild>
+    suspend fun deleteBuild(id: Int): List<ChampionBuild>
 }

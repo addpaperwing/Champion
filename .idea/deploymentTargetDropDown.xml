@@ -2,19 +2,16 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AbilitiesTabsTest">
+      <entry key="ChampionBuildDialogTest">
         <State />
       </entry>
-      <entry key="CollapsedTextTest">
-        <State />
-      </entry>
-      <entry key="DetailTabsTest">
+      <entry key="Tests in 'com.zzy.champions'">
         <State />
       </entry>
       <entry key="app">
         <State />
       </entry>
-      <entry key="detailTabs_defaultShowAbilities()">
+      <entry key="championBuilds_table_functions()">
         <State />
       </entry>
       <entry key="testBuildItemDialogs()">

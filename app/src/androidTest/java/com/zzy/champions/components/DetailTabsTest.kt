@@ -22,7 +22,10 @@ class DetailTabsTest {
             ChampionDetailTabPager(
                 champion = AndroidTestUtil.createChampion(),
                 detail = AndroidTestUtil.createChampionDetail("aatrox"),
-                championBuilds = listOf(ChampionBuild("", ""))
+                championBuilds = listOf(ChampionBuild("", "")),
+                onBuildClick = {},
+                onEditBuild = {},
+                onDeleteBuild = {}
             )
         }
     }

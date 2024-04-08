@@ -31,5 +31,5 @@ class DefaultDetailRepository @Inject constructor(
 
     override suspend fun editBuild(build: ChampionBuild): List<ChampionBuild> = dbHelper.editChampionBuild(build)
 
-    override suspend fun deleteBuild(build: ChampionBuild): List<ChampionBuild> = dbHelper.deleteChampionBuild(build)
+    override suspend fun deleteBuild(id: Int): List<ChampionBuild> = dbHelper.deleteChampionBuild(id)
 }

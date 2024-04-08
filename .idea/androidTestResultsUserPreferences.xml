@@ -84,6 +84,19 @@
             </AndroidTestResultsTableState>
           </value>
         </entry>
+        <entry key="563654792">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Tests" value="360" />
+                  <entry key="Xiaomi Mi A1" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="620378343">
           <value>
             <AndroidTestResultsTableState>
@@ -139,6 +152,19 @@
           </value>
         </entry>
         <entry key="1651258277">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Tests" value="360" />
+                  <entry key="Xiaomi Mi A1" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="1810883438">
           <value>
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">

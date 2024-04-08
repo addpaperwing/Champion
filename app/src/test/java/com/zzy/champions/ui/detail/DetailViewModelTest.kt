@@ -97,8 +97,8 @@ class DetailViewModelTest {
         val detail = ChampionDetail(
             championId = id,
             skins = listOf(
-                SkinNumber(0, "", false),
-                SkinNumber(1, "", true)
+                SkinNumber(0, ""),
+                SkinNumber(1, "")
             ),
             lore = "",
             spells = emptyList(),
@@ -116,9 +116,6 @@ class DetailViewModelTest {
             advanceUntilIdle()
 
             assertEquals(detail.splashIndex, skinNum)
-            detail.skins.forEach {
-                assertEquals(it.initSelectState, it.num == skinNum)
-            }
         }
     }
 }

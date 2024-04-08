@@ -99,17 +99,20 @@ class DatabaseTest {
             assertThat(builds[1], equalTo(BUILD_UGG))
             assertThat(builds[2], equalTo(BUILD_OP_GG_ARAM))
 
-            val editedBuild = BUILD_OP_GG.copy(url = "url")
+            val newUrl = "url"
+            val editedBuild = builds[0].apply {
+                url = newUrl
+            }
             builds = dbHelper.editChampionBuild(editedBuild)
-            assertThat(builds[0], equalTo(editedBuild))
+            assertThat(builds[0].url, equalTo(newUrl))
             assertThat(builds.size, equalTo(3))
 
-            val newBuild = BUILD_OP_GG.copy(nameOfBuild = "new")
+            val newBuild = ChampionBuild("new", "url")
             builds = dbHelper.addChampionBuild(newBuild)
             assertThat(builds.size, equalTo(4))
             assertThat(builds[3], equalTo(newBuild))
 
-            builds = dbHelper.deleteChampionBuild(newBuild)
+            builds = dbHelper.deleteChampionBuild(builds[3].id)
             assertThat(builds.size, equalTo(3))
         }
     }

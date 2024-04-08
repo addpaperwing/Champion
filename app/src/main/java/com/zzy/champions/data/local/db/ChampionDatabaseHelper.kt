@@ -49,5 +49,5 @@ class ChampionDatabaseHelper @Inject constructor(
 
     suspend fun editChampionBuild(build: ChampionBuild): List<ChampionBuild> = cbDao.updateAndRefreshBuilds(build)
 
-    suspend fun deleteChampionBuild(build: ChampionBuild): List<ChampionBuild> = cbDao.deleteAndRefreshBuilds(build)
+    suspend fun deleteChampionBuild(id: Int): List<ChampionBuild> = cbDao.deleteAndRefreshBuilds(id)
 }

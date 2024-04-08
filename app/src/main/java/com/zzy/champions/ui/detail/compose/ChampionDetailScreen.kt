@@ -8,6 +8,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.ui.detail.DetailViewModel
 import com.zzy.champions.ui.navigation.Detail
@@ -68,8 +69,8 @@ fun ChampionDetailScreen(
                 viewModel.saveBannerSplash(data.detail, it)
             },
             championBuilds = builds,
-            onAddNewBuild = { build ->
-                viewModel.addChampionBuild(build)
+            onAddNewBuild = { name, url ->
+                viewModel.addChampionBuild(ChampionBuild(name, url))
             },
             onBuildClick = {
                 onOpenBrowser(it)
@@ -77,11 +78,16 @@ fun ChampionDetailScreen(
             onEditBuild = { build ->
                 viewModel.updateChampionBuild(build)
             },
-            onDeleteBuild = { build ->
-                viewModel.deleteChampionBuild(build)
+            onDeleteBuild = { buildId ->
+                viewModel.deleteChampionBuild(buildId)
             }
         )
     } else {
-        //TODO error screen
+        LoadingAndErrorScreen(
+            isLoading = result is UiState.Loading,
+            isError = result is UiState.Error
+        ) {
+            viewModel.getChampionAndDetail(id)
+        }
     }
 }

@@ -44,8 +44,8 @@ class ChampionViewModel @Inject constructor(
 //    private val _builds = MutableStateFlow<List<ChampionBuild>>(emptyList())
 //    val builds: StateFlow<List<ChampionBuild>> = _builds.asStateFlow()
 
+    //Debounce
     private var getChampionJob: Job? = null
-
 
 
     fun insertBuildsWhenFirstOpen() {
@@ -77,15 +77,15 @@ class ChampionViewModel @Inject constructor(
 //
 //        }
 //    }
-    fun clearSearchResults() {
-        loadChampions()
-    }
+//    fun clearSearchResults() {
+//        loadChampions()
+//    }
 
     fun getChampion(id: String) {
+        getChampionJob?.cancel()
         getChampionJob = viewModelScope.launch {
-            getChampionJob?.cancel()
-            delay(300)
             val result = withContext(dispatcher) {
+                delay(300)
                 try {
                     UiState.Success(repository.searchChampionsBy(id))
                 } catch (e: Throwable) {

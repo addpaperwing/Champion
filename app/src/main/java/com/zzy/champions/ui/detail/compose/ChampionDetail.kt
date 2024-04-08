@@ -39,10 +39,10 @@ fun ChampionDetail(modifier: Modifier = Modifier,
                    detail: ChampionDetail,
                    onSkinClick:(Int) -> Unit = {},
                    championBuilds: List<ChampionBuild>,
-                   onAddNewBuild: (ChampionBuild) -> Unit,
+                   onAddNewBuild: (String, String) -> Unit,
                    onBuildClick: (String) -> Unit,
                    onEditBuild: (ChampionBuild) -> Unit,
-                   onDeleteBuild: (ChampionBuild) -> Unit
+                   onDeleteBuild: (Int) -> Unit
 
 ) {
     var bannerImageUrl by remember { mutableStateOf("") }
@@ -61,8 +61,8 @@ fun ChampionDetail(modifier: Modifier = Modifier,
                 enter = scaleIn(),
                 exit = scaleOut(),
             ) {
-                AddChampionBuildFAB(onAddNewBuild = { build ->
-                    onAddNewBuild(build)
+                AddChampionBuildFAB(onAddNewBuild = { name, url ->
+                    onAddNewBuild(name, url)
                 })
             }
         }
@@ -142,7 +142,7 @@ fun PreviewDetailScreen() {
 
                 },
                 championBuilds = listOf(),
-                onAddNewBuild = {
+                onAddNewBuild = {_, _ ->
 
                 },
                 onBuildClick = {

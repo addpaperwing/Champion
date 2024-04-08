@@ -47,9 +47,6 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             withContext(dispatcher) {
                 detail.splashIndex = skinNum
-                detail.skins.forEach {
-                    it.initSelectState = skinNum == it.num
-                }
                 repository.updateChampionDetailSplash(detail)
             }
         }
@@ -79,10 +76,10 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    fun deleteChampionBuild(build: ChampionBuild) {
+    fun deleteChampionBuild(id: Int) {
         viewModelScope.launch {
             _builds.value = withContext(dispatcher) {
-                repository.deleteBuild(build)
+                repository.deleteBuild(id)
             }
         }
     }

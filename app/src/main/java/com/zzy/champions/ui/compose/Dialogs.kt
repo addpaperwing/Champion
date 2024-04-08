@@ -30,7 +30,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.zzy.champions.R
-import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.ui.theme.MyApplicationTheme
 
 @Composable
@@ -143,18 +142,17 @@ fun MenuItem(modifier: Modifier = Modifier, text: String, onClick: () -> Unit) {
 fun ChampionBuildDialog(
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
-    build: ChampionBuild?,
-    onOkClick: (ChampionBuild) -> Unit,
+    name: String? = null,
+    desc: String? = null,
+    onOkClick: (String, String) -> Unit,
 ) {
-    var title by remember { mutableStateOf(build?.nameOfBuild?:"") }
-    var content by remember { mutableStateOf(build?.url?:"") }
+    var title by remember { mutableStateOf(name?:"") }
+    var content by remember { mutableStateOf(desc?:"") }
     LDialog(
         modifier = modifier.semantics { contentDescription = "Champion build dialog" },
         onDismissRequest = onDismissRequest,
         onPositiveButtonClick = {
-            build?.nameOfBuild = title
-            build?.url = content
-            onOkClick(build?:ChampionBuild(title, content))
+            onOkClick(title, content)
         },
         onNegativeButtonClick = onDismissRequest,
         content = {
@@ -232,7 +230,9 @@ fun LDialog(
                     horizontalArrangement = Arrangement.End
                 ) {
                     onNegativeButtonClick?.let {
-                        TextButton(onClick = it) {
+                        TextButton(
+                            modifier = Modifier.semantics { contentDescription = "LDialog negative button" },
+                            onClick = it) {
                             Text(
                                 text = negativeButtonText,
                                 color = negativeButtonColor
@@ -240,7 +240,9 @@ fun LDialog(
                         }
                     }
                     onPositiveButtonClick?.let {
-                        TextButton(onClick = it) {
+                        TextButton(
+                            modifier = Modifier.semantics { contentDescription = "LDialog positive button" },
+                            onClick = it) {
                             Text(
                                 text = positiveButtonText,
                                 color = positiveButtonColor
@@ -273,11 +275,9 @@ fun PreviewEditBuildDialog() {
     MyApplicationTheme {
         ChampionBuildDialog(
             onDismissRequest = { /*TODO*/ },
-            build = ChampionBuild(
-                nameOfBuild = "OP.GG ARAM",
-                url = "https://www.op.gg/modes/aram/ksante/build?region=kr",
-            ),
-            onOkClick = { cb ->
+            name =  "OP.GG ARAM",
+            desc = "https://www.op.gg/modes/aram/ksante/build?region=kr",
+            onOkClick = { name, desc ->
 
             }
         )

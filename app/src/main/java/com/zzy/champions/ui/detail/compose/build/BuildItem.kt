@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.detail.compose.cb
+package com.zzy.champions.ui.detail.compose.build
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -37,10 +37,10 @@ import com.zzy.champions.ui.compose.TextDialog
 @Composable
 fun BuildItem(
     modifier: Modifier = Modifier,
-    cb: ChampionBuild,
+    build: ChampionBuild,
     onClick: (ChampionBuild) -> Unit,
     onEditClick: (ChampionBuild) -> Unit,
-    onDeleteClick: (ChampionBuild) -> Unit
+    onDeleteClick: (Int) -> Unit
 ) {
     var showMenu by remember { mutableStateOf(false) }
     var showConfirmation by remember { mutableStateOf(false) }
@@ -51,7 +51,7 @@ fun BuildItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(CardDefaults.shape)
-                .clickable { onClick(cb) },
+                .clickable { onClick(build) },
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface
             )
@@ -59,7 +59,7 @@ fun BuildItem(
             Box(modifier = Modifier.height(IntrinsicSize.Min)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = cb.nameOfBuild,
+                        text = build.nameOfBuild,
                         color = MaterialTheme.colorScheme.tertiary,
                         fontSize = 14.sp,
                         modifier = Modifier
@@ -101,7 +101,7 @@ fun BuildItem(
         TextDialog(
             onDismissRequest = { showConfirmation = false },
             onPositiveButtonClick = {
-                onDeleteClick(cb)
+                onDeleteClick(build.id)
             },
             content = {
                 Text(text = stringResource(id = R.string.do_you_want_to_delete_this_build))
@@ -111,10 +111,13 @@ fun BuildItem(
     if (showEditor) {
         ChampionBuildDialog(
             onDismissRequest = { showEditor = false },
-            build = cb,
-            onOkClick = {
+            name = build.nameOfBuild,
+            desc = build.url,
+            onOkClick = { name, url ->
                 showEditor = false
-                onEditClick(cb)
+                build.nameOfBuild = name
+                build.url = url
+                onEditClick(build)
             }
         )
     }

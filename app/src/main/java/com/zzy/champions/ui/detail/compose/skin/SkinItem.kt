@@ -20,15 +20,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.zzy.champions.data.model.ChampionDetail
 import com.zzy.champions.data.model.SkinNumber
 import com.zzy.champions.ui.compose.verticalShadowed
 import com.zzy.champions.ui.theme.Golden
 
 @Composable
 fun SkinItem(modifier: Modifier = Modifier,
+             championId: String,
              skinNumber: SkinNumber,
-             cd: ChampionDetail,
+             isSelected: Boolean,
              onClick: (SkinNumber) -> Unit)
 {
     Card(
@@ -39,11 +39,11 @@ fun SkinItem(modifier: Modifier = Modifier,
                 onClick(skinNumber)
             }
         ,
-        border = if (skinNumber.isSelected) BorderStroke(width = Dp.Hairline, color = Golden) else null,
+        border = if (isSelected) BorderStroke(width = Dp.Hairline, color = Golden) else null,
     ) {
         Box(modifier = Modifier.height(128.dp)) {
             AsyncImage(
-                model = cd.getSplash(skinNumber.num),
+                model = skinNumber.getSplash(championId),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()

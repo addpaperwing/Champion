@@ -53,10 +53,11 @@ class ChampionViewModelTest {
             viewModel.loadChampions()
 
             advanceTimeBy(199)
-            assertEquals(UiState.Loading, viewModel.champions.value)
+            assertEquals(true, viewModel.champions.value is UiState.Loading)
 
             advanceUntilIdle()
-            assertEquals(UiState.Success(listOfChampion), viewModel.champions.value)
+            assertEquals(true, viewModel.champions.value is UiState.Success)
+            assertEquals(listOfChampion, (viewModel.champions.value as UiState.Success).data)
         }
     }
 
@@ -79,10 +80,11 @@ class ChampionViewModelTest {
             viewModel.loadChampions()
 
             advanceTimeBy(199)
-            assertEquals(UiState.Loading, viewModel.champions.value)
+            assertEquals(true, viewModel.champions.value is UiState.Loading)
 
             advanceUntilIdle()
-            assertEquals(UiState.Error(ioException), viewModel.champions.value)
+            assertEquals(true, viewModel.champions.value is UiState.Error)
+            assertEquals(ioException, (viewModel.champions.value as UiState.Error).exception)
         }
     }
 
@@ -105,10 +107,11 @@ class ChampionViewModelTest {
             viewModel.loadChampions()
 
             advanceTimeBy(199)
-            assertEquals(UiState.Loading, viewModel.champions.value)
+            assertEquals(true, viewModel.champions.value is UiState.Loading)
 
             advanceUntilIdle()
-            assertEquals(UiState.Error(ioException), viewModel.champions.value)
+            assertEquals(true, viewModel.champions.value is UiState.Error)
+            assertEquals(ioException, (viewModel.champions.value as UiState.Error).exception)
         }
     }
 
@@ -128,10 +131,11 @@ class ChampionViewModelTest {
             viewModel.loadChampions()
 
             advanceTimeBy(199)
-            assertEquals(UiState.Loading, viewModel.champions.value)
+            assertEquals(true, viewModel.champions.value is UiState.Loading)
 
             advanceUntilIdle()
-            assertEquals(UiState.Error(ioException), viewModel.champions.value)
+            assertEquals(true, viewModel.champions.value is UiState.Error)
+            assertEquals(ioException, (viewModel.champions.value as UiState.Error).exception)
         }
     }
 
@@ -147,15 +151,18 @@ class ChampionViewModelTest {
             champions
         }
 
+        //function delay 300 will be skipped by 'runTest' function
         runTest {
             viewModel.getChampion(aatroxName)
 
-            advanceTimeBy(199)
-            assertEquals(UiState.Loading, viewModel.champions.value)
+            advanceTimeBy( 199)
+            assertEquals(true, viewModel.champions.value is UiState.Loading)
 
             advanceUntilIdle()
-            assertEquals(UiState.Success(champions), viewModel.champions.value)
         }
+
+        assertEquals(true, viewModel.champions.value is UiState.Success)
+        assertEquals(champions, (viewModel.champions.value as UiState.Success).data)
     }
 
 
@@ -173,12 +180,14 @@ class ChampionViewModelTest {
         runTest {
             viewModel.getChampion(aatroxName)
 
-            advanceTimeBy(199)
-            assertEquals(UiState.Loading, viewModel.champions.value)
+            advanceTimeBy( 199)
+            assertEquals(true, viewModel.champions.value is UiState.Loading)
 
             advanceUntilIdle()
-            assertEquals(UiState.Error(ioException), viewModel.champions.value)
         }
+
+        assertEquals(true, viewModel.champions.value is UiState.Error)
+        assertEquals(ioException, (viewModel.champions.value as UiState.Error).exception)
     }
 
 
