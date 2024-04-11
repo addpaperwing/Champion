@@ -9,24 +9,24 @@ import com.zzy.champions.data.model.Stats
 
 object TestUtil {
 
-    internal val LOCAL_CHAMP_NAME = "local"
-    internal val REMOTE_CHAMP_NAME = "remote"
+//    internal val LOCAL_CHAMP_NAME = "local"
+//    internal val REMOTE_CHAMP_NAME = "remote"
+//
+//    fun aatrox(remote: Boolean = false): Champion = Champion(
+//        "Aatrox",
+//        if (remote) REMOTE_CHAMP_NAME else LOCAL_CHAMP_NAME,
+//        "the Darkin Blade",
+//        Image(""),
+//        emptyList(),
+//        "",
+//        Info(),
+//        Stats()
+//    )
 
-    fun aatrox(remote: Boolean = false): Champion = Champion(
-        "Aatrox",
-        if (remote) REMOTE_CHAMP_NAME else LOCAL_CHAMP_NAME,
-        "the Darkin Blade",
-        Image(""),
-        emptyList(),
+    fun createChampion(name: String): Champion = Champion(
+        name,
+        name,
         "",
-        Info(),
-        Stats()
-    )
-
-    fun createChampion(name: String = "Aatrox"): Champion = Champion(
-        name,
-        name,
-        "the Darkin Blade",
         Image(""),
         emptyList(),
         "",

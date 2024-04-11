@@ -15,25 +15,31 @@ private const val PREFERENCE_NAME_SETTING = "com.zzy.champions.settings"
 private const val DEFAULT_LANGUAGE = "en_US"
 private const val DEFAULT_VERSION = "13.19.1"
 
-class DataStoreManager @Inject constructor(@ApplicationContext private val appContext: Context) {
+class DataStoreManager @Inject constructor(@ApplicationContext private val appContext: Context): LocalDataSource {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = PREFERENCE_NAME_SETTING)
 
     private val LANGUAGE = stringPreferencesKey("language")
-    suspend fun getLanguage() = appContext.dataStore.data.first()[LANGUAGE]?: DEFAULT_LANGUAGE
-    suspend fun setLanguage(language: String) = appContext.dataStore.edit { preferences ->
-        preferences[LANGUAGE] = language
+    override suspend fun getLanguage() = appContext.dataStore.data.first()[LANGUAGE]?: DEFAULT_LANGUAGE
+    override suspend fun setLanguage(language: String) {
+        appContext.dataStore.edit { preferences ->
+            preferences[LANGUAGE] = language
+        }
     }
 
     private val VERSION = stringPreferencesKey("version")
-    suspend fun getVersion() = appContext.dataStore.data.first()[VERSION]?: DEFAULT_VERSION
-    suspend fun setVersion(version: String) = appContext.dataStore.edit { preferences ->
-        preferences[VERSION] = version
+    override suspend fun getVersion() = appContext.dataStore.data.first()[VERSION]?: DEFAULT_VERSION
+    override suspend fun setVersion(version: String) {
+        appContext.dataStore.edit { preferences ->
+            preferences[VERSION] = version
+        }
     }
 
     private val FIRST_OPEN = booleanPreferencesKey("first_open")
-    suspend fun isFirstOpen() = appContext.dataStore.data.first()[FIRST_OPEN]?: true
-    suspend fun setNotFirstOpen() = appContext.dataStore.edit { preferences ->
-        preferences[FIRST_OPEN] = false
+    override suspend fun isFirstOpen() = appContext.dataStore.data.first()[FIRST_OPEN]?: true
+    override suspend fun setNotFirstOpen() {
+        appContext.dataStore.edit { preferences ->
+            preferences[FIRST_OPEN] = false
+        }
     }
 }

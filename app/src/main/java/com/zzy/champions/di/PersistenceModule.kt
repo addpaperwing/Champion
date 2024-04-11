@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.zzy.champions.data.local.DataStoreManager
+import com.zzy.champions.data.local.LocalDataSource
 import com.zzy.champions.data.local.db.ChampionDataBase
 import com.zzy.champions.data.local.db.ChampionDatabaseHelper
 import dagger.Module
@@ -21,7 +22,7 @@ object PersistenceModule {
 
     @Provides
     @Singleton
-    fun provideDataStoreManager(@ApplicationContext appContext: Context): DataStoreManager {
+    fun provideLocalDataSource(@ApplicationContext appContext: Context): LocalDataSource {
         return DataStoreManager(appContext)
     }
 

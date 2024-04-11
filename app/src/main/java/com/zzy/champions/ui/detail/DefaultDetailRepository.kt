@@ -1,6 +1,6 @@
 package com.zzy.champions.ui.detail
 
-import com.zzy.champions.data.local.DataStoreManager
+import com.zzy.champions.data.local.LocalDataSource
 import com.zzy.champions.data.local.db.ChampionDatabaseHelper
 import com.zzy.champions.data.model.ChampionAndDetail
 import com.zzy.champions.data.model.ChampionBuild
@@ -11,13 +11,13 @@ import javax.inject.Inject
 
 class DefaultDetailRepository @Inject constructor(
     private val api: Api,
-    private val dsManager: DataStoreManager,
+    private val localDataSource: LocalDataSource,
     private val dbHelper: ChampionDatabaseHelper
 ): DetailRepository {
 
     override suspend fun getChampionAndDetail(id: String): ChampionAndDetail {
         dbHelper.getChampionDetail(id)?: kotlin.run {
-            val detail = api.getChampionDetail(dsManager.getVersion(), dsManager.getLanguage(), id).data[id]?: throw IOException("Champion not found")
+            val detail = api.getChampionDetail(localDataSource.getVersion(), localDataSource.getLanguage(), id).data[id]?: throw IOException("Champion not found")
             dbHelper.updateChampionDetailData(detail)
         }
         return dbHelper.getChampionBasicAndDetailData(id)

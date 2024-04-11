@@ -1,5 +1,6 @@
 package com.zzy.champions.ui.detail
 
+import androidx.lifecycle.SavedStateHandle
 import com.zzy.champions.data.model.ChampionAndDetail
 import com.zzy.champions.data.model.ChampionDetail
 import com.zzy.champions.data.model.Image
@@ -36,12 +37,14 @@ class DetailViewModelTest {
     @MockK
     private lateinit var repository: DetailRepository
 
+    private val savedStateHandle = SavedStateHandle()
+
     private lateinit var viewModel: DetailViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = DetailViewModel(repository, Dispatchers.Main)
+        viewModel = DetailViewModel(savedStateHandle, repository, Dispatchers.Main)
     }
 
     @Test
@@ -51,14 +54,14 @@ class DetailViewModelTest {
         val detail = createChampionDetail(id)
         val championAndDetail = ChampionAndDetail(aatorx, detail)
         coEvery {
-            repository.getChampionAndDetail(id)
+            repository.getChampionAndDetail(any())
         } coAnswers {
             delay(200)
             championAndDetail
         }
 
         runTest {
-            viewModel.getChampionAndDetail(id)
+            viewModel.getChampionAndDetail()
 
             advanceTimeBy(199)
             assertEquals(UiState.Loading, viewModel.result.value)
@@ -70,18 +73,17 @@ class DetailViewModelTest {
 
     @Test
     fun getChampionAndDetail_From_LoadingState_To_ErrorState() {
-        val id = "aatrox"
         val ioException = IOException("error")
 
         coEvery {
-            repository.getChampionAndDetail(id)
+            repository.getChampionAndDetail(any())
         } coAnswers {
             delay(200)
             throw ioException
         }
 
         runTest {
-            viewModel.getChampionAndDetail(id)
+            viewModel.getChampionAndDetail()
 
             advanceTimeBy(199)
             assertEquals(UiState.Loading, viewModel.result.value)

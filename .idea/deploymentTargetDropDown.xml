@@ -2,19 +2,10 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="ChampionBuildDialogTest">
-        <State />
-      </entry>
       <entry key="Tests in 'com.zzy.champions'">
         <State />
       </entry>
       <entry key="app">
-        <State />
-      </entry>
-      <entry key="championBuilds_table_functions()">
-        <State />
-      </entry>
-      <entry key="testBuildItemDialogs()">
         <State />
       </entry>
     </value>

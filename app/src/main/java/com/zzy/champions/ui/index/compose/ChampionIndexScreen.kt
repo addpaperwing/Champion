@@ -1,6 +1,10 @@
 package com.zzy.champions.ui.index.compose
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,8 +22,6 @@ import com.zzy.champions.ui.compose.LaunchScreen
 import com.zzy.champions.ui.index.ChampionViewModel
 import com.zzy.champions.ui.navigation.Index
 
-internal const val ARG_KEY_VERSION_AND_LANGUAGE = "version_and_language"
-
 fun NavGraphBuilder.championIndexScreen(
     showLandingScreen: Boolean,
     onLandingScreenTimeout: () -> Unit,
@@ -28,28 +30,24 @@ fun NavGraphBuilder.championIndexScreen(
 ) {
     composable(
         route = Index.route,
-//        enterTransition = {
-//            fadeIn(animationSpec = tween(300, easing = LinearEasing)) + slideIntoContainer(
-//                animationSpec = tween(300, easing = EaseIn),
-//                towards = AnimatedContentTransitionScope.SlideDirection.Right
-//            )
-//        },
-//        exitTransition = {
-//            fadeOut(
-//                animationSpec = tween(
-//                    300, easing = LinearEasing
-//                )
-//            )
-////            + slideOutOfContainer(
-////                animationSpec = tween(300, easing = EaseOut),
-////                towards = AnimatedContentTransitionScope.SlideDirection.Start
-////            )
-//        }
-    ) { entry ->
+        enterTransition = {
+//            fadeIn(animationSpec = tween(300, easing = LinearEasing)) +
+                    slideIntoContainer(
+                animationSpec = tween(300, easing = EaseIn),
+                towards = AnimatedContentTransitionScope.SlideDirection.Right
+            )
+        },
+        exitTransition = {
+//            fadeOut(animationSpec = tween(300, easing = LinearEasing)) +
+                    slideOutOfContainer(
+                animationSpec = tween(300, easing = EaseOut),
+                towards = AnimatedContentTransitionScope.SlideDirection.Start
+            )
+        }
+    ) {
         ChampionIndexScreen(
             showLandingScreen = showLandingScreen,
             onLandingScreenTimeout = onLandingScreenTimeout,
-            versionAndLanguage = entry.savedStateHandle[ARG_KEY_VERSION_AND_LANGUAGE] ?: "",
             onItemClick = onItemClick,
             onSettingClick = onSettingClick,
         )
@@ -62,7 +60,6 @@ fun ChampionIndexScreen(
     viewModel: ChampionViewModel = hiltViewModel(),
     showLandingScreen: Boolean,
     onLandingScreenTimeout: () -> Unit,
-    versionAndLanguage: String = "",
     onItemClick: (Champion) -> Unit,
     onSettingClick: () -> Unit = {},
 ) {
@@ -71,12 +68,12 @@ fun ChampionIndexScreen(
 
     fun clearSearchTextAndReloadAllChampions() {
         searchText = ""
-        viewModel.loadChampions()
+        viewModel.updateSearchKeyword(searchText)
     }
 
-    LaunchedEffect(key1 = versionAndLanguage) {
+    LaunchedEffect(true) {
         viewModel.insertBuildsWhenFirstOpen()
-        viewModel.loadChampions()
+        viewModel.updateSearchKeyword(searchText)
     }
 
     BackHandler(enabled = searchText.isNotBlank()) {
@@ -87,17 +84,18 @@ fun ChampionIndexScreen(
         ChampionIndex(
             modifier = modifier,
             searchText = searchText,
+            version = (champions as UiState.Success).data.version,
             onTextChanged = {
                 searchText = it
-                viewModel.getChampion(it)
+                viewModel.updateSearchKeyword(it)
             },
             onDoneActionClick = {
-                viewModel.getChampion(it)
+                viewModel.updateSearchKeyword(it)
             },
             onClearSearchText = {
                 clearSearchTextAndReloadAllChampions()
             },
-            champions = (champions as UiState.Success).data,
+            champions = (champions as UiState.Success).data.champions,
             onSettingClick = onSettingClick,
             onItemClick = onItemClick
         )

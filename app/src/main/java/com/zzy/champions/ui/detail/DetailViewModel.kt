@@ -1,11 +1,13 @@
 package com.zzy.champions.ui.detail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zzy.champions.data.model.ChampionAndDetail
 import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.data.model.ChampionDetail
 import com.zzy.champions.data.remote.UiState
+import com.zzy.champions.ui.navigation.Detail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,9 +20,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val repository: DetailRepository,
-    private val dispatcher: CoroutineDispatcher
-): ViewModel() {
+    private val dispatcher: CoroutineDispatcher,
+) : ViewModel() {
 
     private val _result = MutableStateFlow<UiState<ChampionAndDetail>>(UiState.Loading)
     val result: StateFlow<UiState<ChampionAndDetail>> = _result.asStateFlow()
@@ -28,11 +31,12 @@ class DetailViewModel @Inject constructor(
     private val _builds = MutableStateFlow<List<ChampionBuild>>(emptyList())
     val builds: StateFlow<List<ChampionBuild>> = _builds.asStateFlow()
 
-    fun getChampionAndDetail(id: String) {
+    fun getChampionAndDetail() {
         viewModelScope.launch {
+            _result.value = UiState.Loading
             val result = withContext(dispatcher) {
                 try {
-                    val championAndDetail = repository.getChampionAndDetail(id)
+                    val championAndDetail = repository.getChampionAndDetail(savedStateHandle.get<String>(Detail.championIdArg)?:"")
                     UiState.Success(championAndDetail)
                 } catch (e: Throwable) {
                     e.printStackTrace()

@@ -112,7 +112,7 @@ fun AbilitiesIndicator(
         repeat(abilities.size) { index ->
             AbilityImage(
                 modifier = Modifier.semantics { contentDescription = "ability icon $index" },
-                model = abilities[index].getAbilityImage(Champion.version),
+                model = abilities[index].getAbilityImage(),
                 contentDescription = abilities[index].name,
                 activeColor = activeColor,
                 inactiveColor = MaterialTheme.colorScheme.onBackground,

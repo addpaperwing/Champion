@@ -3,7 +3,7 @@ kotlin = "1.9.22"
 ksp = "1.9.23-1.0.19"
 hilt = "2.51"
 androidHilt = "1.2.0"
-androidGradlePlugin = "8.3.0"
+androidGradlePlugin = "8.3.1"
 
 compose = "2024.03.00"
 appcompat = "1.6.1"
@@ -33,6 +33,15 @@ testRules = "1.5.0"
 
 [libraries]
 android-compose-bom = { group = "androidx.compose", name = "compose-bom",  version.ref = "compose" }
+
+android-compose-runtime = { group = "androidx.compose.runtime", name = "runtime"}
+android-compose-foundation = { group = "androidx.compose.foundation", name = "foundation"}
+android-compose-ui = { group = "androidx.compose.ui", name = "ui"}
+android-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling"}
+android-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest"}
+android-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test"}
+android-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4"}
+
 android-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 android-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
 android-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }

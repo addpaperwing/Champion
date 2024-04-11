@@ -42,11 +42,11 @@ data class Champion(
 //    val passive: Any
 ) {
 
-    companion object {
-        var version: String = "3.9.7"
-    }
+//    companion object {
+//        var version: String = "3.9.7"
+//    }
 
-    fun getAvatar() = "https://ddragon.leagueoflegends.com/cdn/$version/img/champion/${image.full}"
+    fun getAvatar(version: String) = "https://ddragon.leagueoflegends.com/cdn/$version/img/champion/${image.full}"
 
 
 }

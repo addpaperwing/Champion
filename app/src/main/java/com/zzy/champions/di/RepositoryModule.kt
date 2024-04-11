@@ -1,6 +1,6 @@
 package com.zzy.champions.di
 
-import com.zzy.champions.data.local.DataStoreManager
+import com.zzy.champions.data.local.LocalDataSource
 import com.zzy.champions.data.local.db.ChampionDatabaseHelper
 import com.zzy.champions.data.remote.Api
 import com.zzy.champions.ui.detail.DefaultDetailRepository
@@ -14,7 +14,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
-import java.util.*
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -22,19 +21,19 @@ object RepositoryModule {
 
     @ViewModelScoped
     @Provides
-    fun provideRepository(api: Api, dsManager: DataStoreManager, dbHelper: ChampionDatabaseHelper): ChampionRepository {
-        return DefaultChampionRepository(api, dsManager, dbHelper)
+    fun provideChampionRepository(api: Api, localDataSource: LocalDataSource, dbHelper: ChampionDatabaseHelper): ChampionRepository {
+        return DefaultChampionRepository(api, localDataSource, dbHelper)
     }
 
     @ViewModelScoped
     @Provides
-    fun provideDetailRepository(api: Api, dsManager: DataStoreManager,  dbHelper: ChampionDatabaseHelper): DetailRepository {
-        return DefaultDetailRepository(api, dsManager, dbHelper)
+    fun provideDetailRepository(api: Api, localDataSource: LocalDataSource, dbHelper: ChampionDatabaseHelper): DetailRepository {
+        return DefaultDetailRepository(api, localDataSource, dbHelper)
     }
 
     @ViewModelScoped
     @Provides
-    fun provideSettingsRepository(api: Api, dsManager: DataStoreManager): SettingsRepository {
-        return DefaultSettingsRepository(api, dsManager)
+    fun provideSettingsRepository(api: Api, localDataSource: LocalDataSource): SettingsRepository {
+        return DefaultSettingsRepository(api, localDataSource)
     }
 }

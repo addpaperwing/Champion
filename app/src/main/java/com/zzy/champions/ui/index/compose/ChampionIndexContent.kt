@@ -2,7 +2,6 @@ package com.zzy.champions.ui.index.compose
 
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -32,6 +31,7 @@ import com.zzy.champions.ui.theme.TANK
 fun ChampionIndex(
     modifier: Modifier = Modifier,
     searchText: String,
+    version: String,
     onTextChanged: (String) -> Unit,
     onDoneActionClick: (String) -> Unit,
     onClearSearchText: () -> Unit,
@@ -42,22 +42,8 @@ fun ChampionIndex(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(modifier = modifier.windowInsetsPadding(WindowInsets.statusBars)) {
-        Header(onSettingClick = onSettingClick)
-        Box {
-            LazyVerticalGrid(
-                modifier = Modifier.padding(top = PREDICTION_ITEM_HEIGHT + 12.dp),
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(start = 12.dp, end = 12.dp, bottom = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                items(count = champions.size) { index ->
-                    ChampionCard(champion = champions[index]) {
-                        onItemClick(champions[index])
-                    }
-                }
-            }
-            SearchTextField(
+        Header(onSettingClick = onSettingClick, version = version)
+        SearchTextField(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 text = searchText,
                 onTextChanged = onTextChanged,
@@ -67,15 +53,31 @@ fun ChampionIndex(
                     onDoneActionClick(it)
                 }
             )
-//            PredictionSearchBar(
-//                modifier = Modifier,
-//                predictions = predictions,
-//                onTextChanged = onTextChanged,
-//                onDoneActionClick = onDoneActionClick,
-//                onPredictionClick = onPredictionClick,
-//                getDisplayText = { champion -> champion.name }
-//            )
-        }
+        LazyVerticalGrid(
+                modifier = Modifier.padding(top = 12.dp),
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(start = 12.dp, end = 12.dp, bottom = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(count = champions.size) { index ->
+                    ChampionCard(champion = champions[index], version = version) {
+                        onItemClick(champions[index])
+                    }
+                }
+            }
+//        Box {
+//
+//
+////            PredictionSearchBar(
+////                modifier = Modifier,
+////                predictions = predictions,
+////                onTextChanged = onTextChanged,
+////                onDoneActionClick = onDoneActionClick,
+////                onPredictionClick = onPredictionClick,
+////                getDisplayText = { champion -> champion.name }
+////            )
+//        }
     }
 }
 
@@ -104,6 +106,7 @@ fun PreviewChampionIndex() {
             ChampionIndex(
                 modifier = Modifier.padding(padding),
                 searchText = text,
+                version = "123",
                 onTextChanged = {},
                 onClearSearchText = {},
                 onDoneActionClick = {},

@@ -20,8 +20,8 @@ class DetailTabsTest {
     fun setupDetailTabs() {
         composeTestRule.setContent {
             ChampionDetailTabPager(
-                champion = AndroidTestUtil.createChampion(),
-                detail = AndroidTestUtil.createChampionDetail("aatrox"),
+                champion = AndroidTestUtil.createChampion(AndroidTestUtil.AATROX),
+                detail = AndroidTestUtil.createChampionDetail(AndroidTestUtil.AATROX),
                 championBuilds = listOf(ChampionBuild("", "")),
                 onBuildClick = {},
                 onEditBuild = {},
