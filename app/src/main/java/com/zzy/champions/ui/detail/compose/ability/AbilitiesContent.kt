@@ -27,20 +27,15 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.zzy.champions.R
+import com.zzy.champions.data.local.ChampionAndDetailPreviewParameterProvider
 import com.zzy.champions.data.model.Ability
-import com.zzy.champions.data.model.Champion
-import com.zzy.champions.data.model.ChampionDetail
-import com.zzy.champions.data.model.Image
-import com.zzy.champions.data.model.Info
-import com.zzy.champions.data.model.Passive
-import com.zzy.champions.data.model.Spell
-import com.zzy.champions.data.model.Stats
+import com.zzy.champions.data.model.ChampionAndDetail
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 import kotlin.math.absoluteValue
 
 
@@ -129,52 +124,11 @@ fun AbilitiesIndicator(
 
 @Preview
 @Composable
-fun PreviewAbilities() {
-    val champion = Champion(
-        "aatrox",
-        "star guardian seraphine The Darkin Blade",
-        "The Darkin Blade",
-        Image(""),
-        listOf("Warrior", "Fighter", "Assassin"),
-        "Blood Well",
-        Info(difficulty = 5),
-        Stats(movespeed = BigDecimal(355), attackrange = BigDecimal(120))
-    )
-
-    val detail = ChampionDetail(
-        "aatrox",
-        emptyList(),
-        "Once honored defenders of Shurima against the Void, Aatrox and his brethren would eventually become an even greater threat to Runeterra, and were defeated only by cunning mortal sorcery. But after centuries of imprisonment, Aatrox was the first to find freedom once more, corrupting and transforming those foolish enough to try and wield the magical weapon that contained his essence. Now, with stolen flesh, he walks Runeterra in a brutal approximation of his previous form, seeking an apocalyptic and long overdue vengeance.",
-        listOf(
-            Spell(
-                "q",
-                "Aatrox slams his greatsword down, dealing physical damage. He can swing three times, each with a different area of effect.",
-                Image("")
-            ),
-            Spell(
-                "w",
-                "Aatrox smashes the ground, dealing damage to the first enemy hit. Champions and large monsters have to leave the impact area quickly or they will be dragged to the center and take the damage again.",
-                Image("")
-            ),
-            Spell(
-                "e",
-                "Passively, Aatrox heals when damaging enemy champions. On activation, he dashes in a direction.",
-                Image("")
-            ),
-            Spell(
-                "r",
-                "Aatrox unleashes his demonic form, fearing nearby enemy minions and gaining attack damage, increased healing, and Move Speed. If he gets a takedown, this effect is extended.",
-                Image("")
-            )
-        ),
-        Passive(
-            "p",
-            "Periodically, Aatrox's next basic attack deals bonus <physicalDamage>physical damage</physicalDamage> and heals him, based on the target's max health.",
-            Image("")
-        )
-    )
-
+fun PreviewAbilities(
+    @PreviewParameter(ChampionAndDetailPreviewParameterProvider::class)
+    championAndDetail: ChampionAndDetail
+) {
     MyApplicationTheme {
-        Abilities(abilities = detail.getAbilities())
+        Abilities(abilities = championAndDetail.detail.getAbilities())
     }
 }

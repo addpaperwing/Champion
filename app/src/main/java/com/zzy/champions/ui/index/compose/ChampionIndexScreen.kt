@@ -1,10 +1,16 @@
 package com.zzy.champions.ui.index.compose
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -12,94 +18,142 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import com.zzy.champions.data.local.ChampionDataPreviewParameterProvider
+import com.zzy.champions.data.local.FakeData.champions
 import com.zzy.champions.data.model.Champion
+import com.zzy.champions.data.model.ChampionData
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.ui.compose.LaunchScreen
 import com.zzy.champions.ui.index.ChampionViewModel
-import com.zzy.champions.ui.navigation.Index
+import com.zzy.champions.ui.theme.MyApplicationTheme
 
-fun NavGraphBuilder.championIndexScreen(
-    showLandingScreen: Boolean,
-    onLandingScreenTimeout: () -> Unit,
+
+@Composable
+fun ChampionIndexRoute(
+    modifier: Modifier = Modifier,
+    viewModel: ChampionViewModel = hiltViewModel(),
+    onSettingClick: () -> Unit,
     onItemClick: (Champion) -> Unit,
-    onSettingClick: () -> Unit = {},
 ) {
-    composable(
-        route = Index.route,
-        enterTransition = {
-//            fadeIn(animationSpec = tween(300, easing = LinearEasing)) +
-                    slideIntoContainer(
-                animationSpec = tween(300, easing = EaseIn),
-                towards = AnimatedContentTransitionScope.SlideDirection.Right
-            )
-        },
-        exitTransition = {
-//            fadeOut(animationSpec = tween(300, easing = LinearEasing)) +
-                    slideOutOfContainer(
-                animationSpec = tween(300, easing = EaseOut),
-                towards = AnimatedContentTransitionScope.SlideDirection.Start
-            )
-        }
-    ) {
-        ChampionIndexScreen(
-            showLandingScreen = showLandingScreen,
-            onLandingScreenTimeout = onLandingScreenTimeout,
-            onItemClick = onItemClick,
-            onSettingClick = onSettingClick,
-        )
-    }
+    val champions by viewModel.champions.collectAsStateWithLifecycle()
+
+    ChampionIndexScreen(
+        modifier = modifier,
+        championsState = champions,
+        onUpdateSearchKeyword = viewModel::updateSearchKeyword,
+        onInsertBuilds = viewModel::insertBuildsWhenFirstOpen,
+        onSettingClick = onSettingClick,
+        onItemClick = onItemClick)
 }
 
 @Composable
 fun ChampionIndexScreen(
     modifier: Modifier = Modifier,
-    viewModel: ChampionViewModel = hiltViewModel(),
-    showLandingScreen: Boolean,
-    onLandingScreenTimeout: () -> Unit,
+    onboardingShowLandingScreen: Boolean = true,
+    championsState: UiState<ChampionData>,
+    onUpdateSearchKeyword: (String) -> Unit,
+    onInsertBuilds: () -> Unit,
+    onSettingClick: () -> Unit,
     onItemClick: (Champion) -> Unit,
-    onSettingClick: () -> Unit = {},
 ) {
-    val champions by viewModel.champions.collectAsStateWithLifecycle()
+    var showLandingScreen by rememberSaveable { mutableStateOf(onboardingShowLandingScreen) }
     var searchText by rememberSaveable { mutableStateOf("") }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     fun clearSearchTextAndReloadAllChampions() {
         searchText = ""
-        viewModel.updateSearchKeyword(searchText)
+        onUpdateSearchKeyword(searchText)
     }
 
-    LaunchedEffect(true) {
-        viewModel.insertBuildsWhenFirstOpen()
-        viewModel.updateSearchKeyword(searchText)
+    LaunchedEffect(Unit) {
+        onInsertBuilds()
+        onUpdateSearchKeyword(searchText)
     }
 
     BackHandler(enabled = searchText.isNotBlank()) {
         clearSearchTextAndReloadAllChampions()
     }
 
-    if (!showLandingScreen && champions is UiState.Success) {
-        ChampionIndex(
-            modifier = modifier,
-            searchText = searchText,
-            version = (champions as UiState.Success).data.version,
-            onTextChanged = {
-                searchText = it
-                viewModel.updateSearchKeyword(it)
-            },
-            onDoneActionClick = {
-                viewModel.updateSearchKeyword(it)
-            },
-            onClearSearchText = {
-                clearSearchTextAndReloadAllChampions()
-            },
-            champions = (champions as UiState.Success).data.champions,
-            onSettingClick = onSettingClick,
-            onItemClick = onItemClick
-        )
+    if (!showLandingScreen && championsState is UiState.Success) {
+        Column(modifier = modifier.windowInsetsPadding(WindowInsets.statusBars)) {
+            Header(onSettingClick = onSettingClick, version = championsState.data.version)
+            SearchTextField(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                text = searchText,
+                onTextChanged = onUpdateSearchKeyword,
+                onClearText = {
+                    clearSearchTextAndReloadAllChampions()
+                },
+                onDone = {
+                    keyboardController?.hide()
+                    onUpdateSearchKeyword(it)
+                }
+            )
+            LazyVerticalGrid(
+                modifier = Modifier.padding(top = 12.dp),
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(start = 12.dp, end = 12.dp, bottom = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(count = champions.size) { index ->
+                    ChampionCard(champion = champions[index], version = championsState.data.version) {
+                        onItemClick(champions[index])
+                    }
+                }
+            }
+        }
     } else {
-        LaunchScreen(modifier = Modifier, onTimeout = onLandingScreenTimeout)
+        LaunchScreen(modifier = Modifier, onTimeout = {
+            showLandingScreen = false
+        })
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewChampionIndexScreen(
+    @PreviewParameter(ChampionDataPreviewParameterProvider::class)
+    championData: ChampionData
+) {
+    MyApplicationTheme {
+        Scaffold { padding ->
+            ChampionIndexScreen(
+                modifier = Modifier.padding(padding),
+                onboardingShowLandingScreen = false,
+                championsState = UiState.Success(championData),
+                onUpdateSearchKeyword = {},
+                onInsertBuilds = { },
+                onSettingClick = { },
+                onItemClick = { }
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewLandingScreen(
+    @PreviewParameter(ChampionDataPreviewParameterProvider::class)
+    championData: ChampionData
+) {
+    MyApplicationTheme {
+        Scaffold { padding ->
+            ChampionIndexScreen(
+                modifier = Modifier.padding(padding),
+                onboardingShowLandingScreen = true,
+                championsState = UiState.Success(championData),
+                onUpdateSearchKeyword = {},
+                onInsertBuilds = { },
+                onSettingClick = { },
+                onItemClick = { }
+            )
+        }
     }
 }

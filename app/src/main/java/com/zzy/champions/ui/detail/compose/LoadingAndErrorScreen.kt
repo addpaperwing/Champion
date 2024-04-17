@@ -60,8 +60,6 @@ fun LoadingAndErrorScreen(
 @Composable
 fun PreviewLoading() {
     MyApplicationTheme {
-
-
         LoadingAndErrorScreen(isLoading = true, isError = false) {
 
         }
@@ -72,8 +70,6 @@ fun PreviewLoading() {
 @Composable
 fun PreviewError() {
     MyApplicationTheme {
-
-
         LoadingAndErrorScreen(isLoading = false, isError = true) {
 
         }

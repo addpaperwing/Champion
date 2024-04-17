@@ -13,10 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.zzy.champions.data.model.ChampionDetail
-import com.zzy.champions.data.model.Image
-import com.zzy.champions.data.model.Passive
+import com.zzy.champions.data.local.ChampionAndDetailPreviewParameterProvider
+import com.zzy.champions.data.model.ChampionAndDetail
 import com.zzy.champions.data.model.SkinNumber
 import com.zzy.champions.ui.theme.MyApplicationTheme
 
@@ -50,23 +50,15 @@ fun SkinList(
 
 @Composable
 @Preview
-fun PreviewSkins() {
-    val detail = ChampionDetail(
-        "aatrox",
-        listOf(SkinNumber(1, "Justicar Aatrox"), SkinNumber(2, "Mecha Aatrox"), SkinNumber(3, "Sea Hunter Aatrox"), SkinNumber(7, "Blood Moon Aatrox")),
-        "Once honored defenders of Shurima against the Void, Aatrox and his brethren would eventually become an even greater threat to Runeterra, and were defeated only by cunning mortal sorcery. But after centuries of imprisonment, Aatrox was the first to find freedom once more, corrupting and transforming those foolish enough to try and wield the magical weapon that contained his essence. Now, with stolen flesh, he walks Runeterra in a brutal approximation of his previous form, seeking an apocalyptic and long overdue vengeance.",
-        emptyList(),
-        Passive(
-            "p",
-            "Periodically, Aatrox's next basic attack deals bonus <physicalDamage>physical damage</physicalDamage> and heals him, based on the target's max health.",
-            Image("")
-        )
-    )
+fun PreviewSkins(
+    @PreviewParameter(ChampionAndDetailPreviewParameterProvider::class)
+    championAndDetail: ChampionAndDetail
+) {
     MyApplicationTheme {
         SkinList(
-            championId = detail.championId,
+            championId = championAndDetail.detail.championId,
             state = rememberSkinListState(),
-            skins = detail.skins,
+            skins = championAndDetail.detail.skins,
             onItemClick = {
 
             }

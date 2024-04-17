@@ -7,7 +7,7 @@ import com.zzy.champions.data.model.ChampionAndDetail
 import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.data.model.ChampionDetail
 import com.zzy.champions.data.remote.UiState
-import com.zzy.champions.ui.navigation.Detail
+import com.zzy.champions.ui.navigation.CHAMPION_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +36,7 @@ class DetailViewModel @Inject constructor(
             _result.value = UiState.Loading
             val result = withContext(dispatcher) {
                 try {
-                    val championAndDetail = repository.getChampionAndDetail(savedStateHandle.get<String>(Detail.championIdArg)?:"")
+                    val championAndDetail = repository.getChampionAndDetail(savedStateHandle.get<String>(CHAMPION_ID)?:"")
                     UiState.Success(championAndDetail)
                 } catch (e: Throwable) {
                     e.printStackTrace()
