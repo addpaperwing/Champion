@@ -48,13 +48,12 @@ jobs:
                 path: 'src/test/screenshots/'
                 retention-days: 30
 
-    instrumentation-test:
-#        runs-on: macOs-latest
-        runs-on: ubuntu-latest
+    android-test:
+        runs-on: macOs-latest
         strategy:
-#            fail-fast: true
+            fail-fast: true
             matrix:
-                api-level: [26, 30]
+                api-level: [26, 29]
         steps:
             - uses: actions/checkout@v4
 
@@ -64,70 +63,70 @@ jobs:
                 distribution: zulu
                 java-version: 18
 
-            - name: Setup Gradle
-              uses: gradle/gradle-build-action@v3
+#            - name: Setup Gradle
+#              uses: gradle/gradle-build-action@v3
+#
+#            - name: Build projects before running emulator
+#              run: ./gradlew packageDemoDebug packageDemoDebugAndroidTest
+#
+#            - name: Run instrumentation tests
+#              uses: reactivecircus/android-emulator-runner@v2
+#              with:
+#               api-level: ${{ matrix.api-level }}
+#               arch: x86_64
+#               disable-animations: true
+#               disk-size: 6000M
+#               heap-size: 600M
+#               script: ./gradlew connectedDemoDebugAndroidTest --daemon
+#
+#            - name: Upload test reports
+#              if: always()
+#              uses: actions/upload-artifact@v4
+#              with:
+#               name: test-reports-${{ matrix.api-level }}
+#               path: '**/build/reports/androidTests'
 
-            - name: Build projects before running emulator
-              run: ./gradlew packageDemoDebug packageDemoDebugAndroidTest
+            - name: setup gradle cache
+              uses: actions/cache@v2
+              with:
+                path: |
+                    ~/.gradle/caches
+                    ~/.gradle/wrapper
+                key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
 
-            - name: Run instrumentation tests
+            - name: make gradlew executable
+              run: chmod +x ./gradlew
+
+            # - name: Get AVD info
+            #   uses: ./.github/actions/get-avd-info
+            #   id: avd-info
+            #   with:
+            #     api-level: ${{ matrix.api-level }}
+
+            - name: AVD cache
+              uses: actions/cache@v2
+              id: avd-cache
+              with:
+                path: |
+                    ~/.android/avd/*
+                    ~/.android/adb*
+                key: avd-${{ matrix.api-level }}
+
+            - name: create AVD and generate snapshot for caching
+              if: steps.avd-cache.outputs.cache-hit != 'true'
               uses: reactivecircus/android-emulator-runner@v2
               with:
-               api-level: ${{ matrix.api-level }}
-               arch: x86_64
-               disable-animations: true
-               disk-size: 6000M
-               heap-size: 600M
-               script: ./gradlew connectedDemoDebugAndroidTest --daemon
+                api-level: ${{ matrix.api-level }}
+                force-avd-creation: false
+                emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+                disable-animations: false
+                script: echo "Generated AVD snapshot for caching."
 
-            - name: Upload test reports
-              if: always()
-              uses: actions/upload-artifact@v4
+            - name: run tests
+              uses: reactivecircus/android-emulator-runner@v2
               with:
-               name: test-reports-${{ matrix.api-level }}
-               path: '**/build/reports/androidTests'
-
-#            - name: setup gradle cache
-#              uses: actions/cache@v2
-#              with:
-#                path: |
-#                    ~/.gradle/caches
-#                    ~/.gradle/wrapper
-#                key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
-#
-#            - name: make gradlew executable
-#              run: chmod +x ./gradlew
-#
-#            # - name: Get AVD info
-#            #   uses: ./.github/actions/get-avd-info
-#            #   id: avd-info
-#            #   with:
-#            #     api-level: ${{ matrix.api-level }}
-#
-#            - name: AVD cache
-#              uses: actions/cache@v3
-#              id: avd-cache
-#              with:
-#                path: |
-#                    ~/.android/avd/*
-#                    ~/.android/adb*
-#                key: avd-${{ matrix.api-level }}
-#
-#            - name: create AVD and generate snapshot for caching
-#              if: steps.avd-cache.outputs.cache-hit != 'true'
-#              uses: reactivecircus/android-emulator-runner@v2
-#              with:
-#                api-level: ${{ matrix.api-level }}
-#                force-avd-creation: false
-#                emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-#                disable-animations: false
-#                script: echo "Generated AVD snapshot for caching."
-#
-#            - name: run tests
-#              uses: reactivecircus/android-emulator-runner@v2
-#              with:
-#                api-level: ${{ matrix.api-level }}
-#                force-avd-creation: false
-#                emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-#                disable-animations: true
-#                script: ./gradlew connectedCheck
+                api-level: ${{ matrix.api-level }}
+                force-avd-creation: false
+                emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+                disable-animations: true
+                script: ./gradlew connectedCheck
