@@ -34,8 +34,8 @@ class ChampionDetailScreenshotTest {
     private val championBuilds = ChampionBuildsPreviewParameterProvider().values.first()
 
     @Test
-    fun championDetailScreenLoading() {
-        composeTestRule.captureForPhone("ChampionDetailScreenLoading") {
+    fun championDetailLoadingScreen() {
+        composeTestRule.captureForPhone("ChampionDetailLoadingScreen") {
             MyApplicationTheme {
                 Scaffold { padding ->
                     ChampionDetailScreen(
@@ -56,8 +56,8 @@ class ChampionDetailScreenshotTest {
     }
 
     @Test
-    fun championDetailScreenError() {
-        composeTestRule.captureForPhone("ChampionDetailScreenError") {
+    fun championDetailErrorScreen() {
+        composeTestRule.captureForPhone("ChampionDetailErrorScreen") {
             MyApplicationTheme {
                 Scaffold { padding ->
                     ChampionDetailScreen(
@@ -78,7 +78,7 @@ class ChampionDetailScreenshotTest {
     }
 
     @Test
-    fun championDetailScreenSuccess() {
+    fun championDetailScreenTabs() {
         val device = DefaultTestDevices.PHONE
         composeTestRule.setContentForDevice(device) {
             MyApplicationTheme {
@@ -99,15 +99,15 @@ class ChampionDetailScreenshotTest {
             }
         }
 
-        composeTestRule.capture(device.description, "ChampionDetailScreen_abilities")
+        composeTestRule.capture(device.description, "ChampionDetailScreenAbilities")
 
         composeTestRule.onNodeWithContentDescription("Stats tab").performClick()
-        composeTestRule.capture(device.description, "ChampionDetailScreen_stats")
+        composeTestRule.capture(device.description, "ChampionDetailScreenStats")
 
         composeTestRule.onNodeWithContentDescription("Builds tab").performClick()
-        composeTestRule.capture(device.description, "ChampionDetailScreen_builds")
+        composeTestRule.capture(device.description, "ChampionDetailScreenBuilds")
 
         composeTestRule.onNodeWithContentDescription("Skins tab").performClick()
-        composeTestRule.capture(device.description, "ChampionDetailScreen_skins")
+        composeTestRule.capture(device.description, "ChampionDetailScreenSkins")
     }
 }
