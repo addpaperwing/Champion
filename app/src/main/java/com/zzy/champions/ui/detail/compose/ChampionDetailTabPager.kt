@@ -43,6 +43,7 @@ fun ChampionDetailTabPager(
     onTabClick: (Int) -> Unit = {},
     champion: Champion,
     detail: ChampionDetail,
+    initPage: Int = 0,
     onSkinClick:(SkinNumber) -> Unit = {},
 
     championBuilds: List<ChampionBuild> = emptyList(),
@@ -51,7 +52,7 @@ fun ChampionDetailTabPager(
     onDeleteBuild: (Int) -> Unit = {}
     ) {
     val titles = stringArrayResource(id = R.array.tabs)
-    val pagerState = rememberPagerState { titles.size }
+    val pagerState = rememberPagerState(initialPage = initPage) { titles.size }
     val scope = rememberCoroutineScope()
 
     Column(modifier) {

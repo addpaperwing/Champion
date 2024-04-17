@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.devtools.ksp)
+    alias(libs.plugins.roborazzi)
 //    id ("org.jetbrains.kotlin.android")
 //    id ("com.google.devtools.ksp")
     id ("kotlin-parcelize")
@@ -25,24 +26,24 @@ android {
         }
     }
 
-    signingConfigs {
-        create("release") {
-            storeFile = file("release-key.jks")
-            storePassword = project.property("KEYSTORE_PASSWORD").toString()
-            keyAlias = project.property("SIGNING_KEY_ALIAS").toString()
-            keyPassword = project.property("SIGNING_KEY_PASSWORD").toString()
-        }
-    }
+//    signingConfigs {
+//        create("release") {
+//            storeFile = file("release-key.jks")
+//            storePassword = project.property("KEYSTORE_PASSWORD").toString()
+//            keyAlias = project.property("SIGNING_KEY_ALIAS").toString()
+//            keyPassword = project.property("SIGNING_KEY_PASSWORD").toString()
+//        }
+//    }
 
     buildTypes {
-        getByName("release") {
-            signingConfig = signingConfigs.findByName("release")
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        debug {
+            isDebuggable = true
         }
 
-        getByName("debug") {
-            isDebuggable = true
+        release {
+            signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
@@ -56,7 +57,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
+        kotlinCompilerExtensionVersion = "1.5.11"
     }
 //    packagingOptions {
 //        resources {
@@ -68,6 +69,12 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             merges += "META-INF/LICENSE.md"
             merges += "META-INF/LICENSE-notice.md"
+        }
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
         }
     }
 }
@@ -144,6 +151,16 @@ dependencies {
     testImplementation(libs.coroutine.test)
     testImplementation(libs.mockk.android)
     testImplementation(libs.mockk.agent)
+
+//    testImplementation(libs.espresso.core)
+//    testImplementation(libs.ui.test.junit4)
+    testImplementation(libs.android.compose.ui.test.junit4)
+
+    testImplementation(libs.robolectric)
+    testImplementation(libs.roborazzi)
+    testImplementation(libs.roborazzi.compose)
+    testImplementation(libs.roborazzi.rule)
+    testImplementation(libs.accompanist.testharness)
 
     androidTestImplementation(libs.android.test.junit)
     androidTestImplementation(libs.android.test.espresso)

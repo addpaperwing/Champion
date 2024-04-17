@@ -1,11 +1,10 @@
 package com.zzy.champions.ui.index
 
-import com.zzy.champions.data.model.ChampionData
+import com.zzy.champions.data.local.ChampionDataPreviewParameterProvider
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.domain.GetAndSaveChampionBasicDataUseCase
 import com.zzy.champions.domain.InsertBuildsForFirstOpenUseCase
 import com.zzy.champions.ui.MainDispatcherRule
-import com.zzy.champions.ui.TestUtil
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coJustRun
@@ -27,9 +26,9 @@ import org.junit.Test
 import java.io.IOException
 
 
-private const val VERSION_1_0 = "1.0"
-private const val CHAMPION_ID = "aatrox"
-private val Champion = TestUtil.createChampion(CHAMPION_ID)
+//private const val VERSION_1_0 = "1.0"
+//private const val CHAMPION_ID = "aatrox"
+//private val Champion = TestUtil.createChampion(CHAMPION_ID)
 @OptIn(ExperimentalCoroutinesApi::class)
 class ChampionViewModelTest {
 
@@ -43,6 +42,8 @@ class ChampionViewModelTest {
     private lateinit var getAndSaveChampionBasicDataUseCase: GetAndSaveChampionBasicDataUseCase
 
     private lateinit var viewModel: ChampionViewModel
+
+    private val championData = ChampionDataPreviewParameterProvider().values.first()
 
     @Before
     fun setup() {
@@ -69,8 +70,6 @@ class ChampionViewModelTest {
 
     @Test
     fun updateSearchKeyword_championsState_From_LoadingState_To_SuccessState() {
-        val champions = listOf(Champion)
-        val championData = ChampionData(VERSION_1_0, champions)
         coEvery {
             getAndSaveChampionBasicDataUseCase(any())
         } coAnswers {

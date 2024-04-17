@@ -24,14 +24,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zzy.champions.R
+import com.zzy.champions.data.local.ChampionAndDetailPreviewParameterProvider
 import com.zzy.champions.data.local.adaptiveScale
 import com.zzy.champions.data.model.Champion
-import com.zzy.champions.data.model.Image
-import com.zzy.champions.data.model.Info
-import com.zzy.champions.data.model.Stats
+import com.zzy.champions.data.model.ChampionAndDetail
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import java.math.BigDecimal
 import kotlin.math.roundToInt
@@ -325,47 +325,11 @@ fun ChampionStats(champion: Champion) {
 
 @Preview
 @Composable
-fun PreviewStats() {
-    val champion = Champion(
-        "aatrox",
-        "star guardian seraphine The Darkin Blade",
-        "The Darkin Blade",
-        Image(""),
-        listOf("Warrior", "Fighter", "Assassin"),
-        "Blood Well",
-        Info(difficulty = 5),
-        Stats(
-            hp = BigDecimal(650),
-            hpperlevel = BigDecimal(114),
-
-            hpregen = BigDecimal(2.5),
-            hpregenperlevel = BigDecimal(0.6),
-
-            mp = BigDecimal(418),
-            mpperlevel = BigDecimal(25),
-
-            mpregen = BigDecimal(8),
-            mpregenperlevel = BigDecimal(0.8),
-
-            movespeed = BigDecimal(355),
-
-            armor = BigDecimal(38),
-            armorperlevel = BigDecimal(4.45),
-
-            spellblock = BigDecimal(30),
-            spellblockperlevel = BigDecimal(1.3),
-
-
-            attackdamage = BigDecimal(53),
-            attackdamageperlevel = BigDecimal(3),
-
-            attackspeed = BigDecimal(0.688),
-            attackspeedperlevel = BigDecimal(2),
-
-            attackrange = BigDecimal(120),
-        )
-    )
+fun PreviewStats(
+    @PreviewParameter(ChampionAndDetailPreviewParameterProvider::class)
+    championAndDetail: ChampionAndDetail
+) {
     MyApplicationTheme {
-        ChampionStats(champion = champion)
+        ChampionStats(champion = championAndDetail.champion)
     }
 }

@@ -1,15 +1,9 @@
 package com.zzy.champions.ui.detail
 
 import androidx.lifecycle.SavedStateHandle
-import com.zzy.champions.data.model.ChampionAndDetail
-import com.zzy.champions.data.model.ChampionDetail
-import com.zzy.champions.data.model.Image
-import com.zzy.champions.data.model.Passive
-import com.zzy.champions.data.model.SkinNumber
+import com.zzy.champions.data.local.ChampionAndDetailPreviewParameterProvider
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.ui.MainDispatcherRule
-import com.zzy.champions.ui.TestUtil.createChampion
-import com.zzy.champions.ui.TestUtil.createChampionDetail
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coJustRun
@@ -41,6 +35,8 @@ class DetailViewModelTest {
 
     private lateinit var viewModel: DetailViewModel
 
+    private val championAndDetail = ChampionAndDetailPreviewParameterProvider().values.first()
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -49,10 +45,10 @@ class DetailViewModelTest {
 
     @Test
     fun getChampionAndDetail_From_LoadingState_To_SuccessState() {
-        val id = "aatrox"
-        val aatorx = createChampion(id)
-        val detail = createChampionDetail(id)
-        val championAndDetail = ChampionAndDetail(aatorx, detail)
+//        val id = "aatrox"
+//        val aatorx = createChampion(id)
+//        val detail = createChampionDetail(id)
+//        val championAndDetail = ChampionAndDetail(aatorx, detail)
         coEvery {
             repository.getChampionAndDetail(any())
         } coAnswers {
@@ -95,19 +91,7 @@ class DetailViewModelTest {
 
     @Test
     fun updateBannerSplash() {
-        val id = "aatrox"
-        val detail = ChampionDetail(
-            championId = id,
-            skins = listOf(
-                SkinNumber(0, ""),
-                SkinNumber(1, "")
-            ),
-            lore = "",
-            spells = emptyList(),
-            passive = Passive(
-                name = "", description = "", image = Image(full = "")
-            )
-        )
+        val detail = championAndDetail.detail
         val skinNum = 1
 
         coJustRun { repository.updateChampionDetailSplash(detail) }
