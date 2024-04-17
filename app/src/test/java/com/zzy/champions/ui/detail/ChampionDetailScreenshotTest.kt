@@ -35,7 +35,7 @@ class ChampionDetailScreenshotTest {
 
     @Test
     fun championDetailScreenLoading() {
-        composeTestRule.captureForPhone("championDetailScreenLoading") {
+        composeTestRule.captureForPhone("ChampionDetailScreenLoading") {
             MyApplicationTheme {
                 Scaffold { padding ->
                     ChampionDetailScreen(
@@ -57,7 +57,7 @@ class ChampionDetailScreenshotTest {
 
     @Test
     fun championDetailScreenError() {
-        composeTestRule.captureForPhone("championDetailScreenError") {
+        composeTestRule.captureForPhone("ChampionDetailScreenError") {
             MyApplicationTheme {
                 Scaffold { padding ->
                     ChampionDetailScreen(
@@ -99,15 +99,15 @@ class ChampionDetailScreenshotTest {
             }
         }
 
-        composeTestRule.capture(device.description, "championDetailScreen_abilities")
+        composeTestRule.capture(device.description, "ChampionDetailScreen_abilities")
 
         composeTestRule.onNodeWithContentDescription("Stats tab").performClick()
-        composeTestRule.capture(device.description, "championDetailScreen_stats")
+        composeTestRule.capture(device.description, "ChampionDetailScreen_stats")
 
         composeTestRule.onNodeWithContentDescription("Builds tab").performClick()
-        composeTestRule.capture(device.description, "championDetailScreen_builds")
+        composeTestRule.capture(device.description, "ChampionDetailScreen_builds")
 
         composeTestRule.onNodeWithContentDescription("Skins tab").performClick()
-        composeTestRule.capture(device.description, "championDetailScreen_skins")
+        composeTestRule.capture(device.description, "ChampionDetailScreen_skins")
     }
 }

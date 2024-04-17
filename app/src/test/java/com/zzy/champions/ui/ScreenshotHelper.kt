@@ -36,7 +36,7 @@ import com.google.accompanist.testharness.TestHarness
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import org.robolectric.RuntimeEnvironment
 
-private const val PATH = "build/outputs/roborazzi/"
+private const val PATH = "src/test/screenshots/"
 
 @OptIn(ExperimentalRoborazziApi::class)
 val DefaultRoborazziOptions =
