@@ -4,7 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
-import com.zzy.champions.AndroidTestUtil
+import com.zzy.champions.data.local.ChampionAndDetailPreviewParameterProvider
 import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.ui.detail.compose.ChampionDetailTabPager
 import org.junit.Before
@@ -16,12 +16,14 @@ class DetailTabsTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
+    private val championAndDetail = ChampionAndDetailPreviewParameterProvider().values.first()
+
     @Before
     fun setupDetailTabs() {
         composeTestRule.setContent {
             ChampionDetailTabPager(
-                champion = AndroidTestUtil.createChampion(AndroidTestUtil.AATROX),
-                detail = AndroidTestUtil.createChampionDetail(AndroidTestUtil.AATROX),
+                champion = championAndDetail.champion,
+                detail = championAndDetail.detail,
                 championBuilds = listOf(ChampionBuild("", "")),
                 onBuildClick = {},
                 onEditBuild = {},

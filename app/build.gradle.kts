@@ -26,24 +26,24 @@ android {
         }
     }
 
-    signingConfigs {
-        create("release") {
-            storeFile = file("release-key.jks")
-            storePassword = project.property("KEYSTORE_PASSWORD").toString()
-            keyAlias = project.property("SIGNING_KEY_ALIAS").toString()
-            keyPassword = project.property("SIGNING_KEY_PASSWORD").toString()
-        }
-    }
+//    signingConfigs {
+//        create("release") {
+//            storeFile = file("release-key.jks")
+//            storePassword = project.property("KEYSTORE_PASSWORD").toString()
+//            keyAlias = project.property("SIGNING_KEY_ALIAS").toString()
+//            keyPassword = project.property("SIGNING_KEY_PASSWORD").toString()
+//        }
+//    }
 
     buildTypes {
-        getByName("release") {
-            signingConfig = signingConfigs.findByName("release")
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        debug {
+            isDebuggable = true
         }
 
-        getByName("debug") {
-            isDebuggable = true
+        release {
+            signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {

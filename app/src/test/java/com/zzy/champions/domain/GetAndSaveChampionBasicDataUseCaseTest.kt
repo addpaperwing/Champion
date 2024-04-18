@@ -1,9 +1,9 @@
 package com.zzy.champions.domain
 
+import com.zzy.champions.data.local.ChampionDataPreviewParameterProvider
 import com.zzy.champions.data.model.ChampionResponse
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.ui.MainDispatcherRule
-import com.zzy.champions.ui.TestUtil
 import com.zzy.champions.ui.index.DefaultChampionRepository
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -27,11 +27,11 @@ private const val VERSION_1_0 = "1.0"
 private const val VERSION_1_1 = "1.1"
 private const val LANGUAGE_US = "US"
 
-private const val REMOTE_CHAMPION_ID = "aatrox"
-private val remoteChampion = TestUtil.createChampion(REMOTE_CHAMPION_ID)
-
-private const val LOCAL_CHAMPION_ID = "ahri"
-private val localChampion = TestUtil.createChampion(LOCAL_CHAMPION_ID)
+//private const val remoteChampionId = "aatrox"
+//private val remoteChampion = TestUtil.createChampion(remoteChampionId)
+//
+//private const val localChampionId = "ahri"
+//private val localChampion = TestUtil.createChampion(localChampionId)
 
 
 class GetAndSaveChampionBasicDataUseCaseTest {
@@ -47,8 +47,12 @@ class GetAndSaveChampionBasicDataUseCaseTest {
     @MockK
     private lateinit var getLanguageUseCase: GetLanguageUseCase
 
-
     private lateinit var useCase : GetAndSaveChampionBasicDataUseCase
+
+    private val championData = ChampionDataPreviewParameterProvider().values.first()
+    private val remoteChampion = championData.champions[0]
+    private val remoteChampionId = remoteChampion.id
+    private val localChampionId = "ahri"
 
     @Before
     fun setup() {
@@ -66,7 +70,7 @@ class GetAndSaveChampionBasicDataUseCaseTest {
         //Mock return local version to 1.0
         coEvery { repository.getLocalVersion() } returns VERSION_1_0
         //Mock only version = 1.1 language = us return remote champion
-        coEvery { repository.getRemoteChampions(VERSION_1_1, LANGUAGE_US) } returns ChampionResponse(mapOf(REMOTE_CHAMPION_ID to remoteChampion))
+        coEvery { repository.getRemoteChampions(VERSION_1_1, LANGUAGE_US) } returns ChampionResponse(mapOf(remoteChampionId to remoteChampion))
         //Mock save local champions call
         coJustRun { repository.saveLocalChampions(VERSION_1_1, listOf(remoteChampion)) }
         //Mock query champion call

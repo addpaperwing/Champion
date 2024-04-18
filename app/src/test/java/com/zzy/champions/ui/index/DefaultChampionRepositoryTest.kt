@@ -1,10 +1,10 @@
 package com.zzy.champions.ui.index
 
+import com.zzy.champions.data.local.ChampionDataPreviewParameterProvider
 import com.zzy.champions.data.local.LocalDataSource
 import com.zzy.champions.data.local.db.ChampionDatabaseHelper
 import com.zzy.champions.data.remote.Api
 import com.zzy.champions.ui.MainDispatcherRule
-import com.zzy.champions.ui.TestUtil.createChampion
 import io.mockk.MockKAnnotations
 import io.mockk.coJustRun
 import io.mockk.coVerify
@@ -31,6 +31,8 @@ class DefaultChampionRepositoryTest {
 
     private lateinit var championRepository: DefaultChampionRepository
 
+    private val championData = ChampionDataPreviewParameterProvider().values.first()
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -39,12 +41,11 @@ class DefaultChampionRepositoryTest {
 
     @Test
     fun saveLocalChampions_saveVersionToo() {
-        val aatrox = createChampion("aatrox")
         coJustRun { localDataSource.setVersion(any()) }
         coJustRun { dbHelper.updateChampionBasicData(any()) }
 
         runTest {
-            championRepository.saveLocalChampions("1.0", listOf(aatrox))
+            championRepository.saveLocalChampions(championData.version, championData.champions)
         }
 
         coVerify { localDataSource.setVersion(any()) }

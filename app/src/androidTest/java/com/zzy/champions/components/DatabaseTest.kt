@@ -5,7 +5,8 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.zzy.champions.AndroidTestUtil
+import com.zzy.champions.data.local.ChampionAndDetailPreviewParameterProvider
+import com.zzy.champions.data.local.ChampionDataPreviewParameterProvider
 import com.zzy.champions.data.local.db.ChampionDataBase
 import com.zzy.champions.data.local.db.ChampionDatabaseHelper
 import com.zzy.champions.data.model.BUILD_OP_GG
@@ -26,11 +27,13 @@ class DatabaseTest {
     private lateinit var db: ChampionDataBase
     private lateinit var dbHelper: ChampionDatabaseHelper
 
-    private val aatrox = AndroidTestUtil.createChampion(AndroidTestUtil.AATROX, AndroidTestUtil.AATROX_TITLE)
-    private val aatroxDetail = AndroidTestUtil.createChampionDetail(AndroidTestUtil.AATROX)
-
-    private val ahri = AndroidTestUtil.createChampion(AndroidTestUtil.AHRI, AndroidTestUtil.AHRI_TITLE)
+//    private val aatrox =
+//    private val aatroxDetail = AndroidTestUtil.createChampionDetail(AndroidTestUtil.AATROX)
+//
+//    private val ahri = AndroidTestUtil.createChampion(AndroidTestUtil.AHRI, AndroidTestUtil.AHRI_TITLE)
 //    private val ahriDetail = AndroidTestUtil.createChampionDetail(ahriId)
+    private val championData = ChampionDataPreviewParameterProvider().values.first()
+    private val championAndDetail = ChampionAndDetailPreviewParameterProvider().values.first()
 
     @Before
     fun createDb() {
@@ -51,37 +54,37 @@ class DatabaseTest {
     fun champion_and_championDetail_table_functions() {
         runTest {
             //Test 'updateChampionDetailData' function
-            dbHelper.updateChampionDetailData(aatroxDetail)
+            dbHelper.updateChampionDetailData(championAndDetail.detail)
 
             //Test 'updateChampionDetailData' result
             //Test 'getChampionDetail' function
-            val detailBeforeUpdateChampions = dbHelper.getChampionDetail(AndroidTestUtil.AATROX)
-            assertThat(detailBeforeUpdateChampions?.championId, equalTo(aatroxDetail.championId))
+            val detailBeforeUpdateChampions = dbHelper.getChampionDetail("Akali")
+            assertThat(detailBeforeUpdateChampions?.championId, equalTo(championAndDetail.detail.championId))
 
 
             //Test 'updateChampionBasicData' function
-            dbHelper.updateChampionBasicData(listOf(ahri, aatrox))
+            dbHelper.updateChampionBasicData(championData.champions)
 
             //Test 'updateChampionBasicData' result1 - insert data list
             //Test 'getAllChampionData' function
             val all = dbHelper.getAllChampionData()
-            assertThat(all[0], equalTo(aatrox))
-            assertThat(all[1], equalTo(ahri))
+            assertThat(all[0], equalTo(championData.champions[0]))
+            assertThat(all[1], equalTo(championData.champions[1]))
 
             //Test 'updateChampionBasicData' result2 - clear detail table
-            val detailAfterUpdateChampions = dbHelper.getChampionDetail(AndroidTestUtil.AATROX)
+            val detailAfterUpdateChampions = dbHelper.getChampionDetail(championAndDetail.champion.id)
             assertThat(detailAfterUpdateChampions, equalTo(null))
 
 
             //Test 'searchChampions'
             val searchAResult = dbHelper.searchChampionsById("a")
-            assertThat(searchAResult.size, equalTo(2))
+            assertThat(searchAResult.size, equalTo(6))
 
             val searchBResult = dbHelper.searchChampionsById("b")
-            assertThat(searchBResult.size, equalTo(0))
+            assertThat(searchBResult.size, equalTo(1))
 
-            val searchAatroxResult = dbHelper.searchChampionsById("aatrox")
-            assertThat(searchAatroxResult[0], equalTo(aatrox))
+            val searchAatroxResult = dbHelper.searchChampionsById("Aatrox")
+            assertThat(searchAatroxResult[0], equalTo(championData.champions[0]))
             assertThat(searchAatroxResult.size, equalTo(1))
         }
     }

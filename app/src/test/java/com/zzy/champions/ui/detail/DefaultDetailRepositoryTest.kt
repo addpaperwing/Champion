@@ -1,13 +1,12 @@
 package com.zzy.champions.ui.detail
 
+import com.zzy.champions.data.local.ChampionAndDetailPreviewParameterProvider
 import com.zzy.champions.data.local.LocalDataSource
 import com.zzy.champions.data.local.db.ChampionDatabaseHelper
 import com.zzy.champions.data.model.ChampionAndDetail
 import com.zzy.champions.data.model.ChampionDetailResponse
 import com.zzy.champions.data.remote.Api
 import com.zzy.champions.ui.MainDispatcherRule
-import com.zzy.champions.ui.TestUtil.createChampion
-import com.zzy.champions.ui.TestUtil.createChampionDetail
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coJustRun
@@ -39,6 +38,8 @@ class DefaultDetailRepositoryTest {
 
     private lateinit var repository: DefaultDetailRepository
 
+    private val championAndDetail = ChampionAndDetailPreviewParameterProvider().values.first()
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -47,10 +48,10 @@ class DefaultDetailRepositoryTest {
 
     @Test
     fun getBasicAndDetail_WhenLocalIsNotNull() {
-        val id = "aatrox"
-        val aatorx = createChampion(id)
-        val remote = createChampionDetail("aatrox_remote")
-        val local = createChampionDetail("aatrox_local")
+        val id = championAndDetail.detail.championId
+        val akali = championAndDetail.champion
+        val remote = championAndDetail.detail
+        val local = championAndDetail.detail.copy(championId = "local")
 
         coEvery { dbHelper.getChampionDetail(id) } returns local
         coEvery { localDataSource.getVersion() } returns VERSION_1_0
@@ -60,11 +61,11 @@ class DefaultDetailRepositoryTest {
         ))
         coJustRun { dbHelper.updateChampionDetailData(remote) }
 
-        coEvery { dbHelper.getChampionBasicAndDetailData(id) } returns ChampionAndDetail(aatorx, local)
+        coEvery { dbHelper.getChampionBasicAndDetailData(id) } returns ChampionAndDetail(akali, local)
 
         runTest {
             val result = repository.getChampionAndDetail(id)
-            assertEquals(aatorx, result.champion)
+            assertEquals(akali, result.champion)
             assertEquals(local, result.detail)
         }
 
@@ -77,9 +78,9 @@ class DefaultDetailRepositoryTest {
 
     @Test
     fun getBasicAndDetail_WhenLocalIsNull() {
-        val id = "aatrox"
-        val aatorx = createChampion(id)
-        val remote = createChampionDetail("aatrox_remote")
+        val id = championAndDetail.detail.championId
+        val akali = championAndDetail.champion
+        val remote = championAndDetail.detail
 
         coEvery { dbHelper.getChampionDetail(id) } returns null
         coEvery { localDataSource.getVersion() } returns VERSION_1_0
@@ -89,11 +90,11 @@ class DefaultDetailRepositoryTest {
         ))
         coJustRun { dbHelper.updateChampionDetailData(remote) }
 
-        coEvery { dbHelper.getChampionBasicAndDetailData(id) } returns ChampionAndDetail(aatorx, remote)
+        coEvery { dbHelper.getChampionBasicAndDetailData(id) } returns ChampionAndDetail(akali, remote)
 
         runTest {
             val result = repository.getChampionAndDetail(id)
-            assertEquals(aatorx, result.champion)
+            assertEquals(akali, result.champion)
             assertEquals(remote, result.detail)
         }
 
@@ -106,9 +107,9 @@ class DefaultDetailRepositoryTest {
 
     @Test
     fun getBasicAndDetail_WhenLocalIsNull_RemoteIsError() {
-        val id = "aatrox"
-        val aatorx = createChampion(id)
-        val remote = createChampionDetail("aatrox_remote")
+        val id = championAndDetail.detail.championId
+        val akali = championAndDetail.champion
+        val remote = championAndDetail.detail
         val exception = IOException("error")
 
         coEvery { dbHelper.getChampionDetail(id) } returns null
@@ -117,7 +118,7 @@ class DefaultDetailRepositoryTest {
         coEvery { api.getChampionDetail(VERSION_1_0, LANGUAGE_US, id) } throws exception
         coJustRun { dbHelper.updateChampionDetailData(remote) }
 
-        coEvery { dbHelper.getChampionBasicAndDetailData(id) } returns ChampionAndDetail(aatorx, remote)
+        coEvery { dbHelper.getChampionBasicAndDetailData(id) } returns ChampionAndDetail(akali, remote)
 
         runTest {
             try {
