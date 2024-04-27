@@ -3,11 +3,12 @@ package com.zzy.champions.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-internal val BUILD_OP_GG = ChampionBuild("OP.GG", "https://www.op.gg/champions/{}/build?region=global")
-
-internal val BUILD_UGG = ChampionBuild("U.GG", "https://u.gg/lol/champions/{}/build")
-
-internal val BUILD_OP_GG_ARAM = ChampionBuild("OP.GG ARAM", "https://www.op.gg/modes/aram/{}/build?region=global")
+internal const val NAME_OF_BUILD_OPGG = "OP.GG"
+internal const val URL_OF_OPGG = "https://www.op.gg/champions/{}/build?region=global"
+internal const val NAME_OF_BUILD_UGG = "U.GG"
+internal const val URL_OF_UGG = "https://u.gg/lol/champions/{}/build"
+internal const val NAME_OF_BUILD_OPGG_ARAM = "OP.GG ARAM"
+internal const val URL_OF_OPGG_ARAM = "https://www.op.gg/modes/aram/{}/build?region=global"
 
 @Entity
 data class ChampionBuild(

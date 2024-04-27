@@ -4,22 +4,19 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
 import com.zzy.champions.data.model.ChampionBuild
+import kotlinx.coroutines.flow.Flow
 
 
 @Dao
 abstract class ChampionBuildDao {
 
     @Query("SELECT * FROM ChampionBuild")
-    abstract suspend fun getBuilds(): List<ChampionBuild>
+    abstract fun getBuilds(): Flow<List<ChampionBuild>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun addNewBuild(vararg build: ChampionBuild)
-
-    @Insert
-    abstract suspend fun addNewBuild(builds: List<ChampionBuild>)
 
     @Update
     abstract suspend fun updateBuild(build: ChampionBuild)
@@ -29,22 +26,4 @@ abstract class ChampionBuildDao {
 
     @Query("DELETE FROM championbuild")
     abstract suspend fun clearBuilds()
-
-    @Transaction
-    open suspend fun addNewAndRefreshBuilds(build: ChampionBuild): List<ChampionBuild> {
-        addNewBuild(build)
-        return getBuilds()
-    }
-
-    @Transaction
-    open suspend fun updateAndRefreshBuilds(build: ChampionBuild): List<ChampionBuild> {
-        updateBuild(build = build)
-        return getBuilds()
-    }
-
-    @Transaction
-    open suspend fun deleteAndRefreshBuilds(id: Int): List<ChampionBuild> {
-        deleteBuild(id)
-        return getBuilds()
-    }
 }

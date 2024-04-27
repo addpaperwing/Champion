@@ -15,7 +15,6 @@ import com.zzy.champions.data.model.ChampionDetail
 @TypeConverters(Converters::class)
 abstract class ChampionDataBase: RoomDatabase() {
     abstract fun championDao(): ChampionDao
-    abstract fun championDetailDao(): ChampionDetailDao
 
     abstract fun championBuildDao(): ChampionBuildDao
 }

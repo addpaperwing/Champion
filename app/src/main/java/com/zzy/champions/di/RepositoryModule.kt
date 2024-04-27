@@ -1,39 +1,26 @@
 package com.zzy.champions.di
 
-import com.zzy.champions.data.local.LocalDataSource
-import com.zzy.champions.data.local.db.ChampionDatabaseHelper
-import com.zzy.champions.data.remote.Api
-import com.zzy.champions.ui.detail.DefaultDetailRepository
-import com.zzy.champions.ui.detail.DetailRepository
-import com.zzy.champions.ui.index.ChampionRepository
-import com.zzy.champions.ui.index.DefaultChampionRepository
-import com.zzy.champions.ui.settings.DefaultSettingsRepository
-import com.zzy.champions.ui.settings.SettingsRepository
+import com.zzy.champions.data.repository.AppDataRepository
+import com.zzy.champions.data.repository.ChampionBuildRepository
+import com.zzy.champions.data.repository.ChampionRepository
+import com.zzy.champions.data.repository.DefaultAppDataRepository
+import com.zzy.champions.data.repository.DefaultChampionBuildRepository
+import com.zzy.champions.data.repository.DefaultChampionRepository
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.components.SingletonComponent
 
 @Module
-@InstallIn(ViewModelComponent::class)
-object RepositoryModule {
+@InstallIn(SingletonComponent::class)
+internal interface RepositoryModule {
 
-    @ViewModelScoped
-    @Provides
-    fun provideChampionRepository(api: Api, localDataSource: LocalDataSource, dbHelper: ChampionDatabaseHelper): ChampionRepository {
-        return DefaultChampionRepository(api, localDataSource, dbHelper)
-    }
+    @Binds
+    fun bindAppDataRepository(appDataRepository: DefaultAppDataRepository): AppDataRepository
 
-    @ViewModelScoped
-    @Provides
-    fun provideDetailRepository(api: Api, localDataSource: LocalDataSource, dbHelper: ChampionDatabaseHelper): DetailRepository {
-        return DefaultDetailRepository(api, localDataSource, dbHelper)
-    }
+    @Binds
+    fun bindChampionRepository(championRepository: DefaultChampionRepository): ChampionRepository
 
-    @ViewModelScoped
-    @Provides
-    fun provideSettingsRepository(api: Api, localDataSource: LocalDataSource): SettingsRepository {
-        return DefaultSettingsRepository(api, localDataSource)
-    }
+    @Binds
+    fun bindChampionBuildRepository(championBuildRepository: DefaultChampionBuildRepository): ChampionBuildRepository
 }

@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,15 +41,15 @@ fun LoadingAndErrorScreen(
             Text(
                 modifier = Modifier.semantics { contentDescription = "Error message" },
                 text = stringResource(id = R.string.error_when_loading))
-            Button(
-                modifier = Modifier.semantics { contentDescription = "Reload button" },
-                onClick = onReloadClick,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.tertiary
-                ),
-            ) {
-                Text(text = stringResource(id = R.string.reload))
-            }
+//            Button(
+//                modifier = Modifier.semantics { contentDescription = "Reload button" },
+//                onClick = onReloadClick,
+//                colors = ButtonDefaults.buttonColors(
+//                    containerColor = MaterialTheme.colorScheme.tertiary
+//                ),
+//            ) {
+//                Text(text = stringResource(id = R.string.reload))
+//            }
         }
     }
 }

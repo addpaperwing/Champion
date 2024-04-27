@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 fun ChampionDetailTabPager(
     modifier: Modifier = Modifier,
     onTabClick: (Int) -> Unit = {},
+    version: String,
     champion: Champion,
     detail: ChampionDetail,
     initPage: Int = 0,
@@ -97,7 +98,7 @@ fun ChampionDetailTabPager(
         ) { page ->
             when (page) {
                 0 -> {
-                    Abilities(abilities = detail.getAbilities())
+                    Abilities(version = version, abilities = detail.getAbilities())
                 }
                 1 -> {
                     ChampionStats(champion = champion)

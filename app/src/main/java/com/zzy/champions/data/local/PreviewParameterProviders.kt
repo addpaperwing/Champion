@@ -1,12 +1,8 @@
 package com.zzy.champions.data.local
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.zzy.champions.data.local.FakeData.builds
 import com.zzy.champions.data.local.FakeData.championDetail
 import com.zzy.champions.data.local.FakeData.champions
-import com.zzy.champions.data.model.BUILD_OP_GG
-import com.zzy.champions.data.model.BUILD_OP_GG_ARAM
-import com.zzy.champions.data.model.BUILD_UGG
 import com.zzy.champions.data.model.Champion
 import com.zzy.champions.data.model.ChampionAndDetail
 import com.zzy.champions.data.model.ChampionBuild
@@ -14,10 +10,16 @@ import com.zzy.champions.data.model.ChampionData
 import com.zzy.champions.data.model.ChampionDetail
 import com.zzy.champions.data.model.Image
 import com.zzy.champions.data.model.Info
+import com.zzy.champions.data.model.NAME_OF_BUILD_OPGG
+import com.zzy.champions.data.model.NAME_OF_BUILD_OPGG_ARAM
+import com.zzy.champions.data.model.NAME_OF_BUILD_UGG
 import com.zzy.champions.data.model.Passive
 import com.zzy.champions.data.model.SkinNumber
 import com.zzy.champions.data.model.Spell
 import com.zzy.champions.data.model.Stats
+import com.zzy.champions.data.model.URL_OF_OPGG
+import com.zzy.champions.data.model.URL_OF_OPGG_ARAM
+import com.zzy.champions.data.model.URL_OF_UGG
 import com.zzy.champions.ui.theme.ASSASSIN
 import com.zzy.champions.ui.theme.FIGHTER
 import com.zzy.champions.ui.theme.MAGE
@@ -38,7 +40,13 @@ class ChampionAndDetailPreviewParameterProvider: PreviewParameterProvider<Champi
 
 class ChampionBuildsPreviewParameterProvider: PreviewParameterProvider<List<ChampionBuild>> {
 
-    override val values: Sequence<List<ChampionBuild>> = sequenceOf(builds)
+    override val values: Sequence<List<ChampionBuild>> = sequenceOf(
+        listOf(
+            ChampionBuild(NAME_OF_BUILD_OPGG, URL_OF_OPGG),
+            ChampionBuild(NAME_OF_BUILD_UGG, URL_OF_UGG),
+            ChampionBuild(NAME_OF_BUILD_OPGG_ARAM, URL_OF_OPGG_ARAM)
+        )
+    )
 }
 
 object FakeData {
@@ -159,11 +167,5 @@ object FakeData {
             )
         ),
         splashIndex = 0
-    )
-
-    val builds = listOf(
-        BUILD_OP_GG,
-        BUILD_OP_GG_ARAM,
-        BUILD_UGG
     )
 }
