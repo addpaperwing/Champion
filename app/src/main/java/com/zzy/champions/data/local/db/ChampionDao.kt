@@ -5,28 +5,41 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Upsert
 import com.zzy.champions.data.model.Champion
 import com.zzy.champions.data.model.ChampionAndDetail
+import com.zzy.champions.data.model.ChampionDetail
 
 @Dao
-interface ChampionDao {
-
-    @Query("SELECT * FROM champion ORDER BY name ASC")
-    suspend fun getAll(): List<Champion>
+abstract class ChampionDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertList(champions:  List<Champion>)
+    abstract suspend fun insertChampions(champions:  List<Champion>)
 
     @Query("SELECT * FROM champion WHERE `id` IS :id  LIMIT 1")
-    suspend fun getChampion(id: String): Champion
+    abstract suspend fun getChampion(id: String): Champion
 
     @Query("SELECT * FROM champion WHERE id LIKE '%' || :query || '%'")
-    suspend fun queryChampionsById(query: String): List<Champion>
+    abstract suspend fun queryChampionsById(query: String): List<Champion>
+
+    @Upsert(entity = ChampionDetail::class)
+    abstract suspend fun insertChampionDetail(detail: ChampionDetail)
+    @Query("SELECT * FROM ChampionDetail WHERE `championId` IS :id  LIMIT 1")
+    abstract suspend fun getChampionDetail(id: String): ChampionDetail?
 
     @Transaction
     @Query("SELECT * FROM champion WHERE `id` IS :id  LIMIT 1")
-    suspend fun getChampionAndDetail(id: String): ChampionAndDetail
+    abstract suspend fun getChampionAndDetail(id: String): ChampionAndDetail
 
-    @Query("DELETE FROM champion")
-    suspend fun clearChampions()
+//    @Query("DELETE FROM champion")
+//    abstract suspend fun clearChampions()
+
+    @Query("DELETE FROM championdetail")
+    abstract suspend fun clearDetailData()
+
+    @Transaction
+    open suspend fun updateLocalChampionData(champions:  List<Champion>) {
+        insertChampions(champions)
+        clearDetailData()
+    }
 }

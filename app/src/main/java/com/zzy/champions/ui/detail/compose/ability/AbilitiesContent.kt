@@ -43,13 +43,15 @@ import kotlin.math.absoluteValue
 @Composable
 fun Abilities(
     modifier: Modifier = Modifier,
+    version: String,
     abilities: List<Ability>
 ) {
     val pagerState = rememberPagerState { abilities.size }
     val scope = rememberCoroutineScope()
 
     Column(modifier = modifier.padding(top = 16.dp).semantics { contentDescription = "Champion abilities" }) {
-        AbilitiesIndicator(abilities = abilities, initPage = pagerState.currentPage) { index ->
+        AbilitiesIndicator(
+            version = version, abilities = abilities, initPage = pagerState.currentPage) { index ->
             scope.launch {
                 pagerState.animateScrollToPage(index)
             }
@@ -80,6 +82,7 @@ fun Abilities(
 @Composable
 fun AbilitiesIndicator(
     modifier: Modifier = Modifier,
+    version: String,
     abilities: List<Ability>,
     activeColor: Color = MaterialTheme.colorScheme.tertiary,
     initPage: Int,
@@ -107,7 +110,7 @@ fun AbilitiesIndicator(
         repeat(abilities.size) { index ->
             AbilityImage(
                 modifier = Modifier.semantics { contentDescription = "ability icon $index" },
-                model = abilities[index].getAbilityImage(),
+                model = abilities[index].getAbilityImage(version),
                 contentDescription = abilities[index].name,
                 activeColor = activeColor,
                 inactiveColor = MaterialTheme.colorScheme.onBackground,
@@ -129,6 +132,6 @@ fun PreviewAbilities(
     championAndDetail: ChampionAndDetail
 ) {
     MyApplicationTheme {
-        Abilities(abilities = championAndDetail.detail.getAbilities())
+        Abilities(version = "3.3.3", abilities = championAndDetail.detail.getAbilities())
     }
 }

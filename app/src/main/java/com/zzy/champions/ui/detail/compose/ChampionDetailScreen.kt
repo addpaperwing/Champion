@@ -24,36 +24,32 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zzy.champions.data.local.ChampionAndDetailPreviewParameterProvider
-import com.zzy.champions.data.model.BUILD_OP_GG
-import com.zzy.champions.data.model.BUILD_OP_GG_ARAM
-import com.zzy.champions.data.model.BUILD_UGG
 import com.zzy.champions.data.model.ChampionAndDetail
 import com.zzy.champions.data.model.ChampionBuild
 import com.zzy.champions.data.model.ChampionDetail
 import com.zzy.champions.data.remote.UiState
-import com.zzy.champions.ui.detail.DetailViewModel
+import com.zzy.champions.ui.detail.ChampionDetailViewModel
 import com.zzy.champions.ui.detail.compose.header.GradientBannerImage
 import com.zzy.champions.ui.detail.compose.header.InfoBox
-import com.zzy.champions.ui.detail.compose.header.rememberBannerState
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import java.io.IOException
 
 @Composable
 fun ChampionDetailRoute(
     modifier: Modifier = Modifier,
-    viewModel: DetailViewModel = hiltViewModel(),
+    viewModel: ChampionDetailViewModel = hiltViewModel(),
     onOpenBrowser: (String) -> Unit,
 ) {
+    val version by viewModel.version.collectAsStateWithLifecycle()
     val championAndDetail by viewModel.result.collectAsStateWithLifecycle()
     val builds by viewModel.builds.collectAsStateWithLifecycle()
 
     ChampionDetailScreen(
         modifier = modifier,
         championDetailState = championAndDetail,
-        getChampionDetail = viewModel::getChampionAndDetail,
+        version = version,
         onSaveBannerNumber = viewModel::saveBannerSplash,
         championBuilds = builds,
-        getChampionBuilds = viewModel::getChampionBuilds,
         addNewBuild = viewModel::addChampionBuild,
         onOpenBrowser = onOpenBrowser,
         updateBuild = viewModel::updateChampionBuild,
@@ -67,26 +63,22 @@ fun ChampionDetailRoute(
 fun ChampionDetailScreen(
     modifier: Modifier,
     championDetailState: UiState<ChampionAndDetail>,
-    getChampionDetail: () -> Unit,
+    version: String,
     onSaveBannerNumber: (ChampionDetail, Int) -> Unit,
-    initPage: Int = 0,
 
     championBuilds: List<ChampionBuild>,
-    getChampionBuilds: () -> Unit,
     addNewBuild: (ChampionBuild) -> Unit,
     onOpenBrowser: (String) -> Unit,
     updateBuild: (ChampionBuild) -> Unit,
     deleteBuild: (Int) -> Unit,
 ) {
-    val bannerState = rememberBannerState(initImageUrl = if (championDetailState is UiState.Success) championDetailState.data.detail.getSplash() else "")
+    var bannerUrl by rememberSaveable { mutableStateOf("") }
     var fabVisibility by rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(true) {
-        getChampionDetail()
-        getChampionBuilds()
-    }
-
     if (championDetailState is UiState.Success) {
+        LaunchedEffect(championDetailState) {
+            bannerUrl = championDetailState.data.detail.getSplash()
+        }
         //For fab only
         Box {
             Column(
@@ -96,7 +88,7 @@ fun ChampionDetailScreen(
 
             ) {
                 Box(Modifier.aspectRatio(1215 / 717f)) {
-                    GradientBannerImage(Modifier.align(Alignment.TopCenter), bannerState)
+                    GradientBannerImage(Modifier.align(Alignment.TopCenter), bannerUrl)
                     InfoBox(
                         modifier = Modifier
                             .align(Alignment.BottomCenter),
@@ -110,11 +102,11 @@ fun ChampionDetailScreen(
                     onTabClick = { index ->
                         fabVisibility = (index == 2)
                     },
+                    version = version,
                     champion = championDetailState.data.champion,
                     detail = championDetailState.data.detail,
-                    initPage = initPage,
                     onSkinClick = {
-                        bannerState.imageUrl = championDetailState.data.detail.getSplash(it.num)
+                        bannerUrl = championDetailState.data.detail.getSplash(it.num)
                         onSaveBannerNumber(championDetailState.data.detail, it.num)
                     },
                     championBuilds = championBuilds,
@@ -125,7 +117,9 @@ fun ChampionDetailScreen(
             }
 
             AnimatedVisibility(
-                modifier = Modifier.align(Alignment.BottomEnd).padding(24.dp),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(24.dp),
                 visible = fabVisibility,
                 enter = scaleIn(),
                 exit = scaleOut(),
@@ -140,7 +134,7 @@ fun ChampionDetailScreen(
             isLoading = championDetailState is UiState.Loading,
             isError = championDetailState is UiState.Error
         ) {
-            getChampionDetail()
+
         }
     }
 }
@@ -154,19 +148,19 @@ fun PreviewDetailScreenChampionData(
             ChampionDetailScreen(
                 modifier = Modifier,
                 championDetailState = UiState.Success(championAndDetail),
-                getChampionDetail = {},
+                version = "",
                 onSaveBannerNumber = {_,_ ->},
 
                 championBuilds = listOf(
-                    BUILD_OP_GG,
-                    BUILD_OP_GG_ARAM,
-                    BUILD_UGG
+                    ChampionBuild("1","1"),
+                    ChampionBuild("2","2"),
+                    ChampionBuild("3","3")
                 ),
                 addNewBuild = {},
                 onOpenBrowser = {},
                 updateBuild = {},
                 deleteBuild = {},
-                getChampionBuilds = {}
+//                getChampionBuilds = {}
             )
     }
 }
@@ -178,7 +172,7 @@ fun PreviewDetailScreenLoading() {
             ChampionDetailScreen(
                 modifier = Modifier,
                 championDetailState = UiState.Loading,
-                getChampionDetail = {},
+                version = "",
                 onSaveBannerNumber = {_,_ ->},
 
                 championBuilds = listOf(),
@@ -186,7 +180,7 @@ fun PreviewDetailScreenLoading() {
                 onOpenBrowser = {},
                 updateBuild = {},
                 deleteBuild = {},
-                getChampionBuilds = {}
+//                getChampionBuilds = {}
             )
     }
 }
@@ -198,7 +192,7 @@ fun PreviewDetailScreenError() {
             ChampionDetailScreen(
                 modifier = Modifier,
                 championDetailState = UiState.Error(IOException()),
-                getChampionDetail = {},
+                version = "",
                 onSaveBannerNumber = {_,_ ->},
 
                 championBuilds = listOf(),
@@ -206,7 +200,7 @@ fun PreviewDetailScreenError() {
                 onOpenBrowser = {},
                 updateBuild = {},
                 deleteBuild = {},
-                getChampionBuilds = {}
+//                getChampionBuilds = {}
             )
     }
 }

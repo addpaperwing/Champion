@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zzy.champions.data.local.ChampionDataPreviewParameterProvider
-import com.zzy.champions.data.local.FakeData.champions
 import com.zzy.champions.data.model.Champion
 import com.zzy.champions.data.model.ChampionData
 import com.zzy.champions.data.remote.UiState
@@ -47,7 +47,7 @@ fun ChampionIndexRoute(
         modifier = modifier,
         championsState = champions,
         onUpdateSearchKeyword = viewModel::updateSearchKeyword,
-        onInsertBuilds = viewModel::insertBuildsWhenFirstOpen,
+        onInsertBuilds = {},
         onSettingClick = onSettingClick,
         onItemClick = onItemClick)
 }
@@ -86,7 +86,10 @@ fun ChampionIndexScreen(
             SearchTextField(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 text = searchText,
-                onTextChanged = onUpdateSearchKeyword,
+                onTextChanged = {
+                    searchText = it
+                    onUpdateSearchKeyword(searchText)
+                },
                 onClearText = {
                     clearSearchTextAndReloadAllChampions()
                 },
@@ -102,9 +105,9 @@ fun ChampionIndexScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                items(count = champions.size) { index ->
-                    ChampionCard(champion = champions[index], version = championsState.data.version) {
-                        onItemClick(champions[index])
+                items(championsState.data.champions) {
+                    ChampionCard(version = championsState.data.version, champion = it) {
+                        onItemClick(it)
                     }
                 }
             }
