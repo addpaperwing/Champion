@@ -1,7 +1,7 @@
 # Champions [![CI](https://github.com/addpaperwing/Champion/actions/workflows/main.yml/badge.svg)](https://github.com/addpaperwing/Champion/actions/workflows/main.yml)
 A league of legend champions data viewer app build with Kotlin and Jetpack Compose 
 
-<img src="screenshots/previewgif.gif" align="right" width="480" height="800"/>
+<img src="screenshots/previewgif.gif" align="right" width="360" height="800"/>
 
 
  * [Kotlin](https://kotlinlang.org/)
