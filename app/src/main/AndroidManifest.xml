@@ -20,7 +20,8 @@
             android:name=".ui.MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="true"
-            android:theme="@style/Theme.Insets">
+            android:theme="@style/Theme.Insets"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

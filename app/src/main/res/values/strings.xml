@@ -56,9 +56,9 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     
-    <string name="build_name">Build Name</string>
+    <string name="build_name">Name</string>
     <string name="build_content">Build Content</string>
-    <string name="build_weblink">Build weblink</string>
+    <string name="build_weblink">Weblink</string>
     
     <string name="no_app_for_link">No app found for content</string>
     
