@@ -101,6 +101,7 @@ fun BuildItem(
         TextDialog(
             onDismissRequest = { showConfirmation = false },
             onPositiveButtonClick = {
+                showConfirmation = false
                 onDeleteClick(build.id)
             },
             content = {
