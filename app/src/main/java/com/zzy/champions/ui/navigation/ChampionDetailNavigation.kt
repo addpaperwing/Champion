@@ -12,20 +12,6 @@ import androidx.navigation.navArgument
 import com.zzy.champions.ui.detail.compose.ChampionDetailRoute
 
 
-//object Detail: ChampionsDestination {
-//    override val route: String = "detail"
-//    const val championIdArg = "champion_id"
-//
-//    val routWithArgs = "$route/{$championIdArg}"
-//    val arguments = listOf(
-//        navArgument(championIdArg) { type = NavType.StringType }
-//    )
-//}
-
-//private fun NavHostController.navigateToChampionDetail(championId: String) {
-//    this.navigateSingleTopTo("${Detail.route}/$championId")
-//}
-
 const val CHAMPION_ID = "championId"
 const val CHAMPION_DETAIL_ROUTE_BASE = "detail"
 const val CHAMPION_DETAIL_ROUTE = "$CHAMPION_DETAIL_ROUTE_BASE/{$CHAMPION_ID}"

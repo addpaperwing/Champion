@@ -36,7 +36,7 @@ data class ChampionDetail(
     val lore: String,
     val spells: List<Spell>,
     val passive: Passive,
-    var splashIndex: Int = 0
+    val splashIndex: Int = 0
 ) {
     fun getSplash(skinNum: Int = splashIndex): String = "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${championId}_$skinNum.jpg"
 

@@ -4,6 +4,7 @@ import com.zzy.champions.data.model.ChampionAndDetail
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.data.repository.AppDataRepository
 import com.zzy.champions.data.repository.ChampionRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -27,7 +28,9 @@ class GetChampionDetailUseCase @Inject constructor(
             try {
                 detail = championRepository.getRemoteChampionDetail(version, language, championId)?:throw IOException("Champion not found")
                 championRepository.saveChampionDetail(detail)
-            } catch (e: IOException) {
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
                 return@withContext UiState.Error(e)
             }
         }

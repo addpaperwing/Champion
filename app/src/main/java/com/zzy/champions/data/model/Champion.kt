@@ -41,15 +41,5 @@ data class Champion(
 //    val spells: List<>,
 //    val passive: Any
 ) {
-
-//    companion object {
-//        var version: String = "3.9.7"
-//    }
-
-    override fun equals(other: Any?): Boolean = this.id == (other as? Champion)?.id
-
     fun getAvatar(version: String) = "https://ddragon.leagueoflegends.com/cdn/$version/img/champion/${image.full}"
-    override fun hashCode(): Int = id.hashCode()
-
-
 }

@@ -1,4 +1,4 @@
-package com.zzy.champions.ui.detail
+package com.zzy.champions.detail
 
 import androidx.lifecycle.SavedStateHandle
 import com.zzy.champions.LANGUAGE_US
@@ -15,6 +15,7 @@ import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.data.repository.AppDataRepository
 import com.zzy.champions.data.repository.ChampionBuildRepository
 import com.zzy.champions.domain.GetChampionDetailUseCase
+import com.zzy.champions.ui.detail.ChampionDetailViewModel
 import com.zzy.champions.ui.navigation.CHAMPION_ID
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

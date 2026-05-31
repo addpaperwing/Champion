@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
 
 
 fun Activity.goWebUrl(urlLink: String) {
-    val link = "${if (!urlLink.contains("http")) "https://"  else ""}$urlLink"
+    val link = if (urlLink.startsWith("http://") || urlLink.startsWith("https://")) urlLink else "https://$urlLink"
     val i = Intent(Intent.ACTION_VIEW)
     i.data = Uri.parse(link)
     try {

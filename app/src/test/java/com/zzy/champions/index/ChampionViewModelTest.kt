@@ -1,6 +1,6 @@
 package com.zzy.champions.index
 
-import com.zzy.champions.ERROR_VERSION
+import com.zzy.champions.VERSION_THAT_FAILS_CHAMPION_FETCH
 import com.zzy.champions.LANGUAGE_US
 import com.zzy.champions.MainDispatcherRule
 import com.zzy.champions.TestChampionRepository
@@ -190,7 +190,7 @@ class ChampionViewModelTest {
 
         //Memory cached version will be set to default earliest version
         assertEquals(DEFAULT_EARLIEST_VERSION, getChampionDataUseCase.getVersion())
-        //Update local version will not be invoked
+        //Local version updated to the default earliest version (fallback needs update from "0")
         coVerify { appDataRepository.setLocalVersion(DEFAULT_EARLIEST_VERSION) }
 
         //Data version is default earliest version
@@ -260,8 +260,8 @@ class ChampionViewModelTest {
 
         //Mock return local version is 0 (default)
         coEvery { appDataRepository.getLocalVersion() } returns flowOf("0")
-        //Mock return remote failed, return default earliest version
-        coEvery { appDataRepository.getRemoteVersion() } returns listOf(ERROR_VERSION)
+        //Remote version fetch succeeds, but fetching champions for this version throws
+        coEvery { appDataRepository.getRemoteVersion() } returns listOf(VERSION_THAT_FAILS_CHAMPION_FETCH)
 
         coJustRun { appDataRepository.setLocalVersion(any()) }
 

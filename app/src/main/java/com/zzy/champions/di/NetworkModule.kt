@@ -1,6 +1,7 @@
 package com.zzy.champions.di
 
 import com.squareup.moshi.Moshi
+import com.zzy.champions.BuildConfig
 import com.zzy.champions.data.remote.Api
 import com.zzy.champions.data.remote.BigDecimalAdapter
 import dagger.Module
@@ -27,10 +28,11 @@ object NetworkModule {
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-//                if (BuidConfig.DEBUG) {
-//
-//                }
+                level = if (BuildConfig.DEBUG) {
+                    HttpLoggingInterceptor.Level.BODY
+                } else {
+                    HttpLoggingInterceptor.Level.NONE
+                }
             })
             .build()
     }

@@ -16,19 +16,16 @@ abstract class ChampionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertChampions(champions:  List<Champion>)
 
-    @Query("SELECT * FROM champion WHERE `id` IS :id  LIMIT 1")
-    abstract suspend fun getChampion(id: String): Champion
-
-    @Query("SELECT * FROM champion WHERE id LIKE '%' || :query || '%'")
+    @Query("SELECT * FROM champion WHERE id LIKE '%' || :query || '%' OR name LIKE '%' || :query || '%'")
     abstract suspend fun queryChampionsById(query: String): List<Champion>
 
     @Upsert(entity = ChampionDetail::class)
     abstract suspend fun insertChampionDetail(detail: ChampionDetail)
-    @Query("SELECT * FROM ChampionDetail WHERE `championId` IS :id  LIMIT 1")
+    @Query("SELECT * FROM ChampionDetail WHERE `championId` = :id  LIMIT 1")
     abstract suspend fun getChampionDetail(id: String): ChampionDetail?
 
     @Transaction
-    @Query("SELECT * FROM champion WHERE `id` IS :id  LIMIT 1")
+    @Query("SELECT * FROM champion WHERE `id` = :id  LIMIT 1")
     abstract suspend fun getChampionAndDetail(id: String): ChampionAndDetail
 
 //    @Query("DELETE FROM champion")

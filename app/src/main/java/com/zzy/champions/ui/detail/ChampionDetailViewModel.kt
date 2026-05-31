@@ -55,8 +55,7 @@ class ChampionDetailViewModel @Inject constructor(
 
     fun saveBannerSplash(detail: ChampionDetail, skinNum: Int) {
         viewModelScope.launch {
-            detail.splashIndex = skinNum
-            championRepository.saveChampionDetail(detail)
+            championRepository.saveChampionDetail(detail.copy(splashIndex = skinNum))
         }
     }
 

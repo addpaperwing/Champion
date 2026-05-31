@@ -17,5 +17,8 @@ data class ChampionBuild(
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
-    fun getWebUrl(championName: String) = url.replace("{}", championName, true)
+
+    // op.gg / u.gg expect a lowercase, alphanumeric slug, e.g. "Miss Fortune" -> "missfortune".
+    fun getWebUrl(championName: String) =
+        url.replace("{}", championName.lowercase().replace(Regex("[^a-z0-9]"), ""))
 }

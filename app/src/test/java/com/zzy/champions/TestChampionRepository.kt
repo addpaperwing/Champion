@@ -20,7 +20,7 @@ import java.io.IOException
 
 internal const val VERSION_14_0 = "14.0.0"
 internal const val VERSION_14_1 = "14.1.0"
-internal const val ERROR_VERSION = "4.0.0"
+internal const val VERSION_THAT_FAILS_CHAMPION_FETCH = "4.0.0"
 internal const val LANGUAGE_US = "US"
 
 internal val aatrox = Champion(
@@ -154,7 +154,7 @@ class TestChampionRepository: ChampionRepository {
                     akali.name to akali
                 ))
             }
-            ERROR_VERSION -> {
+            VERSION_THAT_FAILS_CHAMPION_FETCH -> {
                 throw IOException()
             }
             else -> {
