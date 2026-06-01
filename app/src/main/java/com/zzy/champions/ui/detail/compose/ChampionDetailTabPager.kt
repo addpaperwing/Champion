@@ -92,7 +92,7 @@ fun ChampionDetailTabPager(
         }
         HorizontalPager(
             state = pagerState,
-            beyondBoundsPageCount = 4,
+            beyondViewportPageCount = 4,
             verticalAlignment = Alignment.Top,
             userScrollEnabled = false
         ) { page ->

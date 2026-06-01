@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.zzy.champions.ui.compose.verticalShadowed
 
 @Composable

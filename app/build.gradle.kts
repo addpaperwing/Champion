@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.roborazzi)
     id ("kotlin-parcelize")
@@ -9,12 +10,12 @@ plugins {
 
 android {
     namespace = "com.zzy.champions"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.zzy.champions"
         minSdk = 21
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -48,20 +49,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-
-
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
         buildConfig = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.11"
     }
 //    packagingOptions {
 //        resources {
@@ -82,22 +78,6 @@ android {
         }
     }
 }
-
-//kapt {
-//    correctErrorTypes true
-//}
-//
-//tasks.withType(KotlinCompile).configureEach {
-//    kotlinOptions {
-//        // Treat all Kotlin warnings as errors
-////        allWarningsAsErrors = true
-//
-//        freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
-//
-//        // Set JVM target to 1.8
-//        jvmTarget = "1.8"
-//    }
-//}
 
 dependencies {
     val composeBom = platform(libs.android.compose.bom)
@@ -142,8 +122,8 @@ dependencies {
 
     implementation(libs.android.hilt.navigation.compose)
 
-    implementation(libs.coil)
     implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)

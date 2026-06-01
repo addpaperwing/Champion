@@ -50,7 +50,11 @@ The injected `CoroutineDispatcher` (IO) is passed into repositories and use case
 
 KSP (not kapt) drives codegen for Hilt, Room, and Moshi. After changing `@Entity`/DAO, Hilt modules, or Moshi `@JsonClass` models, a rebuild is needed for generated code to update.
 
+The project is on **Kotlin 2.x**, so Compose uses the standalone Compose Compiler Gradle plugin (`org.jetbrains.kotlin.plugin.compose`) — there is no `composeOptions { kotlinCompilerExtensionVersion }` block anymore.
+
+Image loading is **Coil 3** (`coil3.*` packages; `coil-compose` + `coil-network-okhttp` artifacts). **AGP is intentionally pinned to 8.9.2** — AGP 8.10.x breaks `lintAnalyzeDebug` on Windows with a `RuntimeIssueRegistry*.jar` file-lock (`FileSystemException ... used by another process`). Don't bump AGP without re-checking that `./gradlew lint` runs on Windows.
+
 ## Testing conventions
 
 - Unit tests use JUnit4 + MockK. `MainCoroutineRule` swaps `Dispatchers.Main`; `TestChampionRepository` is a fake repo for ViewModel tests.
-- Build config: `minSdk` 21, `compile`/`targetSdk` 35, Java/JVM target 1.8.
+- Build config: `minSdk` 21, `compile`/`targetSdk` 36, Java/JVM target 17.

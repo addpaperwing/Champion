@@ -15,7 +15,7 @@ A league of legend champions data viewer app build with Kotlin and Jetpack Compo
     * [Material3](https://m3.material.io/) and [Champions page](https://www.leagueoflegends.com/en-us/champions/) for design reference and inspiration
     * [Retrofit](https://square.github.io/retrofit/) for networking
     * [Preferences DataStore](https://developer.android.com/topic/libraries/architecture/datastore#preferences-datastore) and [Room](https://developer.android.com/training/data-storage/room) for app data storage
-    * [coil](https://github.com/coil-kt/coil) for image loading
+    * [coil 3](https://github.com/coil-kt/coil) for image loading
 * Tests
     * [CI Workflow](https://github.com/addpaperwing/Champion/actions/runs/8862155768) 
     * [Mockk](https://mockk.io/) for test mocking
