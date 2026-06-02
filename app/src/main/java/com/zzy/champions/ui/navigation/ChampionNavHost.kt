@@ -2,6 +2,7 @@ package com.zzy.champions.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -28,8 +29,7 @@ fun ChampionNavHost(
             onBack = { navController.popBackStack() },
             onLanguageClick = { navController.navigate(LANGUAGE_ROUTE) { launchSingleTop = true } },
             onRefreshDone = {
-                navController.getBackStackEntry(CHAMPION_INDEX_ROUTE)
-                    .savedStateHandle[KEY_REFRESH] = true
+                navController.signalRefresh()
                 navController.popBackStack()
             }
         )
@@ -37,8 +37,7 @@ fun ChampionNavHost(
         languageScreen(
             onBack = { navController.popBackStack() },
             onLanguageSelected = {
-                navController.getBackStackEntry(CHAMPION_INDEX_ROUTE)
-                    .savedStateHandle[KEY_REFRESH] = true
+                navController.signalRefresh()
                 navController.popBackStack(CHAMPION_INDEX_ROUTE, inclusive = false)
             }
         )
@@ -51,3 +50,10 @@ fun NavHostController.navigateSingleTopTo(route: String) =
         launchSingleTop = true
         restoreState = true
     }
+
+private fun NavController.signalRefresh() {
+    currentBackStack.value
+        .firstOrNull { it.destination.route == CHAMPION_INDEX_ROUTE }
+        ?.savedStateHandle
+        ?.set(KEY_REFRESH, true)
+}
