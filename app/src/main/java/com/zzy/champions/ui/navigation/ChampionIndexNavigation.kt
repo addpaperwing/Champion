@@ -14,6 +14,7 @@ import com.zzy.champions.data.model.Champion
 import com.zzy.champions.ui.index.compose.ChampionIndexRoute
 
 const val CHAMPION_INDEX_ROUTE = "index"
+internal const val KEY_REFRESH = "refresh"
 
 fun NavController.navigateToChampionIndex(navOptions: NavOptions) =
     navigate(CHAMPION_INDEX_ROUTE, navOptions)
@@ -38,14 +39,14 @@ fun NavGraphBuilder.championIndexScreen(
         }
     ) { backStackEntry ->
         val shouldRefresh by backStackEntry.savedStateHandle
-            .getStateFlow("refresh", false)
+            .getStateFlow(KEY_REFRESH, false)
             .collectAsStateWithLifecycle()
 
         ChampionIndexRoute(
             onItemClick = onItemClick,
             onSettingClick = onSettingClick,
             shouldRefresh = shouldRefresh,
-            onRefreshConsumed = { backStackEntry.savedStateHandle["refresh"] = false },
+            onRefreshConsumed = { backStackEntry.savedStateHandle[KEY_REFRESH] = false },
         )
     }
 }

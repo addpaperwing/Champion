@@ -19,17 +19,17 @@ fun ChampionNavHost(
     ) {
         championIndexScreen(
             onItemClick = { navController.navigateToChampionDetail(it.id) },
-            onSettingClick = { navController.navigate(SETTINGS_ROUTE) },
+            onSettingClick = { navController.navigate(SETTINGS_ROUTE) { launchSingleTop = true } },
         )
 
         championDetailScreen(onLinkClick)
 
         settingsScreen(
             onBack = { navController.popBackStack() },
-            onLanguageClick = { navController.navigate(LANGUAGE_ROUTE) },
+            onLanguageClick = { navController.navigate(LANGUAGE_ROUTE) { launchSingleTop = true } },
             onRefreshDone = {
                 navController.getBackStackEntry(CHAMPION_INDEX_ROUTE)
-                    .savedStateHandle["refresh"] = true
+                    .savedStateHandle[KEY_REFRESH] = true
                 navController.popBackStack()
             }
         )
@@ -38,7 +38,7 @@ fun ChampionNavHost(
             onBack = { navController.popBackStack() },
             onLanguageSelected = {
                 navController.getBackStackEntry(CHAMPION_INDEX_ROUTE)
-                    .savedStateHandle["refresh"] = true
+                    .savedStateHandle[KEY_REFRESH] = true
                 navController.popBackStack(CHAMPION_INDEX_ROUTE, inclusive = false)
             }
         )
@@ -48,5 +48,6 @@ fun ChampionNavHost(
 fun NavHostController.navigateSingleTopTo(route: String) =
     this.navigate(route) {
         popUpTo(this@navigateSingleTopTo.graph.findStartDestination().id) { saveState = true }
+        launchSingleTop = true
         restoreState = true
     }
