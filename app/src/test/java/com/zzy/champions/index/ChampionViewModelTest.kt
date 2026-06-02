@@ -287,4 +287,28 @@ class ChampionViewModelTest {
         collectJob1.cancel()
     }
 
+    @Test
+    fun refresh_causesReload() = runTest {
+        // Arrange: local = remote = 14.0 → no update, serve local (empty)
+        coEvery { appDataRepository.getLocalVersion() } returns flowOf(VERSION_14_0)
+        coEvery { appDataRepository.getRemoteVersion() } returns listOf(VERSION_14_0)
+        coJustRun { appDataRepository.setLocalVersion(any()) }
+
+        val collectJob = launch { viewModel.champions.collect() }
+        advanceUntilIdle()
+
+        // Use case cached 14.0; now settings resets it and remote is newer
+        getChampionDataUseCase.reset()
+        coEvery { appDataRepository.getRemoteVersion() } returns listOf(VERSION_14_1)
+
+        // Act
+        viewModel.refresh()
+        advanceUntilIdle()
+
+        // Assert: version updated to 14.1
+        assertEquals(VERSION_14_1, getChampionDataUseCase.getVersion())
+
+        collectJob.cancel()
+    }
+
 }

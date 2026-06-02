@@ -11,35 +11,32 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
-
 @HiltViewModel
 class ChampionViewModel @Inject constructor(
     private val getChampionDataUseCase: GetChampionDataUseCase,
-): ViewModel() {
+) : ViewModel() {
 
-    private val _query: MutableStateFlow<String> = MutableStateFlow("")
+    private val _query = MutableStateFlow("")
+    private val _refreshTrigger = MutableStateFlow(0L)
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     val champions: StateFlow<UiState<ChampionData>> =
-        _query.asStateFlow()
+        combine(_query, _refreshTrigger) { q, _ -> q }
             .debounce(300)
-            .distinctUntilChanged()
-            .map {
-            getChampionDataUseCase(it)
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = UiState.Loading
-        )
+            .map { getChampionDataUseCase(it) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = UiState.Loading
+            )
 
-    fun updateSearchKeyword(query: String) {
-        _query.value = query
-    }
+    fun updateSearchKeyword(query: String) { _query.value = query }
+
+    fun refresh() { _refreshTrigger.value = System.currentTimeMillis() }
 }
