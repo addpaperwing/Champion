@@ -40,7 +40,16 @@ fun ChampionIndexRoute(
     viewModel: ChampionViewModel = hiltViewModel(),
     onSettingClick: () -> Unit,
     onItemClick: (Champion) -> Unit,
+    shouldRefresh: Boolean = false,
+    onRefreshConsumed: () -> Unit = {},
 ) {
+    LaunchedEffect(shouldRefresh) {
+        if (shouldRefresh) {
+            viewModel.refresh()
+            onRefreshConsumed()
+        }
+    }
+
     val champions by viewModel.champions.collectAsStateWithLifecycle()
 
     ChampionIndexScreen(
@@ -49,7 +58,8 @@ fun ChampionIndexRoute(
         onUpdateSearchKeyword = viewModel::updateSearchKeyword,
         onInsertBuilds = {},
         onSettingClick = onSettingClick,
-        onItemClick = onItemClick)
+        onItemClick = onItemClick,
+    )
 }
 
 @Composable

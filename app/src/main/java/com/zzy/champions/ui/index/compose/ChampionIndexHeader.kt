@@ -15,6 +15,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import com.zzy.champions.R
 
 @Composable
@@ -57,11 +61,15 @@ fun Header(
                 fontSize = 8.sp,
             )
         }
-//        IconButton(
-//            modifier = Modifier.align(Alignment.TopEnd),
-//            onClick = onSettingClick
-//        ) {
-//            Icon(imageVector = Icons.Default.Settings, contentDescription = "settings", tint = MaterialTheme.colorScheme.tertiary)
-//        }
+        IconButton(
+            modifier = Modifier.align(Alignment.TopEnd),
+            onClick = onSettingClick
+        ) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = "settings",
+                tint = MaterialTheme.colorScheme.tertiary
+            )
+        }
     }
 }
