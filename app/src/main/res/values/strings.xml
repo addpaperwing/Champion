@@ -70,4 +70,14 @@
     <string name="reload">Reload</string>
     
     <string name="v_">v%s</string>
+
+    <string name="switch_language">Switch Language</string>
+    <string name="select_language">Select Language</string>
+    <string name="refresh_data">Refresh Data</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="refresh_data_dialog_title">Refresh Data?</string>
+    <string name="refresh_data_dialog_message">All local data will be cleared and reloaded from the internet.</string>
+    <string name="switch_language_dialog_title">Switch Language?</string>
+    <string name="switch_language_dialog_message">Champion data will be reloaded in %1$s.</string>
 </resources>
