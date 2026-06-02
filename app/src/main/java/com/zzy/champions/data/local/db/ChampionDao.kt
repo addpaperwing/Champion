@@ -28,14 +28,20 @@ abstract class ChampionDao {
     @Query("SELECT * FROM champion WHERE `id` = :id  LIMIT 1")
     abstract suspend fun getChampionAndDetail(id: String): ChampionAndDetail
 
-//    @Query("DELETE FROM champion")
-//    abstract suspend fun clearChampions()
-
     @Query("DELETE FROM championdetail")
     abstract suspend fun clearDetailData()
 
+    @Query("DELETE FROM champion")
+    abstract suspend fun clearChampions()
+
     @Transaction
-    open suspend fun updateLocalChampionData(champions:  List<Champion>) {
+    open suspend fun clearAll() {
+        clearChampions()
+        clearDetailData()
+    }
+
+    @Transaction
+    open suspend fun updateLocalChampionData(champions: List<Champion>) {
         insertChampions(champions)
         clearDetailData()
     }
