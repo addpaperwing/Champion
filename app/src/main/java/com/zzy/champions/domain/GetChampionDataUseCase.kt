@@ -9,13 +9,13 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import dagger.hilt.android.scopes.ActivityRetainedScoped
 import org.jetbrains.annotations.VisibleForTesting
 import javax.inject.Inject
+import javax.inject.Singleton
 
 internal const val DEFAULT_EARLIEST_VERSION = "3.9.7"
 
-@ActivityRetainedScoped
+@Singleton
 class GetChampionDataUseCase @Inject constructor(
     private val championRepository: ChampionRepository,
     private val appDataRepository: AppDataRepository,
