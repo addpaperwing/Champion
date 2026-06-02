@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -55,7 +56,7 @@ class SettingsViewModel @Inject constructor(
             championRepository.clearLocalData()
             appDataRepository.setLocalVersion("0")
             getChampionDataUseCase.reset()
-            withContext(Dispatchers.Main) { onDone() }
+            withContext(NonCancellable + Dispatchers.Main) { onDone() }  // ← NonCancellable added
         }
     }
 
@@ -64,7 +65,7 @@ class SettingsViewModel @Inject constructor(
             championRepository.clearLocalData()
             appDataRepository.setLocalVersion("0")
             getChampionDataUseCase.reset()
-            withContext(Dispatchers.Main) { onDone() }
+            withContext(NonCancellable + Dispatchers.Main) { onDone() }  // ← NonCancellable added
         }
     }
 }

@@ -11,10 +11,12 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,12 +25,14 @@ class ChampionViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _query = MutableStateFlow("")
-    private val _refreshTrigger = MutableStateFlow(0L)
+    private val _refreshCounter = MutableStateFlow(0)
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     val champions: StateFlow<UiState<ChampionData>> =
-        combine(_query, _refreshTrigger) { q, _ -> q }
-            .debounce(300)
+        merge(
+            _query.debounce(300),                                     // keystrokes debounced
+            _refreshCounter.filter { it > 0 }.map { _query.value }   // explicit refresh, no debounce
+        )
             .map { getChampionDataUseCase(it) }
             .stateIn(
                 scope = viewModelScope,
@@ -38,5 +42,5 @@ class ChampionViewModel @Inject constructor(
 
     fun updateSearchKeyword(query: String) { _query.value = query }
 
-    fun refresh() { _refreshTrigger.value = System.currentTimeMillis() }
+    fun refresh() { _refreshCounter.update { it + 1 } }  // atomic increment, never collides
 }

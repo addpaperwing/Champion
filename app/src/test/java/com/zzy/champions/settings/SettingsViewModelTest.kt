@@ -3,6 +3,7 @@ package com.zzy.champions.settings
 import com.zzy.champions.MainDispatcherRule
 import com.zzy.champions.TestChampionRepository
 import com.zzy.champions.VERSION_14_0
+import com.zzy.champions.akali
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.data.repository.AppDataRepository
 import com.zzy.champions.domain.GetChampionDataUseCase
@@ -82,6 +83,7 @@ class SettingsViewModelTest {
         coJustRun { appDataRepository.setLocalVersion(any()) }
         var done = false
 
+        championRepository.saveLocalChampions(listOf(akali))
         viewModel.selectLanguage("zh_CN") { done = true }
         advanceUntilIdle()
 
@@ -89,6 +91,7 @@ class SettingsViewModelTest {
         coVerify { appDataRepository.setLocalVersion("0") }
         assertNull(getChampionDataUseCase.getVersion())
         assertTrue(done)
+        assertTrue(championRepository.searchChampionsBy("").isEmpty())
     }
 
     @Test
@@ -97,11 +100,13 @@ class SettingsViewModelTest {
         coJustRun { appDataRepository.setLocalVersion(any()) }
         var done = false
 
+        championRepository.saveLocalChampions(listOf(akali))
         viewModel.refreshData { done = true }
         advanceUntilIdle()
 
         coVerify { appDataRepository.setLocalVersion("0") }
         assertNull(getChampionDataUseCase.getVersion())
         assertTrue(done)
+        assertTrue(championRepository.searchChampionsBy("").isEmpty())
     }
 }

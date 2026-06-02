@@ -58,6 +58,9 @@ local.properties
 # Sandbox stuff
 _sandbox
 
+# Kotlin build artifacts
+.kotlin/
+
 # Android Studio captures folder
 captures/
 
