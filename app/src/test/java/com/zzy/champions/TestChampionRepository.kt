@@ -190,4 +190,9 @@ class TestChampionRepository: ChampionRepository {
     } else {
         ChampionAndDetail(champion, championDetail)
     }
+
+    override suspend fun clearLocalData() {
+        localChampions = emptyList()
+        localChampionDetails.clear()
+    }
 }

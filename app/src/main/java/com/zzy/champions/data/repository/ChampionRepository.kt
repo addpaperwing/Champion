@@ -18,4 +18,5 @@ interface ChampionRepository {
     suspend fun saveChampionDetail(championDetail: ChampionDetail)
 
     suspend fun getChampionAndDetail(id: String): ChampionAndDetail
+    suspend fun clearLocalData()
 }

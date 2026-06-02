@@ -46,4 +46,8 @@ class DefaultChampionRepository @Inject constructor(
     }
 
     override suspend fun getChampionAndDetail(id: String): ChampionAndDetail = withContext(dispatcher) { dao.getChampionAndDetail(id) }
+
+    override suspend fun clearLocalData() = withContext(dispatcher) {
+        dao.clearAll()
+    }
 }
