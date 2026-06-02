@@ -23,4 +23,6 @@ class DefaultAppDataRepository @Inject constructor(
     override suspend fun setLanguage(l: String) {
         appDataSource.setLanguage(l)
     }
+
+    override suspend fun getSupportedLanguages(): List<String> = api.getSupportLanguage()
 }

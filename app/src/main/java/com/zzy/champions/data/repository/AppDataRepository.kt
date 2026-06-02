@@ -12,4 +12,6 @@ interface AppDataRepository {
     fun getLanguage(): Flow<String>
 
     suspend fun setLanguage(l: String)
+
+    suspend fun getSupportedLanguages(): List<String>
 }
