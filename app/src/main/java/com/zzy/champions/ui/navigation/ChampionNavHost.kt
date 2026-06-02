@@ -2,7 +2,6 @@ package com.zzy.champions.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -51,9 +50,12 @@ fun NavHostController.navigateSingleTopTo(route: String) =
         restoreState = true
     }
 
-private fun NavController.signalRefresh() {
-    currentBackStack.value
-        .firstOrNull { it.destination.route == CHAMPION_INDEX_ROUTE }
-        ?.savedStateHandle
-        ?.set(KEY_REFRESH, true)
+// CHAMPION_INDEX_ROUTE is the startDestination and is always in the back stack when
+// settings/language destinations are active, so getBackStackEntry won't throw here.
+private fun NavHostController.signalRefresh() {
+    try {
+        getBackStackEntry(CHAMPION_INDEX_ROUTE).savedStateHandle[KEY_REFRESH] = true
+    } catch (_: IllegalArgumentException) {
+        // Index entry not in stack — navigation state is unexpected, skip the signal.
+    }
 }
