@@ -26,7 +26,10 @@ class GetChampionDetailUseCase @Inject constructor(
             val language = appDataRepository.getLanguage().first()
 
             try {
-                detail = championRepository.getRemoteChampionDetail(version, language, championId)?:throw IOException("Champion not found")
+                detail = (championRepository.getRemoteChampionDetail(version, language, championId)
+                    ?: throw IOException("Champion not found"))
+                    //Exclude skin variants whose names contain parentheses, except year variants like "Prestige K/DA Akali (2022)"
+                    .let { it.copy(skins = it.skins.filterNot { skin -> skin.name.hasNonYearParentheses() }) }
                 championRepository.saveChampionDetail(detail)
             } catch (e: CancellationException) {
                 throw e
@@ -37,3 +40,8 @@ class GetChampionDetailUseCase @Inject constructor(
         return@withContext UiState.Success(championRepository.getChampionAndDetail(championId))
     }
 }
+
+// Matches a parenthesized group that is NOT a bare 4-digit year, e.g. "(PROJECT)" but not "(2022)".
+private val NON_YEAR_PARENTHESES = Regex("""\((?!\d{4}\))[^)]*\)""")
+
+private fun String.hasNonYearParentheses(): Boolean = NON_YEAR_PARENTHESES.containsMatchIn(this)
