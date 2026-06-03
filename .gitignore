@@ -45,7 +45,16 @@ local.properties
 # the project can be imported from settings.gradle.kts
 *.iml
 .idea/*
+!.idea/.gitignore
+!.idea/.name
 !.idea/copyright
+!.idea/compiler.xml
+!.idea/gradle.xml
+!.idea/kotlinc.xml
+!.idea/misc.xml
+!.idea/vcs.xml
+!.idea/inspectionProfiles/
+!.idea/inspectionProfiles/Project_Default.xml
 # Keep the code styles.
 !/.idea/codeStyles
 /.idea/codeStyles/*
@@ -57,6 +66,12 @@ local.properties
 
 # Sandbox stuff
 _sandbox
+
+# Claude Code / AI tooling (not part of the Android project)
+CLAUDE.md
+.claude/
+.remember/
+docs/superpowers/
 
 # Kotlin build artifacts
 .kotlin/
