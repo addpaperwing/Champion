@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL Champions</string>
+    <string name="it_might_take_a_bit_while_for_the_first_load">Le premier chargement ou une mise à jour peut prendre un moment</string>
+    <string name="loading_data_">Chargement des données des champions…</string>
+    <string name="choose_your">Choisissez votre</string>
+    <string name="champion">Champion</string>
+    <string name="choose_your_champion_desc">Avec plus de 140 champions, vous trouverez celui qui correspond à votre style de jeu. Maîtrisez-en un, ou maîtrisez-les tous.</string>
+    <string name="role">Rôle</string>
+    <string name="difficulty">Difficulté</string>
+    <string name="more">…Plus</string>
+    <string name="less">Moins</string>
+    <string name="move_speed">Vitesse de déplacement de base : %s</string>
+    <string name="attack_range">Portée d\'attaque de base : %s</string>
+    <string name="level">Nv. </string>
+    <string name="hp">PV</string>
+    <string name="hp_regen">Rég. PV</string>
+    <string name="mp_regen">Rég. %s</string>
+    <string name="armor">Armure</string>
+    <string name="magic_resist">Rés. mag.</string>
+    <string name="attack_damage">Dégâts d\'attaque</string>
+    <string name="attack_speed">Vitesse d\'attaque</string>
+    <string name="skin_name_default">Défaut</string>
+    <string name="settings">Paramètres</string>
+    <string name="latest_game_version">Dernière version du jeu : </string>
+    <string name="app_data_version">Version des données : </string>
+    <string name="language">Langue</string>
+    <string name="internet_connection_error">Erreur de connexion Internet.</string>
+    <string name="edit">Modifier</string>
+    <string name="delete">Supprimer</string>
+    <string name="build_name">Nom</string>
+    <string name="build_content">Contenu du build</string>
+    <string name="build_weblink">Lien web</string>
+    <string name="no_app_for_link">Aucune application trouvée pour ce contenu</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="do_you_want_to_delete_this_build">Voulez-vous supprimer ce build ?</string>
+    <string name="add_weblink_build_desc">Remplacez le nom du champion par le marqueur \"{}\" pour ajouter un lien web de build universel.</string>
+    <string name="error_when_loading">Erreur lors du chargement des détails du champion, veuillez réessayer.</string>
+    <string name="reload">Recharger</string>
+    <string name="switch_language">Changer la langue</string>
+    <string name="switch_language_desc">Modifier la langue d\'affichage des données des champions</string>
+    <string name="select_language">Sélectionner la langue</string>
+    <string name="refresh_data">Actualiser les données</string>
+    <string name="refresh_data_desc">Effacer toutes les données locales et recharger depuis Internet</string>
+    <string name="confirm">Confirmer</string>
+    <string name="cancel">Annuler</string>
+    <string name="refresh_data_dialog_title">Actualiser les données ?</string>
+    <string name="refresh_data_dialog_message">Toutes les données locales seront effacées et rechargées depuis Internet.</string>
+    <string name="switch_language_dialog_title">Changer la langue ?</string>
+    <string name="switch_language_dialog_message">Les données des champions seront rechargées en %1$s.</string>
+
+    <string name="tag_fighter">Combattant</string>
+    <string name="tag_tank">Tank</string>
+    <string name="tag_mage">Mage</string>
+    <string name="tag_assassin">Assassin</string>
+    <string name="tag_support">Soutien</string>
+    <string name="tag_marksman">Tireur</string>
+    <array name="tabs">
+        <item>Capacités</item>
+        <item>Stats</item>
+        <item>Builds</item>
+        <item>Skins</item>
+    </array>
+    <array name="abilities">
+        <item>Passif</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>

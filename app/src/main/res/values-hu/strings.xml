@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL Bajnokok</string>
+    <string name="it_might_take_a_bit_while_for_the_first_load">Az első betöltés vagy frissítés egy kis időt vehet igénybe</string>
+    <string name="loading_data_">Bajnok adatok betöltése…</string>
+    <string name="choose_your">Válaszd ki a</string>
+    <string name="champion">Bajnokod</string>
+    <string name="choose_your_champion_desc">Több mint 140 bajnokkal megtalálod a játékstílusodhoz legmegfelelőbbet. Sajátítsd el az egyiket, vagy az összeset.</string>
+    <string name="role">Szerep</string>
+    <string name="difficulty">Nehézség</string>
+    <string name="more">…Több</string>
+    <string name="less">Kevesebb</string>
+    <string name="move_speed">Alap mozgássebesség: %s</string>
+    <string name="attack_range">Alap támadási hatótávolság: %s</string>
+    <string name="level">Sz. </string>
+    <string name="hp">ÉP</string>
+    <string name="hp_regen">ÉP regen.</string>
+    <string name="mp_regen">%s regen.</string>
+    <string name="armor">Páncél</string>
+    <string name="magic_resist">Mág. ellenállás</string>
+    <string name="attack_damage">Támadáserő</string>
+    <string name="attack_speed">Támadássebesség</string>
+    <string name="skin_name_default">Alapértelmezett</string>
+    <string name="settings">Beállítások</string>
+    <string name="latest_game_version">Legújabb játékverzió: </string>
+    <string name="app_data_version">Adatverzió: </string>
+    <string name="language">Nyelv</string>
+    <string name="internet_connection_error">Internetkapcsolati hiba.</string>
+    <string name="edit">Szerkesztés</string>
+    <string name="delete">Törlés</string>
+    <string name="build_name">Név</string>
+    <string name="build_content">Összeállítás tartalma</string>
+    <string name="build_weblink">Weblink</string>
+    <string name="no_app_for_link">Nem található alkalmazás ehhez a tartalomhoz</string>
+    <string name="confirmation">Megerősítés</string>
+    <string name="do_you_want_to_delete_this_build">Törlöd ezt az összeállítást?</string>
+    <string name="add_weblink_build_desc">Cseréld a bajnok nevét a \"{}\" helyőrzőre, hogy univerzális bajnok összeállítás weblinket adj hozzá.</string>
+    <string name="error_when_loading">Hiba a bajnok adatok betöltésekor, próbáld újra.</string>
+    <string name="reload">Újratöltés</string>
+    <string name="switch_language">Nyelv váltása</string>
+    <string name="switch_language_desc">A bajnok adatok megjelenítési nyelvének módosítása</string>
+    <string name="select_language">Nyelv kiválasztása</string>
+    <string name="refresh_data">Adatok frissítése</string>
+    <string name="refresh_data_desc">Összes helyi adat törlése és újratöltése az internetről</string>
+    <string name="confirm">Megerősítés</string>
+    <string name="cancel">Mégse</string>
+    <string name="refresh_data_dialog_title">Adatok frissítése?</string>
+    <string name="refresh_data_dialog_message">Összes helyi adat törlésre kerül és az internetről töltődik be újra.</string>
+    <string name="switch_language_dialog_title">Nyelv váltása?</string>
+    <string name="switch_language_dialog_message">A bajnok adatok %1$s nyelven töltődnek be újra.</string>
+
+    <string name="tag_fighter">Harcos</string>
+    <string name="tag_tank">Tank</string>
+    <string name="tag_mage">Mágus</string>
+    <string name="tag_assassin">Gyilkos</string>
+    <string name="tag_support">Támogató</string>
+    <string name="tag_marksman">Lövész</string>
+    <array name="tabs">
+        <item>Képességek</item>
+        <item>Statisztikák</item>
+        <item>Összeállítások</item>
+        <item>Skinek</item>
+    </array>
+    <array name="abilities">
+        <item>Passzív</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>

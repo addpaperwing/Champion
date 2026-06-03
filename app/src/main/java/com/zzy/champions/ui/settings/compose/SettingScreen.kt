@@ -5,12 +5,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zzy.champions.R
+import com.zzy.champions.ui.compose.TextDialog
 import com.zzy.champions.ui.settings.SettingsViewModel
 
 @Composable
@@ -33,22 +33,22 @@ fun SettingsRoute(
     var showRefreshDialog by remember { mutableStateOf(false) }
 
     if (showRefreshDialog) {
-        AlertDialog(
+        TextDialog(
             onDismissRequest = { showRefreshDialog = false },
-            title = { Text(stringResource(R.string.refresh_data_dialog_title)) },
-            text = { Text(stringResource(R.string.refresh_data_dialog_message)) },
-            confirmButton = {
-                TextButton(onClick = {
-                    showRefreshDialog = false
-                    viewModel.refreshData(onDone = onRefreshDone)
-                }) { Text(stringResource(R.string.confirm)) }
+            title = stringResource(R.string.refresh_data_dialog_title),
+            positiveButtonText = stringResource(R.string.confirm),
+            negativeButtonText = stringResource(R.string.cancel),
+            onPositiveButtonClick = {
+                showRefreshDialog = false
+                viewModel.refreshData(onDone = onRefreshDone)
             },
-            dismissButton = {
-                TextButton(onClick = { showRefreshDialog = false }) {
-                    Text(stringResource(R.string.cancel))
-                }
-            }
-        )
+            onNegativeButtonClick = { showRefreshDialog = false }
+        ) {
+            Text(
+                text = stringResource(R.string.refresh_data_dialog_message),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
     }
 
     Scaffold(
@@ -56,7 +56,10 @@ fun SettingsRoute(
         topBar = { SettingAppbar(onBack = onBack) }
     ) { padding ->
         Column(Modifier.padding(padding)) {
-            SettingItem(itemName = stringResource(R.string.switch_language)) {
+            SettingItem(
+                itemName = stringResource(R.string.switch_language),
+                description = stringResource(R.string.switch_language_desc)
+            ) {
                 IconButton(onClick = onLanguageClick) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowForward,
@@ -64,7 +67,10 @@ fun SettingsRoute(
                     )
                 }
             }
-            SettingItem(itemName = stringResource(R.string.refresh_data)) {
+            SettingItem(
+                itemName = stringResource(R.string.refresh_data),
+                description = stringResource(R.string.refresh_data_desc)
+            ) {
                 IconButton(onClick = { showRefreshDialog = true }) {
                     Icon(
                         imageVector = Icons.Default.Refresh,

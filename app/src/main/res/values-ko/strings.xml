@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL 챔피언</string>
+
+    <string name="it_might_take_a_bit_while_for_the_first_load">첫 번째 로딩 또는 패치 업데이트는 시간이 걸릴 수 있습니다</string>
+    <string name="loading_data_">챔피언 데이터 로딩 중…</string>
+
+    <string name="choose_your">당신의</string>
+    <string name="champion">챔피언 선택</string>
+    <string name="choose_your_champion_desc">140명 이상의 챔피언 중 당신의 플레이 스타일에 맞는 챔피언을 찾으세요. 하나를 마스터하거나, 모두를 마스터하세요.</string>
+
+    <string name="role">역할</string>
+    <string name="difficulty">난이도</string>
+    <string name="more">…더 보기</string>
+    <string name="less">접기</string>
+
+    <string name="move_speed">기본 이동 속도: %s</string>
+    <string name="attack_range">기본 공격 사거리: %s</string>
+
+    <string name="level">레벨 </string>
+    <string name="hp">체력</string>
+    <string name="hp_regen">체력 회복</string>
+    <string name="mp_regen">%s 회복</string>
+    <string name="armor">방어력</string>
+    <string name="magic_resist">마법 저항력</string>
+    <string name="attack_damage">공격력</string>
+    <string name="attack_speed">공격 속도</string>
+
+    <string name="skin_name_default">기본</string>
+
+    <string name="settings">설정</string>
+    <string name="latest_game_version">최신 게임 버전: </string>
+    <string name="app_data_version">앱 데이터 버전: </string>
+    <string name="language">언어</string>
+
+    <string name="internet_connection_error">인터넷 연결 오류.</string>
+
+    <string name="edit">편집</string>
+    <string name="delete">삭제</string>
+
+    <string name="build_name">이름</string>
+    <string name="build_content">빌드 내용</string>
+    <string name="build_weblink">웹 링크</string>
+
+    <string name="no_app_for_link">이 콘텐츠를 열 앱을 찾을 수 없습니다</string>
+
+    <string name="confirmation">확인</string>
+    <string name="do_you_want_to_delete_this_build">이 빌드를 삭제하시겠습니까?</string>
+
+    <string name="add_weblink_build_desc">챔피언 이름 대신 \"{}\" 플레이스홀더를 사용하여 범용 챔피언 빌드 링크를 추가하세요.</string>
+    <string name="error_when_loading">챔피언 정보 로딩 오류, 다시 시도해 주세요.</string>
+    <string name="reload">다시 로드</string>
+
+    <string name="switch_language">언어 변경</string>
+    <string name="switch_language_desc">챔피언 데이터 표시 언어를 변경합니다</string>
+    <string name="select_language">언어 선택</string>
+    <string name="refresh_data">데이터 새로고침</string>
+    <string name="refresh_data_desc">로컬 데이터를 삭제하고 인터넷에서 다시 로드합니다</string>
+    <string name="confirm">확인</string>
+    <string name="cancel">취소</string>
+    <string name="refresh_data_dialog_title">데이터를 새로고침할까요?</string>
+    <string name="refresh_data_dialog_message">모든 로컬 데이터가 삭제되고 인터넷에서 다시 로드됩니다.</string>
+    <string name="switch_language_dialog_title">언어를 변경할까요?</string>
+    <string name="switch_language_dialog_message">챔피언 데이터가 %1$s(으)로 다시 로드됩니다.</string>
+
+    <string name="tag_fighter">전사</string>
+    <string name="tag_tank">탱커</string>
+    <string name="tag_mage">마법사</string>
+    <string name="tag_assassin">암살자</string>
+    <string name="tag_support">서포터</string>
+    <string name="tag_marksman">원딜</string>
+
+    <array name="tabs">
+        <item>스킬</item>
+        <item>스탯</item>
+        <item>빌드</item>
+        <item>스킨</item>
+    </array>
+
+    <array name="abilities">
+        <item>기본</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>

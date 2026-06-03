@@ -1,7 +1,9 @@
 package com.zzy.champions.ui.settings.compose
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,7 +13,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -19,7 +20,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -31,11 +31,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zzy.champions.R
 import com.zzy.champions.data.remote.UiState
+import com.zzy.champions.ui.compose.TextDialog
 import com.zzy.champions.ui.settings.SettingsViewModel
+import java.util.Locale
+
+private fun localeFromTag(tag: String): Locale = Locale.forLanguageTag(tag.replace('_', '-'))
+
+private fun Locale.selfDisplayName(): String =
+    getDisplayName(this).replaceFirstChar { it.uppercaseChar() }
 
 @Composable
 fun LanguageRoute(
@@ -49,22 +57,29 @@ fun LanguageRoute(
     var pendingLanguage by remember { mutableStateOf<String?>(null) }
 
     pendingLanguage?.let { lang ->
-        AlertDialog(
+        val (locale, displayName) = remember(lang) {
+            val l = localeFromTag(lang)
+            l to l.selfDisplayName()
+        }
+        TextDialog(
             onDismissRequest = { pendingLanguage = null },
-            title = { Text(stringResource(R.string.switch_language_dialog_title)) },
-            text = { Text(stringResource(R.string.switch_language_dialog_message, lang)) },
-            confirmButton = {
-                TextButton(onClick = {
-                    pendingLanguage = null
-                    viewModel.selectLanguage(lang, onDone = onLanguageSelected)
-                }) { Text(stringResource(R.string.confirm)) }
+            title = stringResource(R.string.switch_language_dialog_title),
+            positiveButtonText = stringResource(R.string.confirm),
+            negativeButtonText = stringResource(R.string.cancel),
+            onPositiveButtonClick = {
+                pendingLanguage = null
+                viewModel.selectLanguage(lang, onDone = {
+                    AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(locale))
+                    onLanguageSelected()
+                })
             },
-            dismissButton = {
-                TextButton(onClick = { pendingLanguage = null }) {
-                    Text(stringResource(R.string.cancel))
-                }
-            }
-        )
+            onNegativeButtonClick = { pendingLanguage = null }
+        ) {
+            Text(
+                text = stringResource(R.string.switch_language_dialog_message, displayName),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
     }
 
     Scaffold(
@@ -73,12 +88,16 @@ fun LanguageRoute(
     ) { padding ->
         when (languages) {
             is UiState.Loading -> Box(
-                Modifier.fillMaxSize().padding(padding),
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding),
                 contentAlignment = Alignment.Center
             ) { CircularProgressIndicator() }
 
             is UiState.Error -> Box(
-                Modifier.fillMaxSize().padding(padding),
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding),
                 contentAlignment = Alignment.Center
             ) { Text(stringResource(R.string.internet_connection_error)) }
 
@@ -117,18 +136,26 @@ private fun LanguageItem(
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
+    val displayName = remember(language) { localeFromTag(language).selfDisplayName() }
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 14.dp),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = language,
-            modifier = Modifier.weight(1f),
-            color = MaterialTheme.colorScheme.onBackground
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = displayName,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Text(
+                text = language,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                modifier = Modifier.padding(top = 2.dp)
+            )
+        }
         if (isSelected) {
             Icon(
                 imageVector = Icons.Default.Check,

@@ -31,6 +31,7 @@ import coil3.compose.AsyncImage
 import com.zzy.champions.R
 import com.zzy.champions.data.model.Champion
 import com.zzy.champions.ui.theme.getChampionTagColor
+import com.zzy.champions.ui.theme.getTagStringRes
 import kotlin.math.roundToInt
 
 @Composable
@@ -112,7 +113,7 @@ fun RoleAndDifficulty(modifier: Modifier = Modifier , role: String, difficulty: 
             lineHeight = 12.sp
         )
         Text(
-            text = role.uppercase(),
+            text = stringResource(getTagStringRes(role)).uppercase(),
             color = Color(0xffd0a85c),
             fontWeight = FontWeight(600),
             fontSize = 10.sp,

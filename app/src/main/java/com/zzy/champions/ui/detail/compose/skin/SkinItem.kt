@@ -16,10 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.zzy.champions.R
 import com.zzy.champions.data.model.SkinNumber
 import com.zzy.champions.ui.compose.verticalShadowed
 import com.zzy.champions.ui.theme.Golden
@@ -52,7 +54,7 @@ fun SkinItem(modifier: Modifier = Modifier,
                 alignment = Alignment.TopCenter
             )
             Text(
-                text = skinNumber.name,
+                text = if (skinNumber.num == 0) stringResource(R.string.skin_name_default) else skinNumber.name,
                 color = MaterialTheme.colorScheme.tertiary,
                 fontSize = 14.sp,
                 modifier = Modifier

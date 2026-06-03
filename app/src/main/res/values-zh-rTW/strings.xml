@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">英雄聯盟英雄</string>
+    <string name="it_might_take_a_bit_while_for_the_first_load">首次載入或版本更新可能需要較長時間</string>
+    <string name="loading_data_">正在載入英雄資料…</string>
+    <string name="choose_your">選擇你的</string>
+    <string name="champion">英雄</string>
+    <string name="choose_your_champion_desc">超過140位英雄，總有一位適合你的風格。精通一位，或精通全部。</string>
+    <string name="role">定位</string>
+    <string name="difficulty">難度</string>
+    <string name="more">…更多</string>
+    <string name="less">收起</string>
+    <string name="move_speed">基礎移動速度：%s</string>
+    <string name="attack_range">基礎攻擊距離：%s</string>
+    <string name="level">等級 </string>
+    <string name="hp">血量</string>
+    <string name="hp_regen">血量回復</string>
+    <string name="mp_regen">%s 回復</string>
+    <string name="armor">護甲</string>
+    <string name="magic_resist">魔法抗性</string>
+    <string name="attack_damage">攻擊力</string>
+    <string name="attack_speed">攻擊速度</string>
+    <string name="skin_name_default">預設</string>
+    <string name="settings">設定</string>
+    <string name="latest_game_version">最新遊戲版本：</string>
+    <string name="app_data_version">應用程式資料版本：</string>
+    <string name="language">語言</string>
+    <string name="internet_connection_error">網路連線錯誤。</string>
+    <string name="edit">編輯</string>
+    <string name="delete">刪除</string>
+    <string name="build_name">名稱</string>
+    <string name="build_content">配置內容</string>
+    <string name="build_weblink">網頁連結</string>
+    <string name="no_app_for_link">找不到可開啟此內容的應用程式</string>
+    <string name="confirmation">確認</string>
+    <string name="do_you_want_to_delete_this_build">是否刪除此配置？</string>
+    <string name="add_weblink_build_desc">使用佔位符\"{}\"替換英雄名稱，即可新增通用英雄配置網頁連結。</string>
+    <string name="error_when_loading">載入英雄詳細資料時發生錯誤，請重試。</string>
+    <string name="reload">重新載入</string>
+    <string name="switch_language">切換語言</string>
+    <string name="switch_language_desc">變更英雄資料的顯示語言</string>
+    <string name="select_language">選擇語言</string>
+    <string name="refresh_data">重新整理資料</string>
+    <string name="refresh_data_desc">清除所有本機資料並從網路重新載入</string>
+    <string name="confirm">確認</string>
+    <string name="cancel">取消</string>
+    <string name="refresh_data_dialog_title">重新整理資料？</string>
+    <string name="refresh_data_dialog_message">所有本機資料將被清除並從網路重新載入。</string>
+    <string name="switch_language_dialog_title">切換語言？</string>
+    <string name="switch_language_dialog_message">英雄資料將以 %1$s 重新載入。</string>
+
+    <string name="tag_fighter">戰士</string>
+    <string name="tag_tank">坦克</string>
+    <string name="tag_mage">法師</string>
+    <string name="tag_assassin">刺客</string>
+    <string name="tag_support">輔助</string>
+    <string name="tag_marksman">射手</string>
+    <array name="tabs">
+        <item>技能</item>
+        <item>屬性</item>
+        <item>出裝</item>
+        <item>皮膚</item>
+    </array>
+    <array name="abilities">
+        <item>被動</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>

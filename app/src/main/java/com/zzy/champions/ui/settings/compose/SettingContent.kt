@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,18 +47,33 @@ fun SettingAppbar(modifier: Modifier = Modifier, onBack: () -> Unit) {
     )
 }
 @Composable
-fun SettingItem(modifier: Modifier = Modifier, itemName: String, content: @Composable RowScope.() -> Unit) {
+fun SettingItem(
+    modifier: Modifier = Modifier,
+    itemName: String,
+    description: String? = null,
+    content: @Composable RowScope.() -> Unit,
+) {
     Column(modifier.fillMaxWidth()) {
         Row(
             Modifier
                 .background(color = MaterialTheme.colorScheme.surface)
-                .padding(16.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = itemName,
-                modifier = Modifier.weight(1f),
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = itemName,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                description?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        modifier = Modifier.padding(top = 2.dp)
+                    )
+                }
+            }
             content()
         }
         Spacer(modifier = Modifier.height(1.dp))

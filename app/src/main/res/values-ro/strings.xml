@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL Campioni</string>
+    <string name="it_might_take_a_bit_while_for_the_first_load">Prima încărcare sau actualizarea patch-ului poate dura puțin</string>
+    <string name="loading_data_">Se încarcă datele campionilor…</string>
+    <string name="choose_your">Alege-ți</string>
+    <string name="champion">Campionul</string>
+    <string name="choose_your_champion_desc">Cu mai mult de 140 de campioni, vei găsi cel perfect pentru stilul tău de joc. Stăpânește unul sau stăpânește-i pe toți.</string>
+    <string name="role">Rol</string>
+    <string name="difficulty">Dificultate</string>
+    <string name="more">…Mai mult</string>
+    <string name="less">Mai puțin</string>
+    <string name="move_speed">Viteză de mișcare de bază: %s</string>
+    <string name="attack_range">Rază de atac de bază: %s</string>
+    <string name="level">Nv. </string>
+    <string name="hp">PV</string>
+    <string name="hp_regen">Reg. PV</string>
+    <string name="mp_regen">Reg. %s</string>
+    <string name="armor">Armură</string>
+    <string name="magic_resist">Rez. Magică</string>
+    <string name="attack_damage">Daune de Atac</string>
+    <string name="attack_speed">Viteză de Atac</string>
+    <string name="skin_name_default">Implicit</string>
+    <string name="settings">Setări</string>
+    <string name="latest_game_version">Ultima versiune a jocului: </string>
+    <string name="app_data_version">Versiunea datelor: </string>
+    <string name="language">Limbă</string>
+    <string name="internet_connection_error">Eroare de conexiune la Internet.</string>
+    <string name="edit">Editare</string>
+    <string name="delete">Ștergere</string>
+    <string name="build_name">Nume</string>
+    <string name="build_content">Conținut build</string>
+    <string name="build_weblink">Link web</string>
+    <string name="no_app_for_link">Nu s-a găsit nicio aplicație pentru acest conținut</string>
+    <string name="confirmation">Confirmare</string>
+    <string name="do_you_want_to_delete_this_build">Vrei să ștergi acest build?</string>
+    <string name="add_weblink_build_desc">Înlocuiește numele campionului cu marcatorul \"{}\" pentru a adăuga un link web de build universal.</string>
+    <string name="error_when_loading">Eroare la încărcarea detaliilor campionului, încearcă din nou.</string>
+    <string name="reload">Reîncărcare</string>
+    <string name="switch_language">Schimbă limba</string>
+    <string name="switch_language_desc">Schimbă limba pentru afișarea datelor campionilor</string>
+    <string name="select_language">Selectează limba</string>
+    <string name="refresh_data">Actualizează datele</string>
+    <string name="refresh_data_desc">Șterge toate datele locale și reîncarcă de pe Internet</string>
+    <string name="confirm">Confirmare</string>
+    <string name="cancel">Anulare</string>
+    <string name="refresh_data_dialog_title">Actualizezi datele?</string>
+    <string name="refresh_data_dialog_message">Toate datele locale vor fi șterse și reîncărcate de pe Internet.</string>
+    <string name="switch_language_dialog_title">Schimbi limba?</string>
+    <string name="switch_language_dialog_message">Datele campionilor vor fi reîncărcate în %1$s.</string>
+
+    <string name="tag_fighter">Luptător</string>
+    <string name="tag_tank">Tank</string>
+    <string name="tag_mage">Vrăjitor</string>
+    <string name="tag_assassin">Asasin</string>
+    <string name="tag_support">Sprijin</string>
+    <string name="tag_marksman">Trăgător</string>
+    <array name="tabs">
+        <item>Abilități</item>
+        <item>Statistici</item>
+        <item>Build-uri</item>
+        <item>Skin-uri</item>
+    </array>
+    <array name="abilities">
+        <item>Pasivă</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>

@@ -38,6 +38,8 @@ fun TextDialog(
     textModifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
     title: String? = null,
+    positiveButtonText: String = stringResource(android.R.string.ok),
+    negativeButtonText: String = stringResource(android.R.string.cancel),
     onPositiveButtonClick: (() -> Unit)? = null,
     onNegativeButtonClick: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
@@ -45,6 +47,8 @@ fun TextDialog(
     LDialog(
         modifier = modifier.semantics { contentDescription = "Champion build text dialog" },
         onDismissRequest = onDismissRequest,
+        positiveButtonText = positiveButtonText,
+        negativeButtonText = negativeButtonText,
         onPositiveButtonClick = onPositiveButtonClick,
         onNegativeButtonClick = onNegativeButtonClick
     ) {

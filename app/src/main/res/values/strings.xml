@@ -72,12 +72,21 @@
     <string name="v_">v%s</string>
 
     <string name="switch_language">Switch Language</string>
+    <string name="switch_language_desc">Change the language used for champion data</string>
     <string name="select_language">Select Language</string>
     <string name="refresh_data">Refresh Data</string>
+    <string name="refresh_data_desc">Clear all local data and reload from the internet</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="refresh_data_dialog_title">Refresh Data?</string>
     <string name="refresh_data_dialog_message">All local data will be cleared and reloaded from the internet.</string>
     <string name="switch_language_dialog_title">Switch Language?</string>
     <string name="switch_language_dialog_message">Champion data will be reloaded in %1$s.</string>
+
+    <string name="tag_fighter">Fighter</string>
+    <string name="tag_tank">Tank</string>
+    <string name="tag_mage">Mage</string>
+    <string name="tag_assassin">Assassin</string>
+    <string name="tag_support">Support</string>
+    <string name="tag_marksman">Marksman</string>
 </resources>

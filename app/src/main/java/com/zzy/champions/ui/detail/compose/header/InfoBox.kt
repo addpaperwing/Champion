@@ -16,11 +16,13 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zzy.champions.ui.theme.getTagStringRes
 
 @Composable
 fun InfoBox(modifier: Modifier = Modifier, title: String, name: String, tags: List<String>, lore: String) {
@@ -96,7 +98,7 @@ fun InfoBox(modifier: Modifier = Modifier, title: String, name: String, tags: Li
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = tags.reduce { acc, s -> acc.plus(" · $s") }.uppercase(),
+                text = tags.map { stringResource(getTagStringRes(it)) }.joinToString(" · ").uppercase(),
                 color = MaterialTheme.colorScheme.tertiary,
                 fontSize = 12.sp
             )
