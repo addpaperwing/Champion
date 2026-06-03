@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Champions</string>
-    <string name="champions">Champions</string>
+    <string name="champions" translatable="false">Champions</string>
     
     <string name="it_might_take_a_bit_while_for_the_first_load">It might take a bit while for the first load or patch update</string>
     <string name="loading_data_">Loading champion\'s data…</string>
@@ -69,7 +69,7 @@
     <string name="error_when_loading">Error loading champion\'s detail, please try again.</string>
     <string name="reload">Reload</string>
     
-    <string name="v_">v%s</string>
+    <string name="v_" translatable="false">v%s</string>
 
     <string name="switch_language">Switch Language</string>
     <string name="switch_language_desc">Change the language used for champion data</string>
