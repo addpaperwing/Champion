@@ -58,6 +58,12 @@ local.properties
 # Sandbox stuff
 _sandbox
 
+# Claude Code / AI tooling (not part of the Android project)
+CLAUDE.md
+.claude/
+.remember/
+docs/superpowers/
+
 # Kotlin build artifacts
 .kotlin/
 
