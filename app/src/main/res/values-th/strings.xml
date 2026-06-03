@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL แชมเปี้ยน</string>
+    <string name="it_might_take_a_bit_while_for_the_first_load">การโหลดครั้งแรกหรืออัปเดตแพทช์อาจใช้เวลาสักครู่</string>
+    <string name="loading_data_">กำลังโหลดข้อมูลแชมเปี้ยน…</string>
+    <string name="choose_your">เลือก</string>
+    <string name="champion">แชมเปี้ยนของคุณ</string>
+    <string name="choose_your_champion_desc">ด้วยแชมเปี้ยนกว่า 140 ตัว คุณจะพบตัวที่เหมาะกับสไตล์การเล่นของคุณ ฝึกฝนหนึ่งตัวหรือทุกตัว</string>
+    <string name="role">บทบาท</string>
+    <string name="difficulty">ความยาก</string>
+    <string name="more">…เพิ่มเติม</string>
+    <string name="less">ย่อ</string>
+    <string name="move_speed">ความเร็วเคลื่อนที่พื้นฐาน: %s</string>
+    <string name="attack_range">ระยะโจมตีพื้นฐาน: %s</string>
+    <string name="level">เลเวล </string>
+    <string name="hp">HP</string>
+    <string name="hp_regen">ฟื้นฟู HP</string>
+    <string name="mp_regen">ฟื้นฟู %s</string>
+    <string name="armor">เกราะ</string>
+    <string name="magic_resist">ต้านทานเวทย์</string>
+    <string name="attack_damage">พลังโจมตี</string>
+    <string name="attack_speed">ความเร็วโจมตี</string>
+    <string name="skin_name_default">ค่าเริ่มต้น</string>
+    <string name="settings">การตั้งค่า</string>
+    <string name="latest_game_version">เวอร์ชั่นเกมล่าสุด: </string>
+    <string name="app_data_version">เวอร์ชั่นข้อมูล: </string>
+    <string name="language">ภาษา</string>
+    <string name="internet_connection_error">เกิดข้อผิดพลาดในการเชื่อมต่ออินเทอร์เน็ต</string>
+    <string name="edit">แก้ไข</string>
+    <string name="delete">ลบ</string>
+    <string name="build_name">ชื่อ</string>
+    <string name="build_content">เนื้อหาบิลด์</string>
+    <string name="build_weblink">ลิงก์เว็บ</string>
+    <string name="no_app_for_link">ไม่พบแอปสำหรับเนื้อหานี้</string>
+    <string name="confirmation">ยืนยัน</string>
+    <string name="do_you_want_to_delete_this_build">ต้องการลบบิลด์นี้หรือไม่?</string>
+    <string name="add_weblink_build_desc">แทนที่ชื่อแชมเปี้ยนด้วย \"{}\" เพื่อเพิ่มลิงก์บิลด์แชมเปี้ยนสากล</string>
+    <string name="error_when_loading">เกิดข้อผิดพลาดในการโหลดข้อมูลแชมเปี้ยน กรุณาลองใหม่อีกครั้ง</string>
+    <string name="reload">โหลดใหม่</string>
+    <string name="switch_language">เปลี่ยนภาษา</string>
+    <string name="switch_language_desc">เปลี่ยนภาษาสำหรับแสดงข้อมูลแชมเปี้ยน</string>
+    <string name="select_language">เลือกภาษา</string>
+    <string name="refresh_data">รีเฟรชข้อมูล</string>
+    <string name="refresh_data_desc">ลบข้อมูลทั้งหมดในเครื่องและโหลดใหม่จากอินเทอร์เน็ต</string>
+    <string name="confirm">ยืนยัน</string>
+    <string name="cancel">ยกเลิก</string>
+    <string name="refresh_data_dialog_title">รีเฟรชข้อมูล?</string>
+    <string name="refresh_data_dialog_message">ข้อมูลทั้งหมดในเครื่องจะถูกลบและโหลดใหม่จากอินเทอร์เน็ต</string>
+    <string name="switch_language_dialog_title">เปลี่ยนภาษา?</string>
+    <string name="switch_language_dialog_message">ข้อมูลแชมเปี้ยนจะโหลดใหม่ใน %1$s</string>
+
+    <string name="tag_fighter">นักสู้</string>
+    <string name="tag_tank">แทงค์</string>
+    <string name="tag_mage">นักเวทย์</string>
+    <string name="tag_assassin">นักฆ่า</string>
+    <string name="tag_support">ผู้สนับสนุน</string>
+    <string name="tag_marksman">มาร์กสแมน</string>
+    <array name="tabs">
+        <item>ทักษะ</item>
+        <item>สถิติ</item>
+        <item>บิลด์</item>
+        <item>สกิน</item>
+    </array>
+    <array name="abilities">
+        <item>พาสซีฟ</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>

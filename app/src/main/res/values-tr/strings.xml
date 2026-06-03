@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL Şampiyonlar</string>
+    <string name="it_might_take_a_bit_while_for_the_first_load">İlk yükleme veya yama güncellemesi biraz zaman alabilir</string>
+    <string name="loading_data_">Şampiyon verileri yükleniyor…</string>
+    <string name="choose_your">Şampiyonunu</string>
+    <string name="champion">Seç</string>
+    <string name="choose_your_champion_desc">140\'tan fazla şampiyonla oyun tarzına en uygun olanı bulacaksın. Birini ustalaştır ya da hepsini.</string>
+    <string name="role">Rol</string>
+    <string name="difficulty">Zorluk</string>
+    <string name="more">…Daha Fazla</string>
+    <string name="less">Daha Az</string>
+    <string name="move_speed">Temel Hareket Hızı: %s</string>
+    <string name="attack_range">Temel Saldırı Menzili: %s</string>
+    <string name="level">Sv. </string>
+    <string name="hp">CS</string>
+    <string name="hp_regen">CS Yenilenmesi</string>
+    <string name="mp_regen">%s Yenilenmesi</string>
+    <string name="armor">Zırh</string>
+    <string name="magic_resist">Büyü Direnci</string>
+    <string name="attack_damage">Saldırı Hasarı</string>
+    <string name="attack_speed">Saldırı Hızı</string>
+    <string name="skin_name_default">Varsayılan</string>
+    <string name="settings">Ayarlar</string>
+    <string name="latest_game_version">En son oyun sürümü: </string>
+    <string name="app_data_version">Uygulama veri sürümü: </string>
+    <string name="language">Dil</string>
+    <string name="internet_connection_error">İnternet bağlantısı hatası.</string>
+    <string name="edit">Düzenle</string>
+    <string name="delete">Sil</string>
+    <string name="build_name">Ad</string>
+    <string name="build_content">Derleme İçeriği</string>
+    <string name="build_weblink">Web Bağlantısı</string>
+    <string name="no_app_for_link">Bu içerik için uygulama bulunamadı</string>
+    <string name="confirmation">Onay</string>
+    <string name="do_you_want_to_delete_this_build">Bu derlemeyi silmek istiyor musun?</string>
+    <string name="add_weblink_build_desc">Evrensel şampiyon derleme bağlantısı eklemek için şampiyon adını \"{}\" yer tutucu ile değiştir.</string>
+    <string name="error_when_loading">Şampiyon ayrıntıları yüklenirken hata oluştu, lütfen tekrar dene.</string>
+    <string name="reload">Yeniden Yükle</string>
+    <string name="switch_language">Dil Değiştir</string>
+    <string name="switch_language_desc">Şampiyon verilerinin görüntüleneceği dili değiştir</string>
+    <string name="select_language">Dil Seç</string>
+    <string name="refresh_data">Verileri Yenile</string>
+    <string name="refresh_data_desc">Tüm yerel verileri sil ve internetten yeniden yükle</string>
+    <string name="confirm">Onayla</string>
+    <string name="cancel">İptal</string>
+    <string name="refresh_data_dialog_title">Veriler Yenilensin mi?</string>
+    <string name="refresh_data_dialog_message">Tüm yerel veriler silinecek ve internetten yeniden yüklenecek.</string>
+    <string name="switch_language_dialog_title">Dil Değiştirilsin mi?</string>
+    <string name="switch_language_dialog_message">Şampiyon verileri %1$s dilinde yeniden yüklenecek.</string>
+
+    <string name="tag_fighter">Savaşçı</string>
+    <string name="tag_tank">Tank</string>
+    <string name="tag_mage">Büyücü</string>
+    <string name="tag_assassin">Suikastçı</string>
+    <string name="tag_support">Destek</string>
+    <string name="tag_marksman">Nişancı</string>
+    <array name="tabs">
+        <item>Yetenekler</item>
+        <item>İstatistikler</item>
+        <item>Derlemeler</item>
+        <item>Kostümler</item>
+    </array>
+    <array name="abilities">
+        <item>Pasif</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>

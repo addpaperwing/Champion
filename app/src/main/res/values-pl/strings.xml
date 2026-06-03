@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL Czempioni</string>
+    <string name="it_might_take_a_bit_while_for_the_first_load">Pierwsze ładowanie lub aktualizacja łatki może chwilę potrwać</string>
+    <string name="loading_data_">Ładowanie danych czempionów…</string>
+    <string name="choose_your">Wybierz swojego</string>
+    <string name="champion">Czempiona</string>
+    <string name="choose_your_champion_desc">Ponad 140 czempionów — znajdź idealnego dla swojego stylu gry. Opanuj jednego lub wszystkich.</string>
+    <string name="role">Rola</string>
+    <string name="difficulty">Trudność</string>
+    <string name="more">…Więcej</string>
+    <string name="less">Mniej</string>
+    <string name="move_speed">Bazowa prędkość ruchu: %s</string>
+    <string name="attack_range">Bazowy zasięg ataku: %s</string>
+    <string name="level">Poz. </string>
+    <string name="hp">PZ</string>
+    <string name="hp_regen">Reg. PZ</string>
+    <string name="mp_regen">Reg. %s</string>
+    <string name="armor">Pancerz</string>
+    <string name="magic_resist">Odp. mag.</string>
+    <string name="attack_damage">Obrażenia ataku</string>
+    <string name="attack_speed">Szybkość ataku</string>
+    <string name="skin_name_default">Domyślny</string>
+    <string name="settings">Ustawienia</string>
+    <string name="latest_game_version">Najnowsza wersja gry: </string>
+    <string name="app_data_version">Wersja danych: </string>
+    <string name="language">Język</string>
+    <string name="internet_connection_error">Błąd połączenia z internetem.</string>
+    <string name="edit">Edytuj</string>
+    <string name="delete">Usuń</string>
+    <string name="build_name">Nazwa</string>
+    <string name="build_content">Zawartość buildu</string>
+    <string name="build_weblink">Link do strony</string>
+    <string name="no_app_for_link">Nie znaleziono aplikacji dla tej zawartości</string>
+    <string name="confirmation">Potwierdzenie</string>
+    <string name="do_you_want_to_delete_this_build">Czy chcesz usunąć ten build?</string>
+    <string name="add_weblink_build_desc">Zastąp nazwę czempiona symbolem zastępczym \"{}\" aby dodać uniwersalny link do buildu.</string>
+    <string name="error_when_loading">Błąd ładowania szczegółów czempiona, spróbuj ponownie.</string>
+    <string name="reload">Załaduj ponownie</string>
+    <string name="switch_language">Zmień język</string>
+    <string name="switch_language_desc">Zmień język wyświetlania danych czempionów</string>
+    <string name="select_language">Wybierz język</string>
+    <string name="refresh_data">Odśwież dane</string>
+    <string name="refresh_data_desc">Usuń wszystkie lokalne dane i załaduj ponownie z internetu</string>
+    <string name="confirm">Potwierdź</string>
+    <string name="cancel">Anuluj</string>
+    <string name="refresh_data_dialog_title">Odświeżyć dane?</string>
+    <string name="refresh_data_dialog_message">Wszystkie lokalne dane zostaną usunięte i ponownie załadowane z internetu.</string>
+    <string name="switch_language_dialog_title">Zmienić język?</string>
+    <string name="switch_language_dialog_message">Dane czempionów zostaną ponownie załadowane w %1$s.</string>
+
+    <string name="tag_fighter">Wojownik</string>
+    <string name="tag_tank">Tank</string>
+    <string name="tag_mage">Mag</string>
+    <string name="tag_assassin">Zabójca</string>
+    <string name="tag_support">Wsparcie</string>
+    <string name="tag_marksman">Strzelec</string>
+    <array name="tabs">
+        <item>Umiejętności</item>
+        <item>Statystyki</item>
+        <item>Buildy</item>
+        <item>Skórki</item>
+    </array>
+    <array name="abilities">
+        <item>Pasywna</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>

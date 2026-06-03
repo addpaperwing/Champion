@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL Tướng</string>
+    <string name="it_might_take_a_bit_while_for_the_first_load">Lần tải đầu tiên hoặc cập nhật bản vá có thể mất chút thời gian</string>
+    <string name="loading_data_">Đang tải dữ liệu tướng…</string>
+    <string name="choose_your">Chọn</string>
+    <string name="champion">Tướng của bạn</string>
+    <string name="choose_your_champion_desc">Với hơn 140 tướng, bạn sẽ tìm được tướng phù hợp với phong cách chơi của mình. Thành thạo một tướng, hoặc tất cả.</string>
+    <string name="role">Vai trò</string>
+    <string name="difficulty">Độ khó</string>
+    <string name="more">…Thêm</string>
+    <string name="less">Thu gọn</string>
+    <string name="move_speed">Tốc độ di chuyển cơ bản: %s</string>
+    <string name="attack_range">Tầm đánh cơ bản: %s</string>
+    <string name="level">Cấp </string>
+    <string name="hp">HP</string>
+    <string name="hp_regen">Hồi HP</string>
+    <string name="mp_regen">Hồi %s</string>
+    <string name="armor">Giáp</string>
+    <string name="magic_resist">Kháng phép</string>
+    <string name="attack_damage">Sát thương vật lý</string>
+    <string name="attack_speed">Tốc độ đánh</string>
+    <string name="skin_name_default">Mặc định</string>
+    <string name="settings">Cài đặt</string>
+    <string name="latest_game_version">Phiên bản game mới nhất: </string>
+    <string name="app_data_version">Phiên bản dữ liệu: </string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="internet_connection_error">Lỗi kết nối Internet.</string>
+    <string name="edit">Chỉnh sửa</string>
+    <string name="delete">Xóa</string>
+    <string name="build_name">Tên</string>
+    <string name="build_content">Nội dung build</string>
+    <string name="build_weblink">Đường dẫn web</string>
+    <string name="no_app_for_link">Không tìm thấy ứng dụng cho nội dung này</string>
+    <string name="confirmation">Xác nhận</string>
+    <string name="do_you_want_to_delete_this_build">Bạn có muốn xóa build này không?</string>
+    <string name="add_weblink_build_desc">Thay tên tướng bằng ký tự \"{}\" để thêm đường dẫn web build tướng toàn cầu.</string>
+    <string name="error_when_loading">Lỗi khi tải chi tiết tướng, vui lòng thử lại.</string>
+    <string name="reload">Tải lại</string>
+    <string name="switch_language">Đổi ngôn ngữ</string>
+    <string name="switch_language_desc">Thay đổi ngôn ngữ hiển thị dữ liệu tướng</string>
+    <string name="select_language">Chọn ngôn ngữ</string>
+    <string name="refresh_data">Làm mới dữ liệu</string>
+    <string name="refresh_data_desc">Xóa tất cả dữ liệu cục bộ và tải lại từ Internet</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="cancel">Hủy</string>
+    <string name="refresh_data_dialog_title">Làm mới dữ liệu?</string>
+    <string name="refresh_data_dialog_message">Tất cả dữ liệu cục bộ sẽ bị xóa và tải lại từ Internet.</string>
+    <string name="switch_language_dialog_title">Đổi ngôn ngữ?</string>
+    <string name="switch_language_dialog_message">Dữ liệu tướng sẽ được tải lại bằng %1$s.</string>
+
+    <string name="tag_fighter">Đấu sĩ</string>
+    <string name="tag_tank">Xe tăng</string>
+    <string name="tag_mage">Pháp sư</string>
+    <string name="tag_assassin">Sát thủ</string>
+    <string name="tag_support">Hỗ trợ</string>
+    <string name="tag_marksman">Xạ thủ</string>
+    <array name="tabs">
+        <item>Kỹ năng</item>
+        <item>Chỉ số</item>
+        <item>Build</item>
+        <item>Trang phục</item>
+    </array>
+    <array name="abilities">
+        <item>Nội tại</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>

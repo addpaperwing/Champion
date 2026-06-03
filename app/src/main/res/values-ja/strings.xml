@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL チャンピオン</string>
+
+    <string name="it_might_take_a_bit_while_for_the_first_load">初回読み込みまたはパッチ更新には時間がかかる場合があります</string>
+    <string name="loading_data_">チャンピオンデータ読み込み中…</string>
+
+    <string name="choose_your">あなたの</string>
+    <string name="champion">チャンピオンを選ぼう</string>
+    <string name="choose_your_champion_desc">140体以上のチャンピオンから、あなたのプレイスタイルに合った一体を見つけよう。一体を極めるか、全てを極めるか。</string>
+
+    <string name="role">ロール</string>
+    <string name="difficulty">難易度</string>
+    <string name="more">…もっと見る</string>
+    <string name="less">折りたたむ</string>
+
+    <string name="move_speed">基本移動速度: %s</string>
+    <string name="attack_range">基本攻撃射程: %s</string>
+
+    <string name="level">Lv. </string>
+    <string name="hp">体力</string>
+    <string name="hp_regen">体力回復</string>
+    <string name="mp_regen">%s 回復</string>
+    <string name="armor">アーマー</string>
+    <string name="magic_resist">魔法耐性</string>
+    <string name="attack_damage">攻撃力</string>
+    <string name="attack_speed">攻撃速度</string>
+
+    <string name="skin_name_default">デフォルト</string>
+
+    <string name="settings">設定</string>
+    <string name="latest_game_version">最新ゲームバージョン：</string>
+    <string name="app_data_version">アプリデータバージョン：</string>
+    <string name="language">言語</string>
+
+    <string name="internet_connection_error">インターネット接続エラー。</string>
+
+    <string name="edit">編集</string>
+    <string name="delete">削除</string>
+
+    <string name="build_name">名前</string>
+    <string name="build_content">ビルド内容</string>
+    <string name="build_weblink">Webリンク</string>
+
+    <string name="no_app_for_link">このコンテンツを開くアプリが見つかりません</string>
+
+    <string name="confirmation">確認</string>
+    <string name="do_you_want_to_delete_this_build">このビルドを削除しますか？</string>
+
+    <string name="add_weblink_build_desc">チャンピオン名の代わりに\"{}\"プレースホルダーを使用して、汎用チャンピオンビルドリンクを追加できます。</string>
+    <string name="error_when_loading">チャンピオンの詳細の読み込みエラー。もう一度お試しください。</string>
+    <string name="reload">再読み込み</string>
+
+    <string name="switch_language">言語を変更</string>
+    <string name="switch_language_desc">チャンピオンデータの表示言語を変更します</string>
+    <string name="select_language">言語を選択</string>
+    <string name="refresh_data">データを更新</string>
+    <string name="refresh_data_desc">すべてのローカルデータを削除してインターネットから再読み込みします</string>
+    <string name="confirm">確認</string>
+    <string name="cancel">キャンセル</string>
+    <string name="refresh_data_dialog_title">データを更新しますか？</string>
+    <string name="refresh_data_dialog_message">すべてのローカルデータが削除され、インターネットから再読み込みされます。</string>
+    <string name="switch_language_dialog_title">言語を変更しますか？</string>
+    <string name="switch_language_dialog_message">チャンピオンデータが %1$s で再読み込みされます。</string>
+
+    <string name="tag_fighter">ファイター</string>
+    <string name="tag_tank">タンク</string>
+    <string name="tag_mage">メイジ</string>
+    <string name="tag_assassin">アサシン</string>
+    <string name="tag_support">サポート</string>
+    <string name="tag_marksman">マークスマン</string>
+
+    <array name="tabs">
+        <item>スキル</item>
+        <item>ステータス</item>
+        <item>ビルド</item>
+        <item>スキン</item>
+    </array>
+
+    <array name="abilities">
+        <item>パッシブ</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>

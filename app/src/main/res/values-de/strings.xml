@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL Championpedia</string>
+    <string name="it_might_take_a_bit_while_for_the_first_load">Beim ersten Laden oder einem Patch-Update kann es etwas länger dauern</string>
+    <string name="loading_data_">Championdaten werden geladen…</string>
+    <string name="choose_your">Wähle deinen</string>
+    <string name="champion">Champion</string>
+    <string name="choose_your_champion_desc">Mit mehr als 140 Champions findest du den perfekten für deinen Spielstil. Meistere einen oder alle.</string>
+    <string name="role">Rolle</string>
+    <string name="difficulty">Schwierigkeit</string>
+    <string name="more">…Mehr</string>
+    <string name="less">Weniger</string>
+    <string name="move_speed">Grundbewegungsgeschwindigkeit: %s</string>
+    <string name="attack_range">Grundangriffsreichweite: %s</string>
+    <string name="level">Lv. </string>
+    <string name="hp">LP</string>
+    <string name="hp_regen">LP-Reg.</string>
+    <string name="mp_regen">%s Reg.</string>
+    <string name="armor">Rüstung</string>
+    <string name="magic_resist">Mag. Resist.</string>
+    <string name="attack_damage">Angriffschaden</string>
+    <string name="attack_speed">Angriffsgeschw.</string>
+    <string name="skin_name_default">Standard</string>
+    <string name="settings">Einstellungen</string>
+    <string name="latest_game_version">Neueste Spielversion: </string>
+    <string name="app_data_version">App-Datenversion: </string>
+    <string name="language">Sprache</string>
+    <string name="internet_connection_error">Internetverbindungsfehler.</string>
+    <string name="edit">Bearbeiten</string>
+    <string name="delete">Löschen</string>
+    <string name="build_name">Name</string>
+    <string name="build_content">Build-Inhalt</string>
+    <string name="build_weblink">Weblink</string>
+    <string name="no_app_for_link">Keine App für diesen Inhalt gefunden</string>
+    <string name="confirmation">Bestätigung</string>
+    <string name="do_you_want_to_delete_this_build">Soll dieser Build gelöscht werden?</string>
+    <string name="add_weblink_build_desc">Ersetze den Championsnamen durch den Platzhalter \"{}\" um einen universellen Champion-Build-Weblink hinzuzufügen.</string>
+    <string name="error_when_loading">Fehler beim Laden der Championdetails, bitte erneut versuchen.</string>
+    <string name="reload">Neu laden</string>
+    <string name="switch_language">Sprache wechseln</string>
+    <string name="switch_language_desc">Sprache für die Anzeige von Championdaten ändern</string>
+    <string name="select_language">Sprache auswählen</string>
+    <string name="refresh_data">Daten aktualisieren</string>
+    <string name="refresh_data_desc">Alle lokalen Daten löschen und aus dem Internet neu laden</string>
+    <string name="confirm">Bestätigen</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="refresh_data_dialog_title">Daten aktualisieren?</string>
+    <string name="refresh_data_dialog_message">Alle lokalen Daten werden gelöscht und aus dem Internet neu geladen.</string>
+    <string name="switch_language_dialog_title">Sprache wechseln?</string>
+    <string name="switch_language_dialog_message">Championdaten werden in %1$s neu geladen.</string>
+
+    <string name="tag_fighter">Kämpfer</string>
+    <string name="tag_tank">Tank</string>
+    <string name="tag_mage">Magier</string>
+    <string name="tag_assassin">Assassine</string>
+    <string name="tag_support">Unterstützer</string>
+    <string name="tag_marksman">Schütze</string>
+    <array name="tabs">
+        <item>Fähigkeiten</item>
+        <item>Werte</item>
+        <item>Builds</item>
+        <item>Skins</item>
+    </array>
+    <array name="abilities">
+        <item>Passiv</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>

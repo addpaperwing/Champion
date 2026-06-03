@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL Champion</string>
+    <string name="it_might_take_a_bit_while_for_the_first_load">Pemuatan pertama atau pembaruan patch mungkin memerlukan beberapa saat</string>
+    <string name="loading_data_">Memuat data champion…</string>
+    <string name="choose_your">Pilih</string>
+    <string name="champion">Champion-mu</string>
+    <string name="choose_your_champion_desc">Dengan lebih dari 140 champion, kamu akan menemukan yang sempurna untuk gaya bermainmu. Kuasai satu, atau kuasai semuanya.</string>
+    <string name="role">Peran</string>
+    <string name="difficulty">Kesulitan</string>
+    <string name="more">…Lagi</string>
+    <string name="less">Sembunyikan</string>
+    <string name="move_speed">Kecepatan Gerak Dasar: %s</string>
+    <string name="attack_range">Jangkauan Serangan Dasar: %s</string>
+    <string name="level">Lv. </string>
+    <string name="hp">HP</string>
+    <string name="hp_regen">Reg. HP</string>
+    <string name="mp_regen">Reg. %s</string>
+    <string name="armor">Armor</string>
+    <string name="magic_resist">Res. Sihir</string>
+    <string name="attack_damage">Kerusakan Serangan</string>
+    <string name="attack_speed">Kecepatan Serangan</string>
+    <string name="skin_name_default">Bawaan</string>
+    <string name="settings">Pengaturan</string>
+    <string name="latest_game_version">Versi game terbaru: </string>
+    <string name="app_data_version">Versi data: </string>
+    <string name="language">Bahasa</string>
+    <string name="internet_connection_error">Kesalahan koneksi Internet.</string>
+    <string name="edit">Ubah</string>
+    <string name="delete">Hapus</string>
+    <string name="build_name">Nama</string>
+    <string name="build_content">Isi Build</string>
+    <string name="build_weblink">Tautan Web</string>
+    <string name="no_app_for_link">Tidak ada aplikasi untuk konten ini</string>
+    <string name="confirmation">Konfirmasi</string>
+    <string name="do_you_want_to_delete_this_build">Apakah kamu ingin menghapus build ini?</string>
+    <string name="add_weblink_build_desc">Ganti nama champion dengan placeholder \"{}\" untuk menambahkan tautan web build champion universal.</string>
+    <string name="error_when_loading">Kesalahan memuat detail champion, coba lagi.</string>
+    <string name="reload">Muat Ulang</string>
+    <string name="switch_language">Ganti Bahasa</string>
+    <string name="switch_language_desc">Ubah bahasa untuk tampilan data champion</string>
+    <string name="select_language">Pilih Bahasa</string>
+    <string name="refresh_data">Perbarui Data</string>
+    <string name="refresh_data_desc">Hapus semua data lokal dan muat ulang dari Internet</string>
+    <string name="confirm">Konfirmasi</string>
+    <string name="cancel">Batal</string>
+    <string name="refresh_data_dialog_title">Perbarui Data?</string>
+    <string name="refresh_data_dialog_message">Semua data lokal akan dihapus dan dimuat ulang dari Internet.</string>
+    <string name="switch_language_dialog_title">Ganti Bahasa?</string>
+    <string name="switch_language_dialog_message">Data champion akan dimuat ulang dalam %1$s.</string>
+
+    <string name="tag_fighter">Petarung</string>
+    <string name="tag_tank">Tank</string>
+    <string name="tag_mage">Penyihir</string>
+    <string name="tag_assassin">Pembunuh</string>
+    <string name="tag_support">Pendukung</string>
+    <string name="tag_marksman">Penembak</string>
+    <array name="tabs">
+        <item>Kemampuan</item>
+        <item>Statistik</item>
+        <item>Build</item>
+        <item>Skin</item>
+    </array>
+    <array name="abilities">
+        <item>Pasif</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>

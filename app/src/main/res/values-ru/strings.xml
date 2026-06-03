@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL Чемпионы</string>
+    <string name="it_might_take_a_bit_while_for_the_first_load">Первая загрузка или обновление патча может занять некоторое время</string>
+    <string name="loading_data_">Загрузка данных чемпионов…</string>
+    <string name="choose_your">Выберите своего</string>
+    <string name="champion">Чемпиона</string>
+    <string name="choose_your_champion_desc">Более 140 чемпионов — найдите идеального для вашего стиля игры. Освойте одного или всех.</string>
+    <string name="role">Роль</string>
+    <string name="difficulty">Сложность</string>
+    <string name="more">…Ещё</string>
+    <string name="less">Скрыть</string>
+    <string name="move_speed">Базовая скорость передвижения: %s</string>
+    <string name="attack_range">Базовая дальность атаки: %s</string>
+    <string name="level">Ур. </string>
+    <string name="hp">ОЗ</string>
+    <string name="hp_regen">Рег. ОЗ</string>
+    <string name="mp_regen">Рег. %s</string>
+    <string name="armor">Броня</string>
+    <string name="magic_resist">Маг. сопр.</string>
+    <string name="attack_damage">Физ. урон</string>
+    <string name="attack_speed">Скорость атаки</string>
+    <string name="skin_name_default">Стандартный</string>
+    <string name="settings">Настройки</string>
+    <string name="latest_game_version">Актуальная версия игры: </string>
+    <string name="app_data_version">Версия данных: </string>
+    <string name="language">Язык</string>
+    <string name="internet_connection_error">Ошибка подключения к интернету.</string>
+    <string name="edit">Изменить</string>
+    <string name="delete">Удалить</string>
+    <string name="build_name">Название</string>
+    <string name="build_content">Содержимое сборки</string>
+    <string name="build_weblink">Ссылка</string>
+    <string name="no_app_for_link">Приложение для открытия ссылки не найдено</string>
+    <string name="confirmation">Подтверждение</string>
+    <string name="do_you_want_to_delete_this_build">Удалить эту сборку?</string>
+    <string name="add_weblink_build_desc">Замените имя чемпиона заполнителем \"{}\" для добавления универсальной ссылки на сборку.</string>
+    <string name="error_when_loading">Ошибка загрузки данных чемпиона, попробуйте снова.</string>
+    <string name="reload">Загрузить снова</string>
+    <string name="switch_language">Сменить язык</string>
+    <string name="switch_language_desc">Изменить язык отображения данных чемпионов</string>
+    <string name="select_language">Выбрать язык</string>
+    <string name="refresh_data">Обновить данные</string>
+    <string name="refresh_data_desc">Удалить все локальные данные и загрузить из интернета</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="cancel">Отмена</string>
+    <string name="refresh_data_dialog_title">Обновить данные?</string>
+    <string name="refresh_data_dialog_message">Все локальные данные будут удалены и загружены из интернета.</string>
+    <string name="switch_language_dialog_title">Сменить язык?</string>
+    <string name="switch_language_dialog_message">Данные чемпионов будут перезагружены на %1$s.</string>
+
+    <string name="tag_fighter">Боец</string>
+    <string name="tag_tank">Танк</string>
+    <string name="tag_mage">Маг</string>
+    <string name="tag_assassin">Убийца</string>
+    <string name="tag_support">Поддержка</string>
+    <string name="tag_marksman">Стрелок</string>
+    <array name="tabs">
+        <item>Способности</item>
+        <item>Характеристики</item>
+        <item>Сборки</item>
+        <item>Облики</item>
+    </array>
+    <array name="abilities">
+        <item>Пасс.</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>

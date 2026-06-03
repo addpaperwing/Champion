@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL Campioni</string>
+    <string name="it_might_take_a_bit_while_for_the_first_load">Il primo caricamento o un aggiornamento patch potrebbe richiedere un momento</string>
+    <string name="loading_data_">Caricamento dati campioni…</string>
+    <string name="choose_your">Scegli il tuo</string>
+    <string name="champion">Campione</string>
+    <string name="choose_your_champion_desc">Con più di 140 campioni, troverai quello perfetto per il tuo stile di gioco. Padroneggia uno o tutti.</string>
+    <string name="role">Ruolo</string>
+    <string name="difficulty">Difficoltà</string>
+    <string name="more">…Altro</string>
+    <string name="less">Meno</string>
+    <string name="move_speed">Velocità di movimento base: %s</string>
+    <string name="attack_range">Gittata di attacco base: %s</string>
+    <string name="level">Lv. </string>
+    <string name="hp">PF</string>
+    <string name="hp_regen">Rig. PF</string>
+    <string name="mp_regen">Rig. %s</string>
+    <string name="armor">Armatura</string>
+    <string name="magic_resist">Res. Magica</string>
+    <string name="attack_damage">Danni Fisici</string>
+    <string name="attack_speed">Velocità d\'Attacco</string>
+    <string name="skin_name_default">Predefinito</string>
+    <string name="settings">Impostazioni</string>
+    <string name="latest_game_version">Ultima versione del gioco: </string>
+    <string name="app_data_version">Versione dati: </string>
+    <string name="language">Lingua</string>
+    <string name="internet_connection_error">Errore di connessione Internet.</string>
+    <string name="edit">Modifica</string>
+    <string name="delete">Elimina</string>
+    <string name="build_name">Nome</string>
+    <string name="build_content">Contenuto build</string>
+    <string name="build_weblink">Link web</string>
+    <string name="no_app_for_link">Nessuna app trovata per questo contenuto</string>
+    <string name="confirmation">Conferma</string>
+    <string name="do_you_want_to_delete_this_build">Vuoi eliminare questa build?</string>
+    <string name="add_weblink_build_desc">Sostituisci il nome del campione con il segnaposto \"{}\" per aggiungere un link web di build universale.</string>
+    <string name="error_when_loading">Errore nel caricamento dei dettagli del campione, riprova.</string>
+    <string name="reload">Ricarica</string>
+    <string name="switch_language">Cambia lingua</string>
+    <string name="switch_language_desc">Cambia la lingua per la visualizzazione dei dati dei campioni</string>
+    <string name="select_language">Seleziona lingua</string>
+    <string name="refresh_data">Aggiorna dati</string>
+    <string name="refresh_data_desc">Cancella tutti i dati locali e ricarica da Internet</string>
+    <string name="confirm">Conferma</string>
+    <string name="cancel">Annulla</string>
+    <string name="refresh_data_dialog_title">Aggiornare i dati?</string>
+    <string name="refresh_data_dialog_message">Tutti i dati locali verranno cancellati e ricaricati da Internet.</string>
+    <string name="switch_language_dialog_title">Cambiare lingua?</string>
+    <string name="switch_language_dialog_message">I dati dei campioni verranno ricaricati in %1$s.</string>
+
+    <string name="tag_fighter">Combattente</string>
+    <string name="tag_tank">Tank</string>
+    <string name="tag_mage">Mago</string>
+    <string name="tag_assassin">Assassino</string>
+    <string name="tag_support">Supporto</string>
+    <string name="tag_marksman">Tiratore</string>
+    <array name="tabs">
+        <item>Abilità</item>
+        <item>Statistiche</item>
+        <item>Build</item>
+        <item>Skin</item>
+    </array>
+    <array name="abilities">
+        <item>Passiva</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>

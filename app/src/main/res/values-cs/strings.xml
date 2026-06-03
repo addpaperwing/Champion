@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL Šampióni</string>
+    <string name="it_might_take_a_bit_while_for_the_first_load">První načtení nebo aktualizace patche může chvíli trvat</string>
+    <string name="loading_data_">Načítání dat šampiónů…</string>
+    <string name="choose_your">Vyber si svého</string>
+    <string name="champion">Šampióna</string>
+    <string name="choose_your_champion_desc">S více než 140 šampióny najdeš toho pravého pro svůj styl hry. Ovládni jednoho, nebo ovládni všechny.</string>
+    <string name="role">Role</string>
+    <string name="difficulty">Obtížnost</string>
+    <string name="more">…Více</string>
+    <string name="less">Méně</string>
+    <string name="move_speed">Základní rychlost pohybu: %s</string>
+    <string name="attack_range">Základní dosah útoku: %s</string>
+    <string name="level">Úr. </string>
+    <string name="hp">ŽB</string>
+    <string name="hp_regen">Reg. ŽB</string>
+    <string name="mp_regen">Reg. %s</string>
+    <string name="armor">Brnění</string>
+    <string name="magic_resist">Mag. odolnost</string>
+    <string name="attack_damage">Útočná síla</string>
+    <string name="attack_speed">Rychlost útoku</string>
+    <string name="skin_name_default">Výchozí</string>
+    <string name="settings">Nastavení</string>
+    <string name="latest_game_version">Nejnovější verze hry: </string>
+    <string name="app_data_version">Verze dat: </string>
+    <string name="language">Jazyk</string>
+    <string name="internet_connection_error">Chyba připojení k internetu.</string>
+    <string name="edit">Upravit</string>
+    <string name="delete">Smazat</string>
+    <string name="build_name">Název</string>
+    <string name="build_content">Obsah sestavy</string>
+    <string name="build_weblink">Webový odkaz</string>
+    <string name="no_app_for_link">Nenalezena žádná aplikace pro tento obsah</string>
+    <string name="confirmation">Potvrzení</string>
+    <string name="do_you_want_to_delete_this_build">Chceš smazat tuto sestavu?</string>
+    <string name="add_weblink_build_desc">Nahraď jméno šampióna zástupným symbolem \"{}\" pro přidání univerzálního odkazu na sestavu.</string>
+    <string name="error_when_loading">Chyba při načítání detailů šampióna, zkus to znovu.</string>
+    <string name="reload">Znovu načíst</string>
+    <string name="switch_language">Změnit jazyk</string>
+    <string name="switch_language_desc">Změnit jazyk zobrazení dat šampiónů</string>
+    <string name="select_language">Vybrat jazyk</string>
+    <string name="refresh_data">Obnovit data</string>
+    <string name="refresh_data_desc">Smazat všechna lokální data a znovu načíst z internetu</string>
+    <string name="confirm">Potvrdit</string>
+    <string name="cancel">Zrušit</string>
+    <string name="refresh_data_dialog_title">Obnovit data?</string>
+    <string name="refresh_data_dialog_message">Všechna lokální data budou smazána a znovu načtena z internetu.</string>
+    <string name="switch_language_dialog_title">Změnit jazyk?</string>
+    <string name="switch_language_dialog_message">Data šampiónů budou znovu načtena v %1$s.</string>
+
+    <string name="tag_fighter">Bojovník</string>
+    <string name="tag_tank">Tank</string>
+    <string name="tag_mage">Mág</string>
+    <string name="tag_assassin">Zabiják</string>
+    <string name="tag_support">Podpora</string>
+    <string name="tag_marksman">Střelec</string>
+    <array name="tabs">
+        <item>Schopnosti</item>
+        <item>Statistiky</item>
+        <item>Sestavy</item>
+        <item>Skiny</item>
+    </array>
+    <array name="abilities">
+        <item>Pasivní</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>

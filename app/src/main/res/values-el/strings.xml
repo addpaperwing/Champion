@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL Πρωταθλητές</string>
+    <string name="it_might_take_a_bit_while_for_the_first_load">Η πρώτη φόρτωση ή η ενημέρωση patch μπορεί να διαρκέσει λίγο</string>
+    <string name="loading_data_">Φόρτωση δεδομένων πρωταθλητή…</string>
+    <string name="choose_your">Επίλεξε τον</string>
+    <string name="champion">Πρωταθλητή σου</string>
+    <string name="choose_your_champion_desc">Με περισσότερους από 140 πρωταθλητές, θα βρεις τον κατάλληλο για το στυλ παιχνιδιού σου. Κατέκτησε έναν ή κατέκτησε όλους.</string>
+    <string name="role">Ρόλος</string>
+    <string name="difficulty">Δυσκολία</string>
+    <string name="more">…Περισσότερα</string>
+    <string name="less">Λιγότερα</string>
+    <string name="move_speed">Βασική ταχύτητα κίνησης: %s</string>
+    <string name="attack_range">Βασική εμβέλεια επίθεσης: %s</string>
+    <string name="level">Επ. </string>
+    <string name="hp">ΖΥ</string>
+    <string name="hp_regen">Ανακ. ΖΥ</string>
+    <string name="mp_regen">Ανακ. %s</string>
+    <string name="armor">Πανοπλία</string>
+    <string name="magic_resist">Μαγ. Αντίσταση</string>
+    <string name="attack_damage">Ζημιά Επίθεσης</string>
+    <string name="attack_speed">Ταχύτητα Επίθεσης</string>
+    <string name="skin_name_default">Προεπιλογή</string>
+    <string name="settings">Ρυθμίσεις</string>
+    <string name="latest_game_version">Τελευταία έκδοση παιχνιδιού: </string>
+    <string name="app_data_version">Έκδοση δεδομένων: </string>
+    <string name="language">Γλώσσα</string>
+    <string name="internet_connection_error">Σφάλμα σύνδεσης Internet.</string>
+    <string name="edit">Επεξεργασία</string>
+    <string name="delete">Διαγραφή</string>
+    <string name="build_name">Όνομα</string>
+    <string name="build_content">Περιεχόμενο build</string>
+    <string name="build_weblink">Σύνδεσμος web</string>
+    <string name="no_app_for_link">Δεν βρέθηκε εφαρμογή για αυτό το περιεχόμενο</string>
+    <string name="confirmation">Επιβεβαίωση</string>
+    <string name="do_you_want_to_delete_this_build">Θέλεις να διαγράψεις αυτό το build;</string>
+    <string name="add_weblink_build_desc">Αντικατέστησε το όνομα του πρωταθλητή με τον εκπρόσωπο \"{}\" για να προσθέσεις έναν καθολικό σύνδεσμο build.</string>
+    <string name="error_when_loading">Σφάλμα κατά τη φόρτωση λεπτομερειών πρωταθλητή, δοκίμασε ξανά.</string>
+    <string name="reload">Επαναφόρτωση</string>
+    <string name="switch_language">Αλλαγή γλώσσας</string>
+    <string name="switch_language_desc">Αλλαγή γλώσσας εμφάνισης δεδομένων πρωταθλητή</string>
+    <string name="select_language">Επιλογή γλώσσας</string>
+    <string name="refresh_data">Ανανέωση δεδομένων</string>
+    <string name="refresh_data_desc">Διαγραφή όλων των τοπικών δεδομένων και επαναφόρτωση από το Internet</string>
+    <string name="confirm">Επιβεβαίωση</string>
+    <string name="cancel">Ακύρωση</string>
+    <string name="refresh_data_dialog_title">Ανανέωση δεδομένων;</string>
+    <string name="refresh_data_dialog_message">Όλα τα τοπικά δεδομένα θα διαγραφούν και θα επαναφορτωθούν από το Internet.</string>
+    <string name="switch_language_dialog_title">Αλλαγή γλώσσας;</string>
+    <string name="switch_language_dialog_message">Τα δεδομένα πρωταθλητή θα επαναφορτωθούν στα %1$s.</string>
+
+    <string name="tag_fighter">Μαχητής</string>
+    <string name="tag_tank">Τανκ</string>
+    <string name="tag_mage">Μάγος</string>
+    <string name="tag_assassin">Δολοφόνος</string>
+    <string name="tag_support">Υποστήριξη</string>
+    <string name="tag_marksman">Σκοπευτής</string>
+    <array name="tabs">
+        <item>Ικανότητες</item>
+        <item>Στατιστικά</item>
+        <item>Builds</item>
+        <item>Εμφανίσεις</item>
+    </array>
+    <array name="abilities">
+        <item>Παθητικό</item>
+        <item>Q</item>
+        <item>W</item>
+        <item>E</item>
+        <item>R</item>
+    </array>
+</resources>
