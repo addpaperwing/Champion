@@ -66,6 +66,8 @@ internal val akaliDetail = ChampionDetail(
             SkinNumber(7, "Headhunter Akali"),
             SkinNumber(8, "Sashimi Akali"),
             SkinNumber(9, "K/DA Akali"),
+            SkinNumber(10, "Headhunter Akali (Ruby)", parentSkin = 7),
+            SkinNumber(11, "Headhunter Akali (Tanzanite)", parentSkin = 7),
             SkinNumber(13, "Prestige K/DA Akali"),
             SkinNumber(14, "PROJECT: Akali"),
             SkinNumber(15, "True Damage Akali"),

@@ -132,10 +132,7 @@ class ChampionDetailViewModelTest {
 
         val collectJob1 = launch(UnconfinedTestDispatcher()) { viewModel.result.collect() }
 
-        // Fetching from remote drops skins with non-year parentheses, but keeps year variants like "Prestige K/DA Akali (2022)".
-        val expectedDetail = akaliDetail.copy(skins = akaliDetail.skins.filterNot {
-            it.name.contains("(") && !it.name.contains(Regex("""\(\d{4}\)"""))
-        })
+        val expectedDetail = akaliDetail.copy(skins = akaliDetail.skins.filterNot { it.isChroma })
         assertEquals(UiState.Success(ChampionAndDetail(akali, expectedDetail)), viewModel.result.value)
 
         collectJob1.cancel()
