@@ -57,21 +57,43 @@ object PersistenceModule {
                     override fun migrate(db: SupportSQLiteDatabase) {
                         // No schema changes — version bumped to align with feature/remove-chroma-skins.
                     }
+                },
+                object : Migration(2, 3) {
+                    override fun migrate(db: SupportSQLiteDatabase) {
+                        // Remove duplicate default builds created by the onOpen re-insert bug.
+                        db.execSQL(
+                            "DELETE FROM ChampionBuild WHERE id NOT IN " +
+                            "(SELECT MIN(id) FROM ChampionBuild GROUP BY nameOfBuild)"
+                        )
+                    }
                 }
             )
             .build()
     }
 
     private fun prepopulateChampionBuild(db: SupportSQLiteDatabase) {
-        val buildOpgg = contentValuesOf(("nameOfBuild" to NAME_OF_BUILD_OPGG), ("url" to URL_OF_OPGG))
-        val buildUgg = contentValuesOf(("nameOfBuild" to NAME_OF_BUILD_UGG), ("url" to URL_OF_UGG))
-        val buildOpggAram = contentValuesOf(("nameOfBuild" to NAME_OF_BUILD_OPGG_ARAM), ("url" to URL_OF_OPGG_ARAM))
-        try {
-            db.insert("ChampionBuild", conflictAlgorithm = SQLiteDatabase.CONFLICT_IGNORE, values = buildOpgg)
-            db.insert("ChampionBuild", conflictAlgorithm = SQLiteDatabase.CONFLICT_IGNORE, values = buildUgg)
-            db.insert("ChampionBuild", conflictAlgorithm = SQLiteDatabase.CONFLICT_IGNORE, values = buildOpggAram)
-        } catch (e: Throwable) {
-            e.printStackTrace()
+        listOf(
+            NAME_OF_BUILD_OPGG to URL_OF_OPGG,
+            NAME_OF_BUILD_UGG to URL_OF_UGG,
+            NAME_OF_BUILD_OPGG_ARAM to URL_OF_OPGG_ARAM
+        ).forEach { (name, url) ->
+            try {
+                val cursor = db.query(
+                    "SELECT COUNT(*) FROM ChampionBuild WHERE nameOfBuild = ?",
+                    arrayOf(name)
+                )
+                val exists = cursor.moveToFirst() && cursor.getInt(0) > 0
+                cursor.close()
+                if (!exists) {
+                    db.insert(
+                        "ChampionBuild",
+                        SQLiteDatabase.CONFLICT_IGNORE,
+                        contentValuesOf("nameOfBuild" to name, "url" to url)
+                    )
+                }
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
         }
     }
 

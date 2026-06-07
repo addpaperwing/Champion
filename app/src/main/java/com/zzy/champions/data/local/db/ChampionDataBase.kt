@@ -9,7 +9,7 @@ import com.zzy.champions.data.model.ChampionDetail
 
 @Database(
     entities = [Champion::class, ChampionDetail::class, ChampionBuild::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
