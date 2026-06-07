@@ -6,9 +6,9 @@ import com.squareup.moshi.JsonClass
 data class SkinNumber(
     val num: Int,
     val name: String,
-//    var initSelectState: Boolean = num == 0
+    val parentSkin: Int? = null,
 ) {
-//    var isSelected by mutableStateOf(initSelectState)
+    val isChroma: Boolean get() = parentSkin != null
 
     fun getSplash(championId: String): String = "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${championId}_$num.jpg"
 }
