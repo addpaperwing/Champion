@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import androidx.core.content.contentValuesOf
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.zzy.champions.data.local.AppDataSource
 import com.zzy.champions.data.local.DataStoreManager
@@ -45,13 +46,19 @@ object PersistenceModule {
             .databaseBuilder(application, ChampionDataBase::class.java, DB_NAME)
             .addCallback(object: RoomDatabase.Callback() {
 
-                override fun onCreate(db: SupportSQLiteDatabase) {
-                    super.onCreate(db)
+                override fun onOpen(db: SupportSQLiteDatabase) {
+                    super.onOpen(db)
 
                     prepopulateChampionBuild(db)
                 }
             })
-            .fallbackToDestructiveMigration()
+            .addMigrations(
+                object : Migration(1, 2) {
+                    override fun migrate(db: SupportSQLiteDatabase) {
+                        // No schema changes — version bumped to align with feature/remove-chroma-skins.
+                    }
+                }
+            )
             .build()
     }
 
