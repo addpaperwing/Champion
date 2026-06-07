@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import androidx.core.content.contentValuesOf
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.zzy.champions.data.local.AppDataSource
 import com.zzy.champions.data.local.DataStoreManager
@@ -51,6 +52,14 @@ object PersistenceModule {
                     prepopulateChampionBuild(db)
                 }
             })
+            .addMigrations(
+                // Clears cached detail so the parentSkin-based chroma filter is applied on re-fetch.
+                object : Migration(1, 2) {
+                    override fun migrate(db: SupportSQLiteDatabase) {
+                        db.execSQL("DELETE FROM ChampionDetail")
+                    }
+                }
+            )
             .fallbackToDestructiveMigration()
             .build()
     }
