@@ -40,6 +40,8 @@ fun ChampionNavHost(
                 navController.popBackStack(CHAMPION_INDEX_ROUTE, inclusive = false)
             }
         )
+
+        itemsScreen()
     }
 }
 

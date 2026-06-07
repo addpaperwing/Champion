@@ -47,23 +47,26 @@ internal val sorceresShoes = Item(
     upgrades = emptyList(),
 )
 
+private val remoteItems = listOf(longSword, infinityEdge, sorceresShoes)
+
 internal class TestItemRepository : ItemRepository {
-    private val items = mutableListOf(longSword, infinityEdge, sorceresShoes)
+    // Separate local store so clearning local doesn't affect remote
+    private val localItems = mutableListOf(longSword, infinityEdge, sorceresShoes)
     var shouldThrowOnFetch = false
 
     override suspend fun getRemoteItems(version: String, language: String): List<Item> {
         if (shouldThrowOnFetch) throw java.io.IOException("Network error")
-        return items
+        return remoteItems
     }
 
     override suspend fun saveLocalItems(items: List<Item>) {
-        this.items.clear()
-        this.items.addAll(items)
+        localItems.clear()
+        localItems.addAll(items)
     }
 
-    override suspend fun getLocalItems(): List<Item> = items.toList()
+    override suspend fun getLocalItems(): List<Item> = localItems.toList()
 
-    override suspend fun getItemCount(): Int = items.size
+    override suspend fun getItemCount(): Int = localItems.size
 
-    override suspend fun getItemById(id: String): Item? = items.find { it.id == id }
+    override suspend fun getItemById(id: String): Item? = localItems.find { it.id == id }
 }

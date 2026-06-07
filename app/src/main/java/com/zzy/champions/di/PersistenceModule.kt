@@ -13,6 +13,7 @@ import com.zzy.champions.data.local.DataStoreManager
 import com.zzy.champions.data.local.db.ChampionBuildDao
 import com.zzy.champions.data.local.db.ChampionDao
 import com.zzy.champions.data.local.db.ChampionDataBase
+import com.zzy.champions.data.local.db.ItemDao
 import com.zzy.champions.data.model.NAME_OF_BUILD_OPGG
 import com.zzy.champions.data.model.NAME_OF_BUILD_OPGG_ARAM
 import com.zzy.champions.data.model.NAME_OF_BUILD_UGG
@@ -66,6 +67,26 @@ object PersistenceModule {
                             "(SELECT MIN(id) FROM ChampionBuild GROUP BY nameOfBuild)"
                         )
                     }
+                },
+                object : Migration(3, 4) {
+                    override fun migrate(db: SupportSQLiteDatabase) {
+                        db.execSQL(
+                            """CREATE TABLE IF NOT EXISTS `items` (
+                                `id` TEXT NOT NULL,
+                                `name` TEXT NOT NULL,
+                                `description` TEXT NOT NULL,
+                                `plaintext` TEXT NOT NULL,
+                                `image` TEXT NOT NULL,
+                                `gold` TEXT NOT NULL,
+                                `tags` TEXT NOT NULL,
+                                `maps` TEXT NOT NULL,
+                                `stats` TEXT NOT NULL,
+                                `components` TEXT NOT NULL,
+                                `upgrades` TEXT NOT NULL,
+                                PRIMARY KEY(`id`)
+                            )""".trimIndent()
+                        )
+                    }
                 }
             )
             .build()
@@ -104,5 +125,6 @@ object PersistenceModule {
     @Provides
     fun provideChampionBuildDao(db: ChampionDataBase): ChampionBuildDao = db.championBuildDao()
 
-
+    @Provides
+    fun provideItemDao(db: ChampionDataBase): ItemDao = db.itemDao()
 }

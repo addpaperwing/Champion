@@ -2,6 +2,7 @@ package com.zzy.champions.data.remote
 
 import com.zzy.champions.data.model.ChampionDetailResponse
 import com.zzy.champions.data.model.ChampionResponse
+import com.zzy.champions.data.model.ItemResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -18,4 +19,10 @@ interface Api {
 
     @GET("/cdn/{version}/data/{language}/champion/{id}.json")
     suspend fun getChampionDetail(@Path("version") version: String, @Path("language") language: String, @Path("id") id: String): ChampionDetailResponse
+
+    @GET("/cdn/{version}/data/{language}/item.json")
+    suspend fun getItems(
+        @Path("version") version: String,
+        @Path("language") language: String
+    ): ItemResponse
 }
