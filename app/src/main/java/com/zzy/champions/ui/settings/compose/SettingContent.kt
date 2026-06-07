@@ -1,6 +1,7 @@
 package com.zzy.champions.ui.settings.compose
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.ui.semantics.Role
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,12 +54,15 @@ fun SettingItem(
     modifier: Modifier = Modifier,
     itemName: String,
     description: String? = null,
+    onClick: (() -> Unit)? = null,
+    role: Role = Role.Button,
     content: @Composable RowScope.() -> Unit,
 ) {
     Column(modifier.fillMaxWidth()) {
         Row(
             Modifier
                 .background(color = MaterialTheme.colorScheme.surface)
+                .then(if (onClick != null) Modifier.minimumInteractiveComponentSize().clickable(role = role, onClick = onClick) else Modifier)
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
