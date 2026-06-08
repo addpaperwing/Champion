@@ -19,12 +19,22 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.zzy.champions.R
 import com.zzy.champions.data.model.Item
+import com.zzy.champions.data.model.itemIconUrl
+
+private val REGEX_HTML_TAGS = Regex("<[^>]+>")
+private val REGEX_STAT_PREFIX = Regex("^(Flat|Percent)")
+private val REGEX_STAT_SUFFIX = Regex("Mod$")
+private val REGEX_ACRONYM_SPLIT = Regex("([A-Z]+)([A-Z][a-z])")
+private val REGEX_CAMEL_SPLIT = Regex("([a-z\\d])([A-Z])")
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,6 +43,7 @@ fun ItemBottomSheet(
     version: String,
     onDismiss: () -> Unit,
     onComponentClick: (String) -> Unit,
+    resolveItem: (String) -> Item? = { null },
     modifier: Modifier = Modifier,
 ) {
     ModalBottomSheet(
@@ -49,7 +60,7 @@ fun ItemBottomSheet(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 AsyncImage(
-                    model = item.getIconUrl(version),
+                    model = item.getIconUrl(version).takeIf { version.isNotEmpty() },
                     contentDescription = item.name,
                     modifier = Modifier.size(56.dp),
                 )
@@ -74,7 +85,8 @@ fun ItemBottomSheet(
 
             item.stats.forEach { (key, value) ->
                 val label = formatStatKey(key)
-                val display = if (value < 1.0) "+${(value * 100).toInt()}%" else "+${value.toInt()}"
+                val isPercent = key.startsWith("Percent") || value < 1.0
+                val display = if (isPercent) "+${(value * 100).toInt()}%" else "+${value.toInt()}"
                 Text(
                     text = "$display $label",
                     style = MaterialTheme.typography.bodyMedium,
@@ -82,10 +94,9 @@ fun ItemBottomSheet(
                 )
             }
 
-            val descText = item.description
-                .replace(Regex("<[^>]+>"), "")
-                .trim()
-                .ifEmpty { item.plaintext }
+            val descText = remember(item.description) {
+                item.description.replace(REGEX_HTML_TAGS, "").trim().ifEmpty { item.plaintext }
+            }
             if (descText.isNotEmpty()) {
                 Spacer(Modifier.height(8.dp))
                 Text(text = descText, style = MaterialTheme.typography.bodySmall)
@@ -94,50 +105,51 @@ fun ItemBottomSheet(
             if (item.components.isNotEmpty()) {
                 Spacer(Modifier.height(12.dp))
                 Text(
-                    text = "Builds from:",
+                    text = stringResource(R.string.builds_from),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(Modifier.height(4.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    item.components.forEach { componentId ->
-                        AsyncImage(
-                            model = "https://ddragon.leagueoflegends.com/cdn/$version/img/item/$componentId.png",
-                            contentDescription = componentId,
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clickable { onComponentClick(componentId) },
-                        )
-                    }
-                }
+                ItemImageRow(ids = item.components, version = version, onItemClick = onComponentClick)
             }
 
-            if (item.upgrades.isNotEmpty()) {
+            val visibleUpgrades = item.upgrades.filter { resolveItem(it) != null }
+            if (visibleUpgrades.isNotEmpty()) {
                 Spacer(Modifier.height(12.dp))
                 Text(
-                    text = "Builds into:",
+                    text = stringResource(R.string.builds_into),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(Modifier.height(4.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    item.upgrades.forEach { upgradeId ->
-                        AsyncImage(
-                            model = "https://ddragon.leagueoflegends.com/cdn/$version/img/item/$upgradeId.png",
-                            contentDescription = upgradeId,
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clickable { onComponentClick(upgradeId) },
-                        )
-                    }
-                }
+                ItemImageRow(ids = visibleUpgrades, version = version, onItemClick = onComponentClick)
             }
         }
     }
 }
 
+@Composable
+private fun ItemImageRow(
+    ids: List<String>,
+    version: String,
+    onItemClick: (String) -> Unit,
+) {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        ids.forEach { id ->
+            AsyncImage(
+                model = itemIconUrl(version, id).takeIf { version.isNotEmpty() },
+                contentDescription = id,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clickable { onItemClick(id) },
+            )
+        }
+    }
+}
+
 private fun formatStatKey(key: String): String =
-    key.replace(Regex("^(Flat|Percent)"), "")
-        .replace(Regex("Mod$"), "")
-        .replace(Regex("([A-Z])"), " $1")
+    key.replace(REGEX_STAT_PREFIX, "")
+        .replace(REGEX_STAT_SUFFIX, "")
+        .replace(REGEX_ACRONYM_SPLIT, "$1 $2")
+        .replace(REGEX_CAMEL_SPLIT, "$1 $2")
         .trim()

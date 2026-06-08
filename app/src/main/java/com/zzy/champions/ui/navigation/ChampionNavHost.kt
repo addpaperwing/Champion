@@ -11,6 +11,7 @@ fun ChampionNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     onLinkClick: (String) -> Unit,
+    onSplashFinished: () -> Unit = {},
 ) {
     NavHost(
         modifier = modifier,
@@ -20,6 +21,7 @@ fun ChampionNavHost(
         championIndexScreen(
             onItemClick = { navController.navigateToChampionDetail(it.id) },
             onSettingClick = { navController.navigate(SETTINGS_ROUTE) { launchSingleTop = true } },
+            onSplashFinished = onSplashFinished,
         )
 
         championDetailScreen(onLinkClick)
@@ -41,7 +43,9 @@ fun ChampionNavHost(
             }
         )
 
-        itemsScreen()
+        itemsScreen(
+            onSettingClick = { navController.navigate(SETTINGS_ROUTE) { launchSingleTop = true } },
+        )
     }
 }
 
@@ -52,12 +56,15 @@ fun NavHostController.navigateSingleTopTo(route: String) =
         restoreState = true
     }
 
-// CHAMPION_INDEX_ROUTE is the startDestination and is always in the back stack when
-// settings/language destinations are active, so getBackStackEntry won't throw here.
+// Add new top-level tabs here so they receive language-change and data-refresh signals.
+private val REFRESHABLE_ROUTES = listOf(CHAMPION_INDEX_ROUTE, ITEMS_ROUTE)
+
 private fun NavHostController.signalRefresh() {
-    try {
-        getBackStackEntry(CHAMPION_INDEX_ROUTE).savedStateHandle[KEY_REFRESH] = true
-    } catch (_: IllegalArgumentException) {
-        // Index entry not in stack — navigation state is unexpected, skip the signal.
+    for (route in REFRESHABLE_ROUTES) {
+        try {
+            getBackStackEntry(route).savedStateHandle[KEY_REFRESH] = true
+        } catch (_: IllegalArgumentException) {
+            // Entry not yet in back stack (screen never visited) — skip.
+        }
     }
 }

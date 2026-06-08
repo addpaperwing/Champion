@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LoL Şampiyonlar</string>
     <string name="it_might_take_a_bit_while_for_the_first_load">İlk yükleme veya yama güncellemesi biraz zaman alabilir</string>
@@ -68,4 +68,8 @@
         <item>E</item>
         <item>R</item>
     </array>
+    <string name="builds_from">Parçalar:</string>
+    <string name="builds_into">Yükseltme:</string>
+    <string name="nav_champions">Şampiyonlar</string>
+    <string name="nav_items">Eşyalar</string>
 </resources>

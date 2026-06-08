@@ -2,11 +2,13 @@ package com.zzy.champions.settings
 
 import com.zzy.champions.MainDispatcherRule
 import com.zzy.champions.TestChampionRepository
+import com.zzy.champions.TestItemRepository
 import com.zzy.champions.VERSION_14_0
 import com.zzy.champions.akali
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.data.repository.AppDataRepository
 import com.zzy.champions.domain.GetChampionDataUseCase
+import com.zzy.champions.domain.GetItemDataUseCase
 import com.zzy.champions.ui.settings.SettingsViewModel
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -38,7 +40,9 @@ class SettingsViewModelTest {
     private lateinit var appDataRepository: AppDataRepository
 
     private val championRepository = TestChampionRepository()
+    private val itemRepository = TestItemRepository()
     private lateinit var getChampionDataUseCase: GetChampionDataUseCase
+    private lateinit var getItemDataUseCase: GetItemDataUseCase
     private lateinit var viewModel: SettingsViewModel
 
     @Before
@@ -47,11 +51,12 @@ class SettingsViewModelTest {
         getChampionDataUseCase = GetChampionDataUseCase(
             championRepository, appDataRepository, Dispatchers.Main
         )
+        getItemDataUseCase = GetItemDataUseCase(itemRepository, appDataRepository, Dispatchers.Main)
         coEvery { appDataRepository.getLanguage() } returns flowOf("en_US")
         coEvery { appDataRepository.getSupportedLanguages() } returns listOf("en_US", "zh_CN", "ko_KR")
 
         viewModel = SettingsViewModel(
-            appDataRepository, championRepository, getChampionDataUseCase, Dispatchers.Main
+            appDataRepository, championRepository, getChampionDataUseCase, getItemDataUseCase, Dispatchers.Main
         )
     }
 
@@ -68,7 +73,7 @@ class SettingsViewModelTest {
     fun languageError_setsErrorState() = runTest {
         coEvery { appDataRepository.getSupportedLanguages() } throws IOException()
         viewModel = SettingsViewModel(
-            appDataRepository, championRepository, getChampionDataUseCase, Dispatchers.Main
+            appDataRepository, championRepository, getChampionDataUseCase, getItemDataUseCase, Dispatchers.Main
         )
         val job = launch(UnconfinedTestDispatcher()) { viewModel.languages.collect() }
         advanceUntilIdle()

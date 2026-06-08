@@ -84,4 +84,9 @@
         <item>E</item>
         <item>R</item>
     </array>
+    <string name="builds_from">合成材料：</string>
+    <string name="builds_into">升级为：</string>
+
+    <string name="nav_champions">英雄</string>
+    <string name="nav_items">装备</string>
 </resources>

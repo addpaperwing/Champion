@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LoL Bajnokok</string>
     <string name="it_might_take_a_bit_while_for_the_first_load">Az első betöltés vagy frissítés egy kis időt vehet igénybe</string>
@@ -68,4 +68,8 @@
         <item>E</item>
         <item>R</item>
     </array>
+    <string name="builds_from">Összetevők:</string>
+    <string name="builds_into">Fejleszthető:</string>
+    <string name="nav_champions">Bajnokok</string>
+    <string name="nav_items">Tárgyak</string>
 </resources>

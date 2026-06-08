@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">英雄联盟英雄</string>
     <string name="it_might_take_a_bit_while_for_the_first_load">首次加载或版本更新可能需要较长时间</string>
@@ -69,4 +69,8 @@
         <item>E</item>
         <item>R</item>
     </array>
+    <string name="builds_from">合成材料：</string>
+    <string name="builds_into">升级为：</string>
+    <string name="nav_champions">英雄</string>
+    <string name="nav_items">装备</string>
 </resources>

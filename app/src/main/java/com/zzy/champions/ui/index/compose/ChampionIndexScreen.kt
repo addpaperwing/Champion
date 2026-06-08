@@ -42,6 +42,7 @@ fun ChampionIndexRoute(
     onItemClick: (Champion) -> Unit,
     shouldRefresh: Boolean = false,
     onRefreshConsumed: () -> Unit = {},
+    onSplashFinished: () -> Unit = {},
 ) {
     LaunchedEffect(shouldRefresh) {
         if (shouldRefresh) {
@@ -59,6 +60,7 @@ fun ChampionIndexRoute(
         onInsertBuilds = {},
         onSettingClick = onSettingClick,
         onItemClick = onItemClick,
+        onSplashFinished = onSplashFinished,
     )
 }
 
@@ -71,6 +73,7 @@ fun ChampionIndexScreen(
     onInsertBuilds: () -> Unit,
     onSettingClick: () -> Unit,
     onItemClick: (Champion) -> Unit,
+    onSplashFinished: () -> Unit = {},
 ) {
     var showLandingScreen by rememberSaveable { mutableStateOf(onboardingShowLandingScreen) }
     var searchText by rememberSaveable { mutableStateOf("") }
@@ -125,6 +128,7 @@ fun ChampionIndexScreen(
     } else {
         LaunchScreen(modifier = Modifier, onTimeout = {
             showLandingScreen = false
+            onSplashFinished()
         })
     }
 }

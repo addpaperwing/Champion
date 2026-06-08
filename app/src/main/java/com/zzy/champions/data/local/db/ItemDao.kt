@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.zzy.champions.data.model.Item
 
 @Dao
@@ -20,6 +21,12 @@ interface ItemDao {
 
     @Query("DELETE FROM items")
     suspend fun clearItems()
+
+    @Transaction
+    suspend fun clearAndInsertItems(items: List<Item>) {
+        clearItems()
+        insertItems(items)
+    }
 
     @Query("SELECT * FROM items WHERE id = :id LIMIT 1")
     suspend fun getItemById(id: String): Item?

@@ -69,4 +69,8 @@ internal class TestItemRepository : ItemRepository {
     override suspend fun getItemCount(): Int = localItems.size
 
     override suspend fun getItemById(id: String): Item? = localItems.find { it.id == id }
+
+    override suspend fun clearLocalItems() {
+        localItems.clear()
+    }
 }

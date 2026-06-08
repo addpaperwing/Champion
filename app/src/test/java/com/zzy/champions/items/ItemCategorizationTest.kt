@@ -3,7 +3,7 @@ package com.zzy.champions.items
 import com.zzy.champions.data.model.Image
 import com.zzy.champions.data.model.Item
 import com.zzy.champions.data.model.ItemGold
-import com.zzy.champions.ui.items.compose.categorizeItems
+import com.zzy.champions.ui.items.categorizeItems
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

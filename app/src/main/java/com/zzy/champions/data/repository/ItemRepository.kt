@@ -8,4 +8,5 @@ interface ItemRepository {
     suspend fun getLocalItems(): List<Item>
     suspend fun getItemCount(): Int
     suspend fun getItemById(id: String): Item?
+    suspend fun clearLocalItems()
 }

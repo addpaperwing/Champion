@@ -19,7 +19,11 @@ class DefaultItemRepository @Inject constructor(
         }
 
     override suspend fun saveLocalItems(items: List<Item>) = withContext(dispatcher) {
-        dao.insertItems(items)
+        dao.clearAndInsertItems(items)
+    }
+
+    override suspend fun clearLocalItems() = withContext(dispatcher) {
+        dao.clearItems()
     }
 
     override suspend fun getLocalItems(): List<Item> = withContext(dispatcher) {

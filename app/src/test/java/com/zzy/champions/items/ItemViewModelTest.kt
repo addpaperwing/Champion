@@ -9,6 +9,7 @@ import com.zzy.champions.data.repository.AppDataRepository
 import com.zzy.champions.domain.GetItemDataUseCase
 import com.zzy.champions.infinityEdge
 import com.zzy.champions.ui.items.ItemViewModel
+import androidx.lifecycle.SavedStateHandle
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
@@ -42,22 +43,23 @@ class ItemViewModelTest {
         coEvery { appDataRepository.getLanguage() } returns flowOf(LANGUAGE_US)
         itemRepository = TestItemRepository()
         useCase = GetItemDataUseCase(itemRepository, appDataRepository, Dispatchers.Main)
-        viewModel = ItemViewModel(useCase)
+        viewModel = ItemViewModel(useCase, appDataRepository, SavedStateHandle())
     }
 
     @Test
     fun stateIsInitiallyLoading() {
-        assertEquals(UiState.Loading, viewModel.items.value)
+        assertEquals(UiState.Loading, viewModel.categorizedItems.value)
     }
 
     @Test
     fun items_loadsSuccessfully() = runTest {
-        val job = launch { viewModel.items.collect() }
+        val job = launch { viewModel.categorizedItems.collect() }
         advanceUntilIdle()
 
-        val state = viewModel.items.value
+        val state = viewModel.categorizedItems.value
         assert(state is UiState.Success)
-        assertEquals(3, (state as UiState.Success).data.size)
+        val totalItems = (state as UiState.Success).data.sumOf { it.second.size }
+        assertEquals(3, totalItems)
         job.cancel()
     }
 

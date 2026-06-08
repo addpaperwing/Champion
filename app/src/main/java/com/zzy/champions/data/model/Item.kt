@@ -24,3 +24,7 @@ data class Item(
     fun getIconUrl(version: String) =
         "https://ddragon.leagueoflegends.com/cdn/$version/img/item/${image.full}"
 }
+
+// For component/upgrade IDs that don't carry an Image object
+fun itemIconUrl(version: String, itemId: String) =
+    "https://ddragon.leagueoflegends.com/cdn/$version/img/item/$itemId.png"

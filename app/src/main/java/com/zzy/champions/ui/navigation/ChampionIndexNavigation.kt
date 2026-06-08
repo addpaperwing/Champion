@@ -22,6 +22,7 @@ fun NavController.navigateToChampionIndex(navOptions: NavOptions) =
 fun NavGraphBuilder.championIndexScreen(
     onItemClick: (Champion) -> Unit,
     onSettingClick: () -> Unit,
+    onSplashFinished: () -> Unit = {},
 ) {
     composable(
         route = CHAMPION_INDEX_ROUTE,
@@ -47,6 +48,7 @@ fun NavGraphBuilder.championIndexScreen(
             onSettingClick = onSettingClick,
             shouldRefresh = shouldRefresh,
             onRefreshConsumed = { backStackEntry.savedStateHandle[KEY_REFRESH] = false },
+            onSplashFinished = onSplashFinished,
         )
     }
 }

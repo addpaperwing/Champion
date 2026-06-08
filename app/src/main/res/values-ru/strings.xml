@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LoL Чемпионы</string>
     <string name="it_might_take_a_bit_while_for_the_first_load">Первая загрузка или обновление патча может занять некоторое время</string>
@@ -68,4 +68,8 @@
         <item>E</item>
         <item>R</item>
     </array>
+    <string name="builds_from">Компоненты:</string>
+    <string name="builds_into">Улучшения:</string>
+    <string name="nav_champions">Чемпионы</string>
+    <string name="nav_items">Предметы</string>
 </resources>

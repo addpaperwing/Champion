@@ -6,6 +6,8 @@ import com.zzy.champions.data.repository.AppDataRepository
 import com.zzy.champions.data.repository.ItemRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -17,18 +19,32 @@ class GetItemDataUseCase @Inject constructor(
     private val appDataRepository: AppDataRepository,
     private val dispatcher: CoroutineDispatcher,
 ) {
+    suspend fun reset() {
+        itemRepository.clearLocalItems()
+    }
+
     suspend operator fun invoke(): UiState<List<Item>> = withContext(dispatcher) {
         try {
-            val cachedCount = itemRepository.getItemCount()
-            if (cachedCount > 0) {
-                return@withContext UiState.Success(itemRepository.getLocalItems())
+            val cached = itemRepository.getLocalItems()
+            if (cached.isNotEmpty()) {
+                return@withContext UiState.Success(cached)
             }
-            val version = appDataRepository.getLocalVersion().first()
-            val language = appDataRepository.getLanguage().first()
+            val (version, language) = coroutineScope {
+                val v = async { appDataRepository.getLocalVersion().first() }
+                val l = async { appDataRepository.getLanguage().first() }
+                v.await() to l.await()
+            }
             val fetched = itemRepository.getRemoteItems(version, language)
                 .filter { it.gold.purchasable }
-            itemRepository.saveLocalItems(fetched)
-            UiState.Success(itemRepository.getLocalItems())
+            if (appDataRepository.getLanguage().first() == language) {
+                itemRepository.saveLocalItems(fetched)
+                // If language changed mid-save, evict the stale data so the next
+                // retry fetches with the correct language.
+                if (appDataRepository.getLanguage().first() != language) {
+                    itemRepository.clearLocalItems()
+                }
+            }
+            UiState.Success(fetched)
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {

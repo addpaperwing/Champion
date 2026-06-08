@@ -53,11 +53,11 @@ class DefaultItemRepositoryTest {
     @Test
     fun saveLocalItems_callsDao() = runTest {
         val item = fakeItemFromApi.copy(id = "1036")
-        coJustRun { dao.insertItems(listOf(item)) }
+        coJustRun { dao.clearAndInsertItems(listOf(item)) }
 
         repository.saveLocalItems(listOf(item))
 
-        coVerify { dao.insertItems(listOf(item)) }
+        coVerify { dao.clearAndInsertItems(listOf(item)) }
     }
 
     @Test

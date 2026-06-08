@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LoL 챔피언</string>
 
@@ -84,4 +84,8 @@
         <item>E</item>
         <item>R</item>
     </array>
+    <string name="builds_from">재료:</string>
+    <string name="builds_into">조합 대상:</string>
+    <string name="nav_champions">챔피언</string>
+    <string name="nav_items">아이템</string>
 </resources>

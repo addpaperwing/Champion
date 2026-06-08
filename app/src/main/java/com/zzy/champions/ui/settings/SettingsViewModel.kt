@@ -6,6 +6,7 @@ import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.data.repository.AppDataRepository
 import com.zzy.champions.data.repository.ChampionRepository
 import com.zzy.champions.domain.GetChampionDataUseCase
+import com.zzy.champions.domain.GetItemDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,6 +26,7 @@ class SettingsViewModel @Inject constructor(
     private val appDataRepository: AppDataRepository,
     private val championRepository: ChampionRepository,
     private val getChampionDataUseCase: GetChampionDataUseCase,
+    private val getItemDataUseCase: GetItemDataUseCase,
     private val dispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
@@ -56,7 +58,8 @@ class SettingsViewModel @Inject constructor(
             championRepository.clearLocalData()
             appDataRepository.setLocalVersion("0")
             getChampionDataUseCase.reset()
-            withContext(NonCancellable + Dispatchers.Main) { onDone() }  // ← NonCancellable added
+            getItemDataUseCase.reset()
+            withContext(NonCancellable + Dispatchers.Main) { onDone() }
         }
     }
 
@@ -65,7 +68,8 @@ class SettingsViewModel @Inject constructor(
             championRepository.clearLocalData()
             appDataRepository.setLocalVersion("0")
             getChampionDataUseCase.reset()
-            withContext(NonCancellable + Dispatchers.Main) { onDone() }  // ← NonCancellable added
+            getItemDataUseCase.reset()
+            withContext(NonCancellable + Dispatchers.Main) { onDone() }
         }
     }
 }

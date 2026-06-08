@@ -87,6 +87,13 @@ object PersistenceModule {
                             )""".trimIndent()
                         )
                     }
+                },
+                object : Migration(4, 5) {
+                    override fun migrate(db: SupportSQLiteDatabase) {
+                        // Clear cached items so the next launch re-fetches without the
+                        // SR/ARAM filter that was previously applied — show all purchasable items.
+                        db.execSQL("DELETE FROM items")
+                    }
                 }
             )
             .build()

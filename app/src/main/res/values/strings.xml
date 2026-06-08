@@ -89,4 +89,10 @@
     <string name="tag_assassin">Assassin</string>
     <string name="tag_support">Support</string>
     <string name="tag_marksman">Marksman</string>
+
+    <string name="builds_from">Builds from:</string>
+    <string name="builds_into">Builds into:</string>
+
+    <string name="nav_champions">Champions</string>
+    <string name="nav_items">Items</string>
 </resources>
