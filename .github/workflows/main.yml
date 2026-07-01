@@ -49,7 +49,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                api-level: [26, 29]
+                api-level: [35, 36]
         steps:
             - name: Enable KVM group perms
               run: |
