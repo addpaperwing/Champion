@@ -28,11 +28,9 @@ fun ChampionNavHost(
         championDetailScreen(onLinkClick)
 
         settingsScreen(
-            onBack = { navController.popBackStack() },
             onLanguageClick = { navController.navigate(LANGUAGE_ROUTE) { launchSingleTop = true } },
             onRefreshDone = {
                 navController.signalRefresh()
-                navController.popBackStack()
             }
         )
 

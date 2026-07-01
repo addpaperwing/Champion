@@ -1,6 +1,5 @@
 package com.zzy.champions.ui.navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.tween
@@ -22,14 +21,14 @@ fun NavGraphBuilder.championIndexScreen(
         route = CHAMPION_INDEX_ROUTE,
         enterTransition = {
             slideIntoContainer(
+                towards = tabEnterDirection(CHAMPION_INDEX_ROUTE, initialState.destination.route),
                 animationSpec = tween(NAV_ANIM_DURATION, easing = EaseIn),
-                towards = AnimatedContentTransitionScope.SlideDirection.End
             )
         },
         exitTransition = {
             slideOutOfContainer(
+                towards = tabExitDirection(CHAMPION_INDEX_ROUTE, targetState.destination.route),
                 animationSpec = tween(NAV_ANIM_DURATION, easing = EaseOut),
-                towards = AnimatedContentTransitionScope.SlideDirection.Start
             )
         }
     ) { backStackEntry ->

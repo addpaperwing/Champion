@@ -29,7 +29,6 @@ import kotlinx.coroutines.launch
 fun SettingsRoute(
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel(),
-    onBack: () -> Unit,
     onLanguageClick: () -> Unit,
     onRefreshDone: () -> Unit,
 ) {
@@ -62,7 +61,7 @@ fun SettingsRoute(
 
     Scaffold(
         modifier = modifier,
-        topBar = { SettingAppbar(onBack = onBack) },
+        topBar = { SettingAppbar() },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         Column(Modifier.padding(padding)) {

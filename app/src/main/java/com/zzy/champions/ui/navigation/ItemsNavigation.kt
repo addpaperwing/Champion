@@ -1,6 +1,5 @@
 package com.zzy.champions.ui.navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.tween
@@ -17,19 +16,14 @@ fun NavGraphBuilder.itemsScreen(onSettingClick: () -> Unit = {}) {
         route = ITEMS_ROUTE,
         enterTransition = {
             slideIntoContainer(
+                towards = tabEnterDirection(ITEMS_ROUTE, initialState.destination.route),
                 animationSpec = tween(NAV_ANIM_DURATION, easing = EaseIn),
-                towards = AnimatedContentTransitionScope.SlideDirection.Start
             )
         },
         exitTransition = {
-            val currIdx = TOP_LEVEL_TABS.indexOfFirst { it.route == ITEMS_ROUTE }
-            val nextIdx = TOP_LEVEL_TABS.indexOfFirst { it.route == targetState.destination.route }
             slideOutOfContainer(
+                towards = tabExitDirection(ITEMS_ROUTE, targetState.destination.route),
                 animationSpec = tween(NAV_ANIM_DURATION, easing = EaseOut),
-                towards = if (nextIdx in 0 until currIdx)
-                    AnimatedContentTransitionScope.SlideDirection.End
-                else
-                    AnimatedContentTransitionScope.SlideDirection.Start
             )
         }
     ) { backStackEntry ->
