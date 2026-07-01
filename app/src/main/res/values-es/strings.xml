@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LoL Campeones</string>
     <string name="it_might_take_a_bit_while_for_the_first_load">La primera carga o actualización puede tardar un momento</string>
@@ -68,4 +68,20 @@
         <item>E</item>
         <item>R</item>
     </array>
+    <string name="builds_from">Componentes:</string>
+    <string name="builds_into">Mejoras:</string>
+    <string name="nav_champions">Campeones</string>
+    <string name="nav_items">Objetos</string>
+
+    <string name="error">Error</string>
+    <string name="language_switch_failed">Error al cambiar de idioma. Tus datos se están restaurando.</string>
+    <string name="data_refresh_failed">Error al actualizar. Inténtalo de nuevo.</string>
+
+    <string name="category_starter">Iniciales</string>
+    <string name="category_boots">Botas</string>
+    <string name="category_mythic">Mítico</string>
+    <string name="category_legendary">Legendario</string>
+    <string name="category_components">Componentes</string>
+    <string name="category_epic">Épico</string>
+    <string name="category_other">Otros</string>
 </resources>

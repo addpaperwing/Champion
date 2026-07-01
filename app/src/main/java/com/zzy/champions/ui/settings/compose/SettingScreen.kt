@@ -8,11 +8,14 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -20,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.zzy.champions.R
 import com.zzy.champions.ui.compose.TextDialog
 import com.zzy.champions.ui.settings.SettingsViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsRoute(
@@ -29,6 +33,9 @@ fun SettingsRoute(
     onLanguageClick: () -> Unit,
     onRefreshDone: () -> Unit,
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val refreshFailedMsg = stringResource(R.string.data_refresh_failed)
     var showRefreshDialog by remember { mutableStateOf(false) }
 
     if (showRefreshDialog) {
@@ -39,7 +46,10 @@ fun SettingsRoute(
             negativeButtonText = stringResource(R.string.cancel),
             onPositiveButtonClick = {
                 showRefreshDialog = false
-                viewModel.refreshData(onDone = onRefreshDone)
+                viewModel.refreshData(onDone = { success ->
+                    if (success) onRefreshDone()
+                    else scope.launch { snackbarHostState.showSnackbar(refreshFailedMsg) }
+                })
             },
             onNegativeButtonClick = { showRefreshDialog = false }
         ) {
@@ -52,7 +62,8 @@ fun SettingsRoute(
 
     Scaffold(
         modifier = modifier,
-        topBar = { SettingAppbar(onBack = onBack) }
+        topBar = { SettingAppbar(onBack = onBack) },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         Column(Modifier.padding(padding)) {
             SettingItem(

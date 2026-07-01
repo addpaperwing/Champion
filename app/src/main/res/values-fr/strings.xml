@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LoL Champions</string>
     <string name="it_might_take_a_bit_while_for_the_first_load">Le premier chargement ou une mise à jour peut prendre un moment</string>
@@ -68,4 +68,20 @@
         <item>E</item>
         <item>R</item>
     </array>
+    <string name="builds_from">Composants :</string>
+    <string name="builds_into">Améliorations :</string>
+    <string name="nav_champions">Champions</string>
+    <string name="nav_items">Objets</string>
+
+    <string name="error">Erreur</string>
+    <string name="language_switch_failed">Échec du changement de langue. Vos données sont en cours de restauration.</string>
+    <string name="data_refresh_failed">Échec de l\'actualisation. Veuillez réessayer.</string>
+
+    <string name="category_starter">Départ</string>
+    <string name="category_boots">Bottes</string>
+    <string name="category_mythic">Mythique</string>
+    <string name="category_legendary">Légendaire</string>
+    <string name="category_components">Composants</string>
+    <string name="category_epic">Épique</string>
+    <string name="category_other">Autre</string>
 </resources>

@@ -8,6 +8,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -20,21 +22,17 @@ import com.zzy.champions.ui.theme.MyApplicationTheme
 fun HtmlText(
     modifier: Modifier = Modifier,
     text: String,
+    color: Color = Color.Unspecified,
     @ColorRes defaultTextColor: Int = R.color.white,
 ) {
+    val argb = if (color != Color.Unspecified) color.toArgb() else null
     AndroidView(
         modifier = modifier,
-        factory = { context ->
-            TextView(context).apply {
-                setTextColor(ContextCompat.getColor(context, defaultTextColor))
-            }
-
-        },
-        update = {
-            it.text = HtmlCompat.fromHtml(
-                text,
-                HtmlCompat.FROM_HTML_MODE_COMPACT
-            )
+        factory = { context -> TextView(context) },
+        update = { tv ->
+            if (argb != null) tv.setTextColor(argb)
+            else tv.setTextColor(ContextCompat.getColor(tv.context, defaultTextColor))
+            tv.text = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_COMPACT)
         }
     )
 }

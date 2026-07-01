@@ -40,13 +40,14 @@ fun ChampionIndexRoute(
     viewModel: ChampionViewModel = hiltViewModel(),
     onSettingClick: () -> Unit,
     onItemClick: (Champion) -> Unit,
-    shouldRefresh: Boolean = false,
-    onRefreshConsumed: () -> Unit = {},
+    refreshStamp: Int = 0,
+    onStampConsumed: () -> Unit = {},
+    onSplashFinished: () -> Unit = {},
 ) {
-    LaunchedEffect(shouldRefresh) {
-        if (shouldRefresh) {
+    LaunchedEffect(refreshStamp) {
+        if (refreshStamp > 0) {
             viewModel.refresh()
-            onRefreshConsumed()
+            onStampConsumed()
         }
     }
 
@@ -59,6 +60,7 @@ fun ChampionIndexRoute(
         onInsertBuilds = {},
         onSettingClick = onSettingClick,
         onItemClick = onItemClick,
+        onSplashFinished = onSplashFinished,
     )
 }
 
@@ -71,6 +73,7 @@ fun ChampionIndexScreen(
     onInsertBuilds: () -> Unit,
     onSettingClick: () -> Unit,
     onItemClick: (Champion) -> Unit,
+    onSplashFinished: () -> Unit = {},
 ) {
     var showLandingScreen by rememberSaveable { mutableStateOf(onboardingShowLandingScreen) }
     var searchText by rememberSaveable { mutableStateOf("") }
@@ -125,6 +128,7 @@ fun ChampionIndexScreen(
     } else {
         LaunchScreen(modifier = Modifier, onTimeout = {
             showLandingScreen = false
+            onSplashFinished()
         })
     }
 }

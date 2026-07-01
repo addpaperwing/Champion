@@ -6,6 +6,8 @@ import com.zzy.champions.data.repository.ChampionRepository
 import com.zzy.champions.data.repository.DefaultAppDataRepository
 import com.zzy.champions.data.repository.DefaultChampionBuildRepository
 import com.zzy.champions.data.repository.DefaultChampionRepository
+import com.zzy.champions.data.repository.DefaultItemRepository
+import com.zzy.champions.data.repository.ItemRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -23,4 +25,7 @@ internal interface RepositoryModule {
 
     @Binds
     fun bindChampionBuildRepository(championBuildRepository: DefaultChampionBuildRepository): ChampionBuildRepository
+
+    @Binds
+    fun bindItemRepository(itemRepository: DefaultItemRepository): ItemRepository
 }

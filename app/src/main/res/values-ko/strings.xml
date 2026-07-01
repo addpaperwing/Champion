@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LoL 챔피언</string>
 
@@ -84,4 +84,20 @@
         <item>E</item>
         <item>R</item>
     </array>
+    <string name="builds_from">재료:</string>
+    <string name="builds_into">조합 대상:</string>
+    <string name="nav_champions">챔피언</string>
+    <string name="nav_items">아이템</string>
+
+    <string name="error">오류</string>
+    <string name="language_switch_failed">언어 전환에 실패했습니다. 데이터를 복원하는 중입니다.</string>
+    <string name="data_refresh_failed">새로고침에 실패했습니다. 다시 시도해 주세요.</string>
+
+    <string name="category_starter">시작 아이템</string>
+    <string name="category_boots">신발</string>
+    <string name="category_mythic">신화</string>
+    <string name="category_legendary">전설</string>
+    <string name="category_components">재료</string>
+    <string name="category_epic">서사</string>
+    <string name="category_other">기타</string>
 </resources>

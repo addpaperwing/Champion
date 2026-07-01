@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
@@ -20,6 +19,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import com.zzy.champions.R
+import com.zzy.champions.ui.compose.VersionText
 
 @Composable
 fun Header(
@@ -53,12 +53,9 @@ fun Header(
                 fontSize = 10.sp,
                 lineHeight = 10.sp
             )
-            Text(
+            VersionText(
+                version = version,
                 modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
-                textAlign = TextAlign.End,
-                text = stringResource(id = R.string.v_, version),
-                color = MaterialTheme.colorScheme.tertiary,
-                fontSize = 8.sp,
             )
         }
         IconButton(

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">英雄联盟英雄</string>
     <string name="it_might_take_a_bit_while_for_the_first_load">首次加载或版本更新可能需要较长时间</string>
@@ -69,4 +69,20 @@
         <item>E</item>
         <item>R</item>
     </array>
+    <string name="builds_from">合成材料：</string>
+    <string name="builds_into">升级为：</string>
+    <string name="nav_champions">英雄</string>
+    <string name="nav_items">装备</string>
+
+    <string name="error">错误</string>
+    <string name="language_switch_failed">语言切换失败，正在恢复你的数据。</string>
+    <string name="data_refresh_failed">刷新失败，请重试。</string>
+
+    <string name="category_starter">起始装备</string>
+    <string name="category_boots">鞋子</string>
+    <string name="category_mythic">神话装备</string>
+    <string name="category_legendary">传说装备</string>
+    <string name="category_components">合成材料</string>
+    <string name="category_epic">史诗装备</string>
+    <string name="category_other">其他</string>
 </resources>

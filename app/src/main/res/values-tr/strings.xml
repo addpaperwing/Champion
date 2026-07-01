@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LoL Şampiyonlar</string>
     <string name="it_might_take_a_bit_while_for_the_first_load">İlk yükleme veya yama güncellemesi biraz zaman alabilir</string>
@@ -68,4 +68,20 @@
         <item>E</item>
         <item>R</item>
     </array>
+    <string name="builds_from">Parçalar:</string>
+    <string name="builds_into">Yükseltme:</string>
+    <string name="nav_champions">Şampiyonlar</string>
+    <string name="nav_items">Eşyalar</string>
+
+    <string name="error">Hata</string>
+    <string name="language_switch_failed">Dil değiştirme başarısız oldu. Verilerin geri yükleniyor.</string>
+    <string name="data_refresh_failed">Yenileme başarısız oldu. Lütfen tekrar dene.</string>
+
+    <string name="category_starter">Başlangıç</string>
+    <string name="category_boots">Botlar</string>
+    <string name="category_mythic">Mitik</string>
+    <string name="category_legendary">Efsanevi</string>
+    <string name="category_components">Parçalar</string>
+    <string name="category_epic">Epik</string>
+    <string name="category_other">Diğer</string>
 </resources>

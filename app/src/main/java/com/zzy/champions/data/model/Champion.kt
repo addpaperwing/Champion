@@ -41,5 +41,5 @@ data class Champion(
 //    val spells: List<>,
 //    val passive: Any
 ) {
-    fun getAvatar(version: String) = "https://ddragon.leagueoflegends.com/cdn/$version/img/champion/${image.full}"
+    fun getAvatar(version: String) = "$DDRAGON_CDN/$version/img/champion/${image.full}"
 }

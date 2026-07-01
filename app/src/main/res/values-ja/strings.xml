@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LoL チャンピオン</string>
 
@@ -84,4 +84,20 @@
         <item>E</item>
         <item>R</item>
     </array>
+    <string name="builds_from">素材：</string>
+    <string name="builds_into">強化先：</string>
+    <string name="nav_champions">チャンピオン</string>
+    <string name="nav_items">アイテム</string>
+
+    <string name="error">エラー</string>
+    <string name="language_switch_failed">言語の切り替えに失敗しました。データを復元しています。</string>
+    <string name="data_refresh_failed">更新に失敗しました。もう一度お試しください。</string>
+
+    <string name="category_starter">スターター</string>
+    <string name="category_boots">ブーツ</string>
+    <string name="category_mythic">ミシック</string>
+    <string name="category_legendary">レジェンダリー</string>
+    <string name="category_components">コンポーネント</string>
+    <string name="category_epic">エピック</string>
+    <string name="category_other">その他</string>
 </resources>

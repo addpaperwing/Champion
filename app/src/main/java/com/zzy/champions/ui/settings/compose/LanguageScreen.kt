@@ -55,6 +55,26 @@ fun LanguageRoute(
     val languages by viewModel.languages.collectAsStateWithLifecycle()
     val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
     var pendingLanguage by remember { mutableStateOf<String?>(null) }
+    var languageSwitchFailed by remember { mutableStateOf(false) }
+
+    if (languageSwitchFailed) {
+        TextDialog(
+            onDismissRequest = {
+                languageSwitchFailed = false
+                onLanguageSelected()
+            },
+            title = stringResource(R.string.error),
+            onPositiveButtonClick = {
+                languageSwitchFailed = false
+                onLanguageSelected()
+            },
+        ) {
+            Text(
+                text = stringResource(R.string.language_switch_failed),
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+        }
+    }
 
     pendingLanguage?.let { lang ->
         val (locale, displayName) = remember(lang) {
@@ -68,9 +88,13 @@ fun LanguageRoute(
             negativeButtonText = stringResource(R.string.cancel),
             onPositiveButtonClick = {
                 pendingLanguage = null
-                viewModel.selectLanguage(lang, onDone = {
-                    AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(locale))
-                    onLanguageSelected()
+                viewModel.selectLanguage(lang, onDone = { success ->
+                    if (success) {
+                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(locale))
+                        onLanguageSelected()
+                    } else {
+                        languageSwitchFailed = true
+                    }
                 })
             },
             onNegativeButtonClick = { pendingLanguage = null }

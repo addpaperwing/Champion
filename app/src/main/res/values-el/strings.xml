@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LoL Πρωταθλητές</string>
     <string name="it_might_take_a_bit_while_for_the_first_load">Η πρώτη φόρτωση ή η ενημέρωση patch μπορεί να διαρκέσει λίγο</string>
@@ -68,4 +68,20 @@
         <item>E</item>
         <item>R</item>
     </array>
+    <string name="builds_from">Κατασκευάζεται από:</string>
+    <string name="builds_into">Αναβαθμίζεται σε:</string>
+    <string name="nav_champions">Champions</string>
+    <string name="nav_items">Αντικείμενα</string>
+
+    <string name="error">Σφάλμα</string>
+    <string name="language_switch_failed">Η αλλαγή γλώσσας απέτυχε. Τα δεδομένα σου αποκαθίστανται.</string>
+    <string name="data_refresh_failed">Η ανανέωση απέτυχε. Δοκίμασε ξανά.</string>
+
+    <string name="category_starter">Αρχικά</string>
+    <string name="category_boots">Μπότες</string>
+    <string name="category_mythic">Μυθικό</string>
+    <string name="category_legendary">Θρυλικό</string>
+    <string name="category_components">Συστατικά</string>
+    <string name="category_epic">Επικό</string>
+    <string name="category_other">Άλλο</string>
 </resources>
