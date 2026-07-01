@@ -13,10 +13,11 @@ fun ChampionNavHost(
     onLinkClick: (String) -> Unit,
     onSplashFinished: () -> Unit = {},
 ) {
+    val startRoute = TOP_LEVEL_TABS.first().route
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = CHAMPION_INDEX_ROUTE
+        startDestination = startRoute
     ) {
         championIndexScreen(
             onItemClick = { navController.navigateToChampionDetail(it.id) },
@@ -39,7 +40,7 @@ fun ChampionNavHost(
             onBack = { navController.popBackStack() },
             onLanguageSelected = {
                 navController.signalRefresh()
-                navController.popBackStack(CHAMPION_INDEX_ROUTE, inclusive = false)
+                navController.popBackStack()
             }
         )
 
@@ -56,15 +57,15 @@ fun NavHostController.navigateSingleTopTo(route: String) =
         restoreState = true
     }
 
-// Add new top-level tabs here so they receive language-change and data-refresh signals.
-private val REFRESHABLE_ROUTES = listOf(CHAMPION_INDEX_ROUTE, ITEMS_ROUTE)
+internal const val NAV_ANIM_DURATION = 300
+internal const val KEY_REFRESH = "refresh"
 
 private fun NavHostController.signalRefresh() {
-    for (route in REFRESHABLE_ROUTES) {
-        try {
-            getBackStackEntry(route).savedStateHandle[KEY_REFRESH] = true
-        } catch (_: IllegalArgumentException) {
-            // Entry not yet in back stack (screen never visited) — skip.
+    val stackRoutes = currentBackStack.value.mapNotNullTo(HashSet()) { it.destination.route }
+    for (tab in REFRESH_TABS) {
+        if (tab.route !in stackRoutes) continue
+        getBackStackEntry(tab.route).savedStateHandle.let { handle ->
+            handle[KEY_REFRESH] = (handle.get<Int>(KEY_REFRESH) ?: 0) + 1
         }
     }
 }

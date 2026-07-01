@@ -16,9 +16,6 @@ interface ItemDao {
     @Query("SELECT * FROM items")
     suspend fun getAllItems(): List<Item>
 
-    @Query("SELECT COUNT(*) FROM items")
-    suspend fun getItemCount(): Int
-
     @Query("DELETE FROM items")
     suspend fun clearItems()
 
@@ -28,6 +25,4 @@ interface ItemDao {
         insertItems(items)
     }
 
-    @Query("SELECT * FROM items WHERE id = :id LIMIT 1")
-    suspend fun getItemById(id: String): Item?
 }

@@ -10,5 +10,5 @@ data class SkinNumber(
 ) {
     val isChroma: Boolean get() = parentSkin != null
 
-    fun getSplash(championId: String): String = "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${championId}_$num.jpg"
+    fun getSplash(championId: String): String = "$DDRAGON_CDN/img/champion/splash/${championId}_$num.jpg"
 }

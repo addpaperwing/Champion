@@ -95,4 +95,16 @@
 
     <string name="nav_champions">Champions</string>
     <string name="nav_items">Items</string>
+
+    <string name="error">Error</string>
+    <string name="language_switch_failed">Language switch failed. Your data is being restored.</string>
+    <string name="data_refresh_failed">Refresh failed. Please try again.</string>
+
+    <string name="category_starter">Starter</string>
+    <string name="category_boots">Boots</string>
+    <string name="category_mythic">Mythic</string>
+    <string name="category_legendary">Legendary</string>
+    <string name="category_components">Components</string>
+    <string name="category_epic">Epic</string>
+    <string name="category_other">Other</string>
 </resources>

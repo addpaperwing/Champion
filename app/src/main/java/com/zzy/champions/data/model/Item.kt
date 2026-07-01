@@ -21,10 +21,5 @@ data class Item(
     @Json(name = "from") val components: List<String> = emptyList(),  // "from" is SQL reserved word
     @Json(name = "into") val upgrades: List<String> = emptyList(),    // renamed for clarity
 ) {
-    fun getIconUrl(version: String) =
-        "https://ddragon.leagueoflegends.com/cdn/$version/img/item/${image.full}"
+    fun getIconUrl(version: String) = itemIconUrl(version, id)
 }
-
-// For component/upgrade IDs that don't carry an Image object
-fun itemIconUrl(version: String, itemId: String) =
-    "https://ddragon.leagueoflegends.com/cdn/$version/img/item/$itemId.png"

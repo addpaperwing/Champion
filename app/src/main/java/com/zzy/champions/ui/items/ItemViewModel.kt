@@ -24,6 +24,14 @@ import javax.inject.Inject
 
 private const val KEY_SEARCH_QUERY = "search_query"
 
+internal const val CATEGORY_STARTER    = "Starter"
+internal const val CATEGORY_BOOTS      = "Boots"
+internal const val CATEGORY_MYTHIC     = "Mythic"
+internal const val CATEGORY_LEGENDARY  = "Legendary"
+internal const val CATEGORY_COMPONENTS = "Components"
+internal const val CATEGORY_EPIC       = "Epic"
+internal const val CATEGORY_OTHER      = "Other"
+
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ItemViewModel @Inject constructor(
@@ -84,10 +92,12 @@ class ItemViewModel @Inject constructor(
             initialValue = UiState.Loading,
         )
 
+    // Lazily (not WhileSubscribed) so the cached value persists after the UI goes to
+    // background — prevents a blank version badge flash on return.
     val version: StateFlow<String> = appDataRepository.getLocalVersion()
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
+            started = SharingStarted.Lazily,
             initialValue = "",
         )
 
@@ -96,12 +106,12 @@ class ItemViewModel @Inject constructor(
 
     // Survives retry(): keeps the last successful item list so BottomSheet lookups
     // continue to work while a new fetch is in-flight (when _rawItems = Loading).
-    private var _lastKnownItems: List<Item> = emptyList()
+    private var _lastKnownItems: Map<String, Item> = emptyMap()
 
     init {
         viewModelScope.launch {
             _rawItems.collect { state ->
-                if (state is UiState.Success) _lastKnownItems = state.data
+                if (state is UiState.Success) _lastKnownItems = state.data.associateBy { it.id }
             }
         }
     }
@@ -111,7 +121,7 @@ class ItemViewModel @Inject constructor(
     fun dismissItem() { _selectedItem.value = null }
     fun retry() { _retryTrigger.update { it + 1 } }
 
-    fun getItemById(id: String): Item? = _lastKnownItems.find { it.id == id }
+    fun getItemById(id: String): Item? = _lastKnownItems[id]
 }
 
 internal fun categorizeItems(items: List<Item>): List<Pair<String, List<Item>>> {
@@ -120,13 +130,13 @@ internal fun categorizeItems(items: List<Item>): List<Pair<String, List<Item>>> 
     val componentIds = validItems.flatMap { it.components }.filter { it in allItemIds }.toSet()
 
     val categories = listOf(
-        "Starter"    to { item: Item -> item.gold.total <= 500 && item.id !in componentIds && "Boots" !in item.tags },
-        "Boots"      to { item: Item -> "Boots" in item.tags },
-        "Mythic"     to { item: Item -> "Mythic" in item.tags },
-        "Legendary"  to { item: Item -> "Legendary" in item.tags },
-        "Components" to { item: Item -> item.id in componentIds && "Mythic" !in item.tags && "Legendary" !in item.tags },
-        "Epic"       to { item: Item -> item.gold.total >= 1000 },
-        "Other"      to { _: Item -> true },
+        CATEGORY_STARTER    to { item: Item -> item.gold.total in 1..500 && item.id !in componentIds && "Boots" !in item.tags },
+        CATEGORY_BOOTS      to { item: Item -> "Boots" in item.tags },
+        CATEGORY_MYTHIC     to { item: Item -> "Mythic" in item.tags },
+        CATEGORY_LEGENDARY  to { item: Item -> "Legendary" in item.tags },
+        CATEGORY_COMPONENTS to { item: Item -> item.id in componentIds },
+        CATEGORY_EPIC       to { item: Item -> item.gold.total >= 1000 },
+        CATEGORY_OTHER      to { _: Item -> true },
     )
 
     val assigned = mutableSetOf<String>()

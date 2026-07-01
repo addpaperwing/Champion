@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,8 +26,6 @@ import com.zzy.champions.data.model.Item
 import com.zzy.champions.ui.theme.DarkLight
 import com.zzy.champions.ui.theme.Golden
 
-private val cardShape = CutCornerShape(topEnd = 8.dp, bottomStart = 8.dp)
-
 @Composable
 fun ItemCard(
     item: Item,
@@ -39,15 +36,15 @@ fun ItemCard(
     Box(
         modifier = modifier
             .padding(2.dp)
-            .border(Dp.Hairline, Golden.copy(alpha = 0.5f), cardShape)
+            .border(Dp.Hairline, Golden.copy(alpha = 0.5f), itemCutCornerShape)
             .clickable(onClick = onClick),
     ) {
         Column(
             modifier = Modifier
                 .padding(2.dp)
                 .fillMaxWidth()
-                .background(DarkLight, cardShape)
-                .clip(cardShape)
+                .background(DarkLight, itemCutCornerShape)
+                .clip(itemCutCornerShape)
                 .padding(4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {

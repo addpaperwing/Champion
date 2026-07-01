@@ -30,11 +30,4 @@ class DefaultItemRepository @Inject constructor(
         dao.getAllItems()
     }
 
-    override suspend fun getItemCount(): Int = withContext(dispatcher) {
-        dao.getItemCount()
-    }
-
-    override suspend fun getItemById(id: String): Item? = withContext(dispatcher) {
-        dao.getItemById(id)
-    }
 }

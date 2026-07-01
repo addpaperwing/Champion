@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -34,35 +35,53 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import java.util.Locale
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zzy.champions.R
 import com.zzy.champions.data.model.Item
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.ui.detail.compose.LoadingAndErrorScreen
+import com.zzy.champions.ui.compose.VersionText
 import com.zzy.champions.ui.index.compose.SearchTextField
+import com.zzy.champions.ui.items.CATEGORY_BOOTS
+import com.zzy.champions.ui.items.CATEGORY_COMPONENTS
+import com.zzy.champions.ui.items.CATEGORY_EPIC
+import com.zzy.champions.ui.items.CATEGORY_LEGENDARY
+import com.zzy.champions.ui.items.CATEGORY_MYTHIC
+import com.zzy.champions.ui.items.CATEGORY_OTHER
+import com.zzy.champions.ui.items.CATEGORY_STARTER
 import com.zzy.champions.ui.items.ItemViewModel
 import com.zzy.champions.ui.theme.Golden
 
 private const val GRID_COLUMNS = 5
+internal val itemCutCornerShape = CutCornerShape(topEnd = 8.dp, bottomStart = 8.dp)
+private val categoryHeaderBrush = Brush.horizontalGradient(listOf(Golden.copy(alpha = 0.25f), Color.Transparent))
+
+private val categoryNameResIds = mapOf(
+    CATEGORY_STARTER    to R.string.category_starter,
+    CATEGORY_BOOTS      to R.string.category_boots,
+    CATEGORY_MYTHIC     to R.string.category_mythic,
+    CATEGORY_LEGENDARY  to R.string.category_legendary,
+    CATEGORY_COMPONENTS to R.string.category_components,
+    CATEGORY_EPIC       to R.string.category_epic,
+    CATEGORY_OTHER      to R.string.category_other,
+)
 
 @Composable
 fun ItemRoute(
     modifier: Modifier = Modifier,
     viewModel: ItemViewModel = hiltViewModel(),
     onSettingClick: () -> Unit = {},
-    shouldRefresh: Boolean = false,
-    onRefreshConsumed: () -> Unit = {},
+    refreshStamp: Int = 0,
+    onStampConsumed: () -> Unit = {},
 ) {
-    LaunchedEffect(shouldRefresh) {
-        if (shouldRefresh) {
+    LaunchedEffect(refreshStamp) {
+        if (refreshStamp > 0) {
             viewModel.retry()
-            onRefreshConsumed()
+            onStampConsumed()
         }
     }
 
@@ -89,15 +108,20 @@ fun ItemRoute(
         onReloadClick = viewModel::retry,
     )
 
-    selectedItem?.let { item ->
+    val resolveItem = remember(viewModel) { viewModel::getItemById }
+    val onComponentClick = remember(viewModel) { { componentId: String ->
+        val resolved = resolveItem(componentId)
+        if (resolved != null) viewModel.selectItem(resolved)
+    } }
+    // Don't overlay the error screen: dismiss the sheet when the load fails so
+    // the user can reach the reload button.
+    selectedItem?.takeIf { categorizedState !is UiState.Error }?.let { item ->
         ItemBottomSheet(
             item = item,
             version = version,
             onDismiss = viewModel::dismissItem,
-            onComponentClick = { componentId ->
-                viewModel.getItemById(componentId)?.let { viewModel.selectItem(it) }
-            },
-            resolveItem = viewModel::getItemById,
+            onComponentClick = onComponentClick,
+            resolveItem = resolveItem,
         )
     }
 }
@@ -175,19 +199,16 @@ private fun ItemsHeader(
             .padding(top = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
+        VersionText(
+            version = version,
             modifier = Modifier
                 .weight(1f)
                 .padding(start = 16.dp),
-            textAlign = TextAlign.End,
-            text = if (version.isNotEmpty()) stringResource(R.string.v_, version) else "",
-            color = MaterialTheme.colorScheme.tertiary,
-            fontSize = 8.sp,
         )
         IconButton(onClick = onSettingClick) {
             Icon(
                 imageVector = Icons.Default.Settings,
-                contentDescription = "settings",
+                contentDescription = stringResource(R.string.settings),
                 tint = MaterialTheme.colorScheme.tertiary,
             )
         }
@@ -196,21 +217,18 @@ private fun ItemsHeader(
 
 @Composable
 private fun CategoryHeader(name: String, modifier: Modifier = Modifier) {
-    val shape = CutCornerShape(topEnd = 8.dp, bottomStart = 8.dp)
+    val localizedName = categoryNameResIds[name]?.let { stringResource(it) } ?: name
     Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 4.dp)
             .padding(top = 10.dp, bottom = 4.dp)
-            .border(Dp.Hairline, Golden, shape)
-            .background(
-                Brush.horizontalGradient(listOf(Golden.copy(alpha = 0.25f), Color.Transparent)),
-                shape,
-            )
+            .border(Dp.Hairline, Golden, itemCutCornerShape)
+            .background(categoryHeaderBrush, itemCutCornerShape)
             .padding(horizontal = 10.dp, vertical = 5.dp),
     ) {
         Text(
-            text = name.uppercase(Locale.ROOT),
+            text = localizedName.uppercase(),
             color = Golden,
             fontWeight = FontWeight(700),
             fontSize = 11.sp,

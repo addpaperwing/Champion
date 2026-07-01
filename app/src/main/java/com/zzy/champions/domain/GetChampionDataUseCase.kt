@@ -23,12 +23,13 @@ class GetChampionDataUseCase @Inject constructor(
 //    private val getLatestVersionUseCase: GetLatestVersionUseCase,
 ) {
 
-    private var cachedVersion : String? = null
+    @Volatile private var cachedVersion: String? = null
     suspend operator fun invoke(query: String): UiState<ChampionData> = withContext(dispatcher) {
-        if (cachedVersion != null) {
+        val cv = cachedVersion
+        if (cv != null) {
             UiState.Success(
                 ChampionData(
-                    cachedVersion!!,
+                    cv,
                     championRepository.searchChampionsBy(query)
                 )
             )
@@ -86,10 +87,11 @@ class GetChampionDataUseCase @Inject constructor(
                 }
             } else {
                 //No needs to update
-                cachedVersion = appDataRepository.getLocalVersion().first()
+                val v = appDataRepository.getLocalVersion().first()
+                cachedVersion = v
                 UiState.Success(
                     ChampionData(
-                        cachedVersion!!,
+                        v,
                         championRepository.searchChampionsBy(query)
                     )
                 )

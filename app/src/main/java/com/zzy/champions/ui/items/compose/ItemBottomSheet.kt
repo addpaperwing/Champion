@@ -29,8 +29,11 @@ import coil3.compose.AsyncImage
 import com.zzy.champions.R
 import com.zzy.champions.data.model.Item
 import com.zzy.champions.data.model.itemIconUrl
+import com.zzy.champions.ui.detail.compose.ability.HtmlText
 
-private val REGEX_HTML_TAGS = Regex("<[^>]+>")
+// DDragon anomalies: "Flat"-prefixed stats stored as 0–1 ratios despite the name.
+// Add new entries here if DDragon introduces another such stat.
+private val FLAT_RATIO_STAT_KEYS = setOf("FlatCritChanceMod")
 private val REGEX_STAT_PREFIX = Regex("^(Flat|Percent)")
 private val REGEX_STAT_SUFFIX = Regex("Mod$")
 private val REGEX_ACRONYM_SPLIT = Regex("([A-Z]+)([A-Z][a-z])")
@@ -43,7 +46,7 @@ fun ItemBottomSheet(
     version: String,
     onDismiss: () -> Unit,
     onComponentClick: (String) -> Unit,
-    resolveItem: (String) -> Item? = { null },
+    resolveItem: (String) -> Item?,
     modifier: Modifier = Modifier,
 ) {
     ModalBottomSheet(
@@ -83,23 +86,30 @@ fun ItemBottomSheet(
             HorizontalDivider()
             Spacer(Modifier.height(12.dp))
 
-            item.stats.forEach { (key, value) ->
-                val label = formatStatKey(key)
-                val isPercent = key.startsWith("Percent") || value < 1.0
-                val display = if (isPercent) "+${(value * 100).toInt()}%" else "+${value.toInt()}"
+            val statDisplays = remember(item) {
+                item.stats.map { (key, value) ->
+                    // FlatCritChanceMod is stored as a ratio (0.0–1.0) in DDragon despite the Flat prefix.
+                    val isPercent = key.startsWith("Percent") || key in FLAT_RATIO_STAT_KEYS
+                    val display = if (isPercent) "+${(value * 100).toInt()}%" else "+${value.toInt()}"
+                    "$display ${formatStatKey(key)}"
+                }
+            }
+            statDisplays.forEach { text ->
                 Text(
-                    text = "$display $label",
+                    text = text,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(vertical = 2.dp),
                 )
             }
 
-            val descText = remember(item.description) {
-                item.description.replace(REGEX_HTML_TAGS, "").trim().ifEmpty { item.plaintext }
-            }
+            val descText = item.description.ifEmpty { item.plaintext }
             if (descText.isNotEmpty()) {
                 Spacer(Modifier.height(8.dp))
-                Text(text = descText, style = MaterialTheme.typography.bodySmall)
+                HtmlText(
+                    text = descText,
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
             }
 
             if (item.components.isNotEmpty()) {
@@ -113,7 +123,7 @@ fun ItemBottomSheet(
                 ItemImageRow(ids = item.components, version = version, onItemClick = onComponentClick)
             }
 
-            val visibleUpgrades = item.upgrades.filter { resolveItem(it) != null }
+            val visibleUpgrades = remember(item, resolveItem) { item.upgrades.filter { resolveItem(it) != null } }
             if (visibleUpgrades.isNotEmpty()) {
                 Spacer(Modifier.height(12.dp))
                 Text(

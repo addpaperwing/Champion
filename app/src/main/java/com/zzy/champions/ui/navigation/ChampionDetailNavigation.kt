@@ -30,13 +30,13 @@ fun NavGraphBuilder.championDetailScreen(
         ),
         enterTransition = {
             slideIntoContainer(
-                animationSpec = tween(300, easing = EaseIn),
+                animationSpec = tween(NAV_ANIM_DURATION, easing = EaseIn),
                 towards = AnimatedContentTransitionScope.SlideDirection.Left
             )
         },
         exitTransition = {
             slideOutOfContainer(
-                animationSpec = tween(300, easing = EaseOut),
+                animationSpec = tween(NAV_ANIM_DURATION, easing = EaseOut),
                 towards = AnimatedContentTransitionScope.SlideDirection.End
             )
         }

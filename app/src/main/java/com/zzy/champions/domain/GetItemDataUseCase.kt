@@ -36,21 +36,29 @@ class GetItemDataUseCase @Inject constructor(
             }
             val fetched = itemRepository.getRemoteItems(version, language)
                 .filter { it.gold.purchasable }
-            if (appDataRepository.getLanguage().first() == language) {
+            // Read the language once after the fetch to detect mid-flight changes.
+            val langAfterFetch = appDataRepository.getLanguage().first()
+            return@withContext if (langAfterFetch == language) {
                 itemRepository.saveLocalItems(fetched)
-                // If language changed mid-save, evict the stale data so the next
-                // retry fetches with the correct language.
+                // If language changed during the DB write, evict stale data so the
+                // next retry re-fetches in the new language.
                 if (appDataRepository.getLanguage().first() != language) {
                     itemRepository.clearLocalItems()
+                    return@withContext UiState.Error(Exception("Language changed during save"))
                 }
+                UiState.Success(fetched)
+            } else {
+                // Language changed while the remote fetch was in flight; stale data not persisted.
+                // LanguageScreen's onDone always calls onLanguageSelected(), which invokes signalRefresh()
+                // in ChampionNavHost — so a retry in the correct language is always queued by the caller.
+                UiState.Error(Exception("Language changed mid-fetch"))
             }
-            UiState.Success(fetched)
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             e.printStackTrace()
-            val cached = itemRepository.getLocalItems()
-            if (cached.isNotEmpty()) UiState.Success(cached) else UiState.Error(e)
+            val fallback = try { itemRepository.getLocalItems() } catch (ce: CancellationException) { throw ce } catch (_: Exception) { emptyList() }
+            if (fallback.isNotEmpty()) UiState.Success(fallback) else UiState.Error(e)
         }
     }
 }

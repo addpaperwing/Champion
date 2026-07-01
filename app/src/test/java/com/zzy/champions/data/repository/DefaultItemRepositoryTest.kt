@@ -68,10 +68,4 @@ class DefaultItemRepositoryTest {
         assertEquals(listOf(item), repository.getLocalItems())
     }
 
-    @Test
-    fun getItemCount_returnsDaoCount() = runTest {
-        coEvery { dao.getItemCount() } returns 200
-
-        assertEquals(200, repository.getItemCount())
-    }
 }

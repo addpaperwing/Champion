@@ -16,15 +16,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.zzy.champions.R
-import com.zzy.champions.ui.navigation.CHAMPION_INDEX_ROUTE
 import com.zzy.champions.ui.navigation.ChampionNavHost
-import com.zzy.champions.ui.navigation.ITEMS_ROUTE
+import com.zzy.champions.ui.navigation.TOP_LEVEL_ROUTES
+import com.zzy.champions.ui.navigation.TOP_LEVEL_TABS
 import com.zzy.champions.ui.navigation.navigateSingleTopTo
 import com.zzy.champions.ui.theme.DarkLight
 import com.zzy.champions.ui.theme.Golden
-
-private val TOP_LEVEL_ROUTES = setOf(CHAMPION_INDEX_ROUTE, ITEMS_ROUTE)
 
 private val navItemColors @Composable get() = NavigationBarItemDefaults.colors(
     selectedIconColor = Color.Black,
@@ -49,36 +46,29 @@ fun ChampionApp(
         bottomBar = {
             if (appViewModel.splashDone && currentRoute in TOP_LEVEL_ROUTES) {
                 NavigationBar(containerColor = DarkLight) {
-                    NavigationBarItem(
-                        selected = currentRoute == CHAMPION_INDEX_ROUTE,
-                        onClick = { navController.navigateSingleTopTo(CHAMPION_INDEX_ROUTE) },
-                        icon = {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_champions),
-                                contentDescription = stringResource(R.string.nav_champions),
-                            )
-                        },
-                        label = { Text(stringResource(R.string.nav_champions)) },
-                        colors = navItemColors,
-                    )
-                    NavigationBarItem(
-                        selected = currentRoute == ITEMS_ROUTE,
-                        onClick = { navController.navigateSingleTopTo(ITEMS_ROUTE) },
-                        icon = {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_items),
-                                contentDescription = stringResource(R.string.nav_items),
-                            )
-                        },
-                        label = { Text(stringResource(R.string.nav_items)) },
-                        colors = navItemColors,
-                    )
+                    TOP_LEVEL_TABS.forEach { tab ->
+                        NavigationBarItem(
+                            selected = currentRoute == tab.route,
+                            onClick = { navController.navigateSingleTopTo(tab.route) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(tab.iconRes),
+                                    contentDescription = stringResource(tab.labelRes),
+                                )
+                            },
+                            label = { Text(stringResource(tab.labelRes)) },
+                            colors = navItemColors,
+                        )
+                    }
                 }
             }
         },
     ) { padding ->
         ChampionNavHost(
-            modifier = Modifier.padding(padding),
+            modifier = Modifier.padding(
+                top = padding.calculateTopPadding(),
+                bottom = padding.calculateBottomPadding(),
+            ),
             navController = navController,
             onLinkClick = onLinkClick,
             onSplashFinished = appViewModel::onSplashFinished,

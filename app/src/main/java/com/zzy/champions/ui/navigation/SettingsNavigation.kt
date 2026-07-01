@@ -20,16 +20,16 @@ fun NavGraphBuilder.settingsScreen(
     composable(
         route = SETTINGS_ROUTE,
         enterTransition = {
-            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(300, easing = EaseIn))
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(NAV_ANIM_DURATION, easing = EaseIn))
         },
         exitTransition = {
-            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(300, easing = EaseOut))
+            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(NAV_ANIM_DURATION, easing = EaseOut))
         },
         popEnterTransition = {
-            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(300, easing = EaseIn))
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(NAV_ANIM_DURATION, easing = EaseIn))
         },
         popExitTransition = {
-            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(300, easing = EaseOut))
+            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(NAV_ANIM_DURATION, easing = EaseOut))
         },
     ) {
         SettingsRoute(
@@ -47,16 +47,16 @@ fun NavGraphBuilder.languageScreen(
     composable(
         route = LANGUAGE_ROUTE,
         enterTransition = {
-            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(300, easing = EaseIn))
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(NAV_ANIM_DURATION, easing = EaseIn))
         },
         exitTransition = {
-            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(300, easing = EaseOut))
+            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(NAV_ANIM_DURATION, easing = EaseOut))
         },
         popEnterTransition = {
-            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(300, easing = EaseIn))
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(NAV_ANIM_DURATION, easing = EaseIn))
         },
         popExitTransition = {
-            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(300, easing = EaseOut))
+            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(NAV_ANIM_DURATION, easing = EaseOut))
         },
     ) {
         LanguageRoute(

@@ -89,7 +89,7 @@ class SettingsViewModelTest {
         var done = false
 
         championRepository.saveLocalChampions(listOf(akali))
-        viewModel.selectLanguage("zh_CN") { done = true }
+        viewModel.selectLanguage("zh_CN") { _ -> done = true }
         advanceUntilIdle()
 
         coVerify { appDataRepository.setLanguage("zh_CN") }
@@ -106,7 +106,7 @@ class SettingsViewModelTest {
         var done = false
 
         championRepository.saveLocalChampions(listOf(akali))
-        viewModel.refreshData { done = true }
+        viewModel.refreshData { _ -> done = true }
         advanceUntilIdle()
 
         coVerify { appDataRepository.setLocalVersion("0") }
