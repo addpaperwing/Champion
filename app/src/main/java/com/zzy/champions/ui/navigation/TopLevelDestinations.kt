@@ -18,6 +18,7 @@ internal data class NavTab(
 internal val TOP_LEVEL_TABS: List<NavTab> = listOf(
     NavTab(CHAMPION_INDEX_ROUTE, R.drawable.ic_champions, R.string.nav_champions, refreshesOnDataChange = true),
     NavTab(ITEMS_ROUTE, R.drawable.ic_items, R.string.nav_items, refreshesOnDataChange = true),
+    NavTab(SETTINGS_ROUTE, R.drawable.ic_settings, R.string.settings),
 )
 
 val TOP_LEVEL_ROUTES: Set<String> = TOP_LEVEL_TABS.map { it.route }.toSet()
