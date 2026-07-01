@@ -33,6 +33,9 @@ class SettingsViewModel @Inject constructor(
     val currentLanguage: StateFlow<String> = appDataRepository.getLanguage()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), "")
 
+    val gameVersion: StateFlow<String> = appDataRepository.getLocalVersion()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), "")
+
     private val _languages = MutableStateFlow<UiState<List<String>>>(UiState.Loading)
     val languages: StateFlow<UiState<List<String>>> = _languages.asStateFlow()
 

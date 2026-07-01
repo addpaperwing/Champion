@@ -20,6 +20,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.zzy.champions.BuildConfig
 import com.zzy.champions.R
 import com.zzy.champions.ui.compose.TextDialog
 import com.zzy.champions.ui.settings.SettingsViewModel
@@ -36,6 +38,7 @@ fun SettingsRoute(
     val scope = rememberCoroutineScope()
     val refreshFailedMsg = stringResource(R.string.data_refresh_failed)
     var showRefreshDialog by remember { mutableStateOf(false) }
+    val gameVersion by viewModel.gameVersion.collectAsStateWithLifecycle()
 
     if (showRefreshDialog) {
         TextDialog(
@@ -83,6 +86,18 @@ fun SettingsRoute(
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = null
+                )
+            }
+            SettingItem(itemName = stringResource(R.string.app_version)) {
+                Text(
+                    text = BuildConfig.VERSION_NAME,
+                    color = MaterialTheme.colorScheme.onSecondary
+                )
+            }
+            SettingItem(itemName = stringResource(R.string.latest_game_version)) {
+                Text(
+                    text = stringResource(R.string.v_, gameVersion),
+                    color = MaterialTheme.colorScheme.onSecondary
                 )
             }
         }

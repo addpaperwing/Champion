@@ -24,6 +24,7 @@
     <string name="settings">Nastavení</string>
     <string name="latest_game_version">Nejnovější verze hry: </string>
     <string name="app_data_version">Verze dat: </string>
+    <string name="app_version">Verze aplikace: </string>
     <string name="language">Jazyk</string>
     <string name="internet_connection_error">Chyba připojení k internetu.</string>
     <string name="edit">Upravit</string>
