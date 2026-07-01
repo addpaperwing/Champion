@@ -11,7 +11,7 @@ import com.zzy.champions.ui.items.compose.ItemRoute
 
 const val ITEMS_ROUTE = "items"
 
-fun NavGraphBuilder.itemsScreen(onSettingClick: () -> Unit = {}) {
+fun NavGraphBuilder.itemsScreen() {
     composable(
         route = ITEMS_ROUTE,
         enterTransition = {
@@ -32,7 +32,6 @@ fun NavGraphBuilder.itemsScreen(onSettingClick: () -> Unit = {}) {
             .collectAsStateWithLifecycle()
 
         ItemRoute(
-            onSettingClick = onSettingClick,
             refreshStamp = refreshStamp,
             onStampConsumed = { backStackEntry.savedStateHandle[KEY_REFRESH] = 0 },
         )

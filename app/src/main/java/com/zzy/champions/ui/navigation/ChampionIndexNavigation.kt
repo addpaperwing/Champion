@@ -14,7 +14,6 @@ const val CHAMPION_INDEX_ROUTE = "index"
 
 fun NavGraphBuilder.championIndexScreen(
     onItemClick: (Champion) -> Unit,
-    onSettingClick: () -> Unit,
     onSplashFinished: () -> Unit = {},
 ) {
     composable(
@@ -38,7 +37,6 @@ fun NavGraphBuilder.championIndexScreen(
 
         ChampionIndexRoute(
             onItemClick = onItemClick,
-            onSettingClick = onSettingClick,
             refreshStamp = refreshStamp,
             onStampConsumed = { backStackEntry.savedStateHandle[KEY_REFRESH] = 0 },
             onSplashFinished = onSplashFinished,

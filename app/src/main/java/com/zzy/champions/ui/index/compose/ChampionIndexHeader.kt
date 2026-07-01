@@ -1,6 +1,5 @@
 package com.zzy.champions.ui.index.compose
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,59 +13,34 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import com.zzy.champions.R
-import com.zzy.champions.ui.compose.VersionText
 
 @Composable
-fun Header(
-    modifier: Modifier = Modifier,
-    version: String,
-    onSettingClick: () -> Unit,
-) {
-    Box(modifier = modifier
-        .padding(top = 16.dp)
-        .fillMaxWidth()) {
-        Column(
-            modifier = Modifier,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = stringResource(id = R.string.choose_your).uppercase(),
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 10.sp
-            )
-            Text(
-                text = stringResource(id = R.string.champion).uppercase(),
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 36.sp,
-                fontWeight = FontWeight(900),
-                fontStyle = FontStyle.Italic
-            )
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                text = stringResource(id = R.string.choose_your_champion_desc),
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 10.sp,
-                lineHeight = 10.sp
-            )
-            VersionText(
-                version = version,
-                modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
-            )
-        }
-        IconButton(
-            modifier = Modifier.align(Alignment.TopEnd),
-            onClick = onSettingClick
-        ) {
-            Icon(
-                imageVector = Icons.Default.Settings,
-                contentDescription = "settings",
-                tint = MaterialTheme.colorScheme.tertiary
-            )
-        }
+fun Header(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .padding(top = 16.dp)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(id = R.string.choose_your).uppercase(),
+            color = MaterialTheme.colorScheme.onBackground,
+            fontSize = 10.sp
+        )
+        Text(
+            text = stringResource(id = R.string.champion).uppercase(),
+            color = MaterialTheme.colorScheme.onBackground,
+            fontSize = 36.sp,
+            fontWeight = FontWeight(900),
+            fontStyle = FontStyle.Italic
+        )
+        Text(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            text = stringResource(id = R.string.choose_your_champion_desc),
+            color = MaterialTheme.colorScheme.onBackground,
+            fontSize = 10.sp,
+            lineHeight = 10.sp
+        )
     }
 }

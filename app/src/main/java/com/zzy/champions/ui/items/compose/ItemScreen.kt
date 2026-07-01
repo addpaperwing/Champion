@@ -6,7 +6,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,17 +17,12 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -44,7 +38,6 @@ import com.zzy.champions.R
 import com.zzy.champions.data.model.Item
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.ui.detail.compose.LoadingAndErrorScreen
-import com.zzy.champions.ui.compose.VersionText
 import com.zzy.champions.ui.index.compose.SearchTextField
 import com.zzy.champions.ui.items.CATEGORY_BOOTS
 import com.zzy.champions.ui.items.CATEGORY_COMPONENTS
@@ -74,7 +67,6 @@ private val categoryNameResIds = mapOf(
 fun ItemRoute(
     modifier: Modifier = Modifier,
     viewModel: ItemViewModel = hiltViewModel(),
-    onSettingClick: () -> Unit = {},
     refreshStamp: Int = 0,
     onStampConsumed: () -> Unit = {},
 ) {
@@ -104,7 +96,6 @@ fun ItemRoute(
         onSearchDone = { keyboardController?.hide() },
         onClearSearch = { viewModel.updateSearchQuery("") },
         onItemClick = viewModel::selectItem,
-        onSettingClick = onSettingClick,
         onReloadClick = viewModel::retry,
     )
 
@@ -136,7 +127,6 @@ fun ItemScreen(
     onSearchDone: () -> Unit = {},
     onClearSearch: (() -> Unit)? = null,
     onItemClick: (Item) -> Unit,
-    onSettingClick: () -> Unit = {},
     onReloadClick: () -> Unit = {},
 ) {
     Column(
@@ -144,9 +134,8 @@ fun ItemScreen(
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.statusBars),
     ) {
-        ItemsHeader(version = version, onSettingClick = onSettingClick)
         SearchTextField(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             text = searchText,
             onTextChanged = onSearchTextChange,
             onClearText = onClearSearch,
@@ -183,34 +172,6 @@ fun ItemScreen(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun ItemsHeader(
-    version: String,
-    onSettingClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        VersionText(
-            version = version,
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 16.dp),
-        )
-        IconButton(onClick = onSettingClick) {
-            Icon(
-                imageVector = Icons.Default.Settings,
-                contentDescription = stringResource(R.string.settings),
-                tint = MaterialTheme.colorScheme.tertiary,
-            )
         }
     }
 }

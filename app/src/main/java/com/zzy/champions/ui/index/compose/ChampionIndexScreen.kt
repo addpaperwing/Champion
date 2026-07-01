@@ -38,7 +38,6 @@ import com.zzy.champions.ui.theme.MyApplicationTheme
 fun ChampionIndexRoute(
     modifier: Modifier = Modifier,
     viewModel: ChampionViewModel = hiltViewModel(),
-    onSettingClick: () -> Unit,
     onItemClick: (Champion) -> Unit,
     refreshStamp: Int = 0,
     onStampConsumed: () -> Unit = {},
@@ -58,7 +57,6 @@ fun ChampionIndexRoute(
         championsState = champions,
         onUpdateSearchKeyword = viewModel::updateSearchKeyword,
         onInsertBuilds = {},
-        onSettingClick = onSettingClick,
         onItemClick = onItemClick,
         onSplashFinished = onSplashFinished,
     )
@@ -71,7 +69,6 @@ fun ChampionIndexScreen(
     championsState: UiState<ChampionData>,
     onUpdateSearchKeyword: (String) -> Unit,
     onInsertBuilds: () -> Unit,
-    onSettingClick: () -> Unit,
     onItemClick: (Champion) -> Unit,
     onSplashFinished: () -> Unit = {},
 ) {
@@ -95,7 +92,7 @@ fun ChampionIndexScreen(
 
     if (!showLandingScreen && championsState is UiState.Success) {
         Column(modifier = modifier.windowInsetsPadding(WindowInsets.statusBars)) {
-            Header(onSettingClick = onSettingClick, version = championsState.data.version)
+            Header()
             SearchTextField(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 text = searchText,
@@ -147,7 +144,6 @@ fun PreviewChampionIndexScreen(
                 championsState = UiState.Success(championData),
                 onUpdateSearchKeyword = {},
                 onInsertBuilds = { },
-                onSettingClick = { },
                 onItemClick = { }
             )
         }
@@ -168,7 +164,6 @@ fun PreviewLandingScreen(
                 championsState = UiState.Success(championData),
                 onUpdateSearchKeyword = {},
                 onInsertBuilds = { },
-                onSettingClick = { },
                 onItemClick = { }
             )
         }

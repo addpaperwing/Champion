@@ -38,7 +38,6 @@ class ChampionIndexScreenshotTest {
 
                         },
                         onInsertBuilds = { },
-                        onSettingClick = { },
                         onItemClick = {
 
                         })
@@ -60,15 +59,10 @@ class ChampionIndexScreenshotTest {
 
                         },
                         onInsertBuilds = {  },
-                        onSettingClick = {  },
                         onItemClick = {
                         })
                 }
             }
         }
-
-//        composeTestRule.onRoot().captureRoboImage(
-//            filePath = "build/outputs/roborazzi/ChampionIndexScreen.png"
-//        )
     }
 }

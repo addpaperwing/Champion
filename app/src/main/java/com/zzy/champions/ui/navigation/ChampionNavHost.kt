@@ -21,7 +21,6 @@ fun ChampionNavHost(
     ) {
         championIndexScreen(
             onItemClick = { navController.navigateToChampionDetail(it.id) },
-            onSettingClick = { navController.navigate(SETTINGS_ROUTE) { launchSingleTop = true } },
             onSplashFinished = onSplashFinished,
         )
 
@@ -42,9 +41,7 @@ fun ChampionNavHost(
             }
         )
 
-        itemsScreen(
-            onSettingClick = { navController.navigate(SETTINGS_ROUTE) { launchSingleTop = true } },
-        )
+        itemsScreen()
     }
 }
 
