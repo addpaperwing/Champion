@@ -72,4 +72,16 @@
     <string name="builds_into">Si combina in:</string>
     <string name="nav_champions">Campioni</string>
     <string name="nav_items">Oggetti</string>
+
+    <string name="error">Errore</string>
+    <string name="language_switch_failed">Cambio lingua non riuscito. I tuoi dati sono in fase di ripristino.</string>
+    <string name="data_refresh_failed">Aggiornamento non riuscito. Riprova.</string>
+
+    <string name="category_starter">Iniziali</string>
+    <string name="category_boots">Stivali</string>
+    <string name="category_mythic">Mitico</string>
+    <string name="category_legendary">Leggendario</string>
+    <string name="category_components">Componenti</string>
+    <string name="category_epic">Epico</string>
+    <string name="category_other">Altro</string>
 </resources>

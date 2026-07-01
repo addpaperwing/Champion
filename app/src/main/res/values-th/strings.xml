@@ -72,4 +72,16 @@
     <string name="builds_into">อัปเกรดเป็น:</string>
     <string name="nav_champions">แชมเปี้ยน</string>
     <string name="nav_items">ไอเทม</string>
+
+    <string name="error">ข้อผิดพลาด</string>
+    <string name="language_switch_failed">เปลี่ยนภาษาไม่สำเร็จ กำลังกู้คืนข้อมูลของคุณ</string>
+    <string name="data_refresh_failed">รีเฟรชไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</string>
+
+    <string name="category_starter">ไอเทมเริ่มต้น</string>
+    <string name="category_boots">รองเท้า</string>
+    <string name="category_mythic">มายธิค</string>
+    <string name="category_legendary">ตำนาน</string>
+    <string name="category_components">ส่วนประกอบ</string>
+    <string name="category_epic">มหากาพย์</string>
+    <string name="category_other">อื่นๆ</string>
 </resources>

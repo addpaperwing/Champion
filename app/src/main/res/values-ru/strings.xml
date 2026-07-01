@@ -72,4 +72,16 @@
     <string name="builds_into">Улучшения:</string>
     <string name="nav_champions">Чемпионы</string>
     <string name="nav_items">Предметы</string>
+
+    <string name="error">Ошибка</string>
+    <string name="language_switch_failed">Не удалось сменить язык. Ваши данные восстанавливаются.</string>
+    <string name="data_refresh_failed">Не удалось обновить. Попробуйте снова.</string>
+
+    <string name="category_starter">Начальные</string>
+    <string name="category_boots">Ботинки</string>
+    <string name="category_mythic">Мифический</string>
+    <string name="category_legendary">Легендарный</string>
+    <string name="category_components">Компоненты</string>
+    <string name="category_epic">Эпический</string>
+    <string name="category_other">Другое</string>
 </resources>

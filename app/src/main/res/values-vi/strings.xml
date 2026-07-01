@@ -72,4 +72,16 @@
     <string name="builds_into">Nâng cấp thành:</string>
     <string name="nav_champions">Tướng</string>
     <string name="nav_items">Trang bị</string>
+
+    <string name="error">Lỗi</string>
+    <string name="language_switch_failed">Chuyển ngôn ngữ thất bại. Dữ liệu của bạn đang được khôi phục.</string>
+    <string name="data_refresh_failed">Làm mới thất bại. Vui lòng thử lại.</string>
+
+    <string name="category_starter">Khởi đầu</string>
+    <string name="category_boots">Giày</string>
+    <string name="category_mythic">Thần thoại</string>
+    <string name="category_legendary">Huyền thoại</string>
+    <string name="category_components">Thành phần</string>
+    <string name="category_epic">Sử thi</string>
+    <string name="category_other">Khác</string>
 </resources>

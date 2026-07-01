@@ -72,4 +72,16 @@
     <string name="builds_into">Evoluções:</string>
     <string name="nav_champions">Campeões</string>
     <string name="nav_items">Itens</string>
+
+    <string name="error">Erro</string>
+    <string name="language_switch_failed">Falha ao trocar de idioma. Seus dados estão sendo restaurados.</string>
+    <string name="data_refresh_failed">Falha ao atualizar. Tente novamente.</string>
+
+    <string name="category_starter">Iniciais</string>
+    <string name="category_boots">Botas</string>
+    <string name="category_mythic">Mítico</string>
+    <string name="category_legendary">Lendário</string>
+    <string name="category_components">Componentes</string>
+    <string name="category_epic">Épico</string>
+    <string name="category_other">Outros</string>
 </resources>

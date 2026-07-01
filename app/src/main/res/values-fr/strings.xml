@@ -72,4 +72,16 @@
     <string name="builds_into">Améliorations :</string>
     <string name="nav_champions">Champions</string>
     <string name="nav_items">Objets</string>
+
+    <string name="error">Erreur</string>
+    <string name="language_switch_failed">Échec du changement de langue. Vos données sont en cours de restauration.</string>
+    <string name="data_refresh_failed">Échec de l\'actualisation. Veuillez réessayer.</string>
+
+    <string name="category_starter">Départ</string>
+    <string name="category_boots">Bottes</string>
+    <string name="category_mythic">Mythique</string>
+    <string name="category_legendary">Légendaire</string>
+    <string name="category_components">Composants</string>
+    <string name="category_epic">Épique</string>
+    <string name="category_other">Autre</string>
 </resources>

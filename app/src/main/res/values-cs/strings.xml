@@ -72,4 +72,16 @@
     <string name="builds_into">Lze sestavit do:</string>
     <string name="nav_champions">Šampioni</string>
     <string name="nav_items">Předměty</string>
+
+    <string name="error">Chyba</string>
+    <string name="language_switch_failed">Změna jazyka se nezdařila. Tvá data se obnovují.</string>
+    <string name="data_refresh_failed">Aktualizace se nezdařila. Zkus to znovu.</string>
+
+    <string name="category_starter">Startovní</string>
+    <string name="category_boots">Boty</string>
+    <string name="category_mythic">Mytické</string>
+    <string name="category_legendary">Legendární</string>
+    <string name="category_components">Komponenty</string>
+    <string name="category_epic">Epické</string>
+    <string name="category_other">Ostatní</string>
 </resources>

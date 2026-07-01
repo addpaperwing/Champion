@@ -72,4 +72,16 @@
     <string name="builds_into">Upgrade menjadi:</string>
     <string name="nav_champions">Champions</string>
     <string name="nav_items">Item</string>
+
+    <string name="error">Kesalahan</string>
+    <string name="language_switch_failed">Gagal mengganti bahasa. Data kamu sedang dipulihkan.</string>
+    <string name="data_refresh_failed">Gagal memuat ulang. Coba lagi.</string>
+
+    <string name="category_starter">Awal</string>
+    <string name="category_boots">Sepatu</string>
+    <string name="category_mythic">Mistis</string>
+    <string name="category_legendary">Legendaris</string>
+    <string name="category_components">Bahan</string>
+    <string name="category_epic">Epik</string>
+    <string name="category_other">Lainnya</string>
 </resources>

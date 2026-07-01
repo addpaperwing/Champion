@@ -72,4 +72,16 @@
     <string name="builds_into">Αναβαθμίζεται σε:</string>
     <string name="nav_champions">Champions</string>
     <string name="nav_items">Αντικείμενα</string>
+
+    <string name="error">Σφάλμα</string>
+    <string name="language_switch_failed">Η αλλαγή γλώσσας απέτυχε. Τα δεδομένα σου αποκαθίστανται.</string>
+    <string name="data_refresh_failed">Η ανανέωση απέτυχε. Δοκίμασε ξανά.</string>
+
+    <string name="category_starter">Αρχικά</string>
+    <string name="category_boots">Μπότες</string>
+    <string name="category_mythic">Μυθικό</string>
+    <string name="category_legendary">Θρυλικό</string>
+    <string name="category_components">Συστατικά</string>
+    <string name="category_epic">Επικό</string>
+    <string name="category_other">Άλλο</string>
 </resources>

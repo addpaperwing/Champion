@@ -61,10 +61,9 @@ internal const val NAV_ANIM_DURATION = 300
 internal const val KEY_REFRESH = "refresh"
 
 private fun NavHostController.signalRefresh() {
-    val stackRoutes = currentBackStack.value.mapNotNullTo(HashSet()) { it.destination.route }
     for (tab in REFRESH_TABS) {
-        if (tab.route !in stackRoutes) continue
-        getBackStackEntry(tab.route).savedStateHandle.let { handle ->
+        val entry = runCatching { getBackStackEntry(tab.route) }.getOrNull() ?: continue
+        entry.savedStateHandle.let { handle ->
             handle[KEY_REFRESH] = (handle.get<Int>(KEY_REFRESH) ?: 0) + 1
         }
     }
