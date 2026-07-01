@@ -76,6 +76,19 @@ both `enterTransition` (compare against `initialState.destination.route`) and
 the existing hardcoded/partially-hardcoded logic. This fixes the Items
 enter-transition bug described above and keeps all three tabs consistent.
 
+**Implementation note (found during task review):** the pseudocode above
+resolves an unmatched route (`indexOfFirst` returning `-1`) as "further
+back than any tab," which is wrong for the two non-tab child screens pushed
+from a top-level tab — `CHAMPION_DETAIL_ROUTE` (from Champion Index) and
+`LANGUAGE_ROUTE` (from Settings). Both are always reached by a forward push,
+so the shipped `TabTransitions.kt` resolves an unmatched route to
+`Int.MAX_VALUE` instead of `-1`, treating it as "further forward than any
+tab." This keeps the shared helper's computed direction consistent with
+`championDetailScreen`'s and `languageScreen`'s own untouched, hardcoded
+transitions. See `TabTransitionsTest.kt`'s
+`exitDirection_toPushedChildScreen_isStart` /
+`enterDirection_fromPushedChildScreen_isEnd` for the regression coverage.
+
 ### 4. Remove gear icon + version text from Champions/Items headers
 
 - `ChampionIndexHeader.kt`: remove the `IconButton`/`Icons.Default.Settings`
