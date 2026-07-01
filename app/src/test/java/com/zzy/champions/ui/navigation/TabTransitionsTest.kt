@@ -35,7 +35,19 @@ class TabTransitionsTest {
     }
 
     @Test
-    fun exitDirection_unknownTargetRoute_defaultsToEnd() {
-        assertEquals(SlideDirection.End, tabExitDirection(CHAMPION_INDEX_ROUTE, "unknown"))
+    fun exitDirection_unknownTargetRoute_defaultsToStart() {
+        assertEquals(SlideDirection.Start, tabExitDirection(CHAMPION_INDEX_ROUTE, "unknown"))
+    }
+
+    @Test
+    fun exitDirection_toPushedChildScreen_isStart() {
+        assertEquals(SlideDirection.Start, tabExitDirection(CHAMPION_INDEX_ROUTE, CHAMPION_DETAIL_ROUTE))
+        assertEquals(SlideDirection.Start, tabExitDirection(SETTINGS_ROUTE, LANGUAGE_ROUTE))
+    }
+
+    @Test
+    fun enterDirection_fromPushedChildScreen_isEnd() {
+        assertEquals(SlideDirection.End, tabEnterDirection(CHAMPION_INDEX_ROUTE, CHAMPION_DETAIL_ROUTE))
+        assertEquals(SlideDirection.End, tabEnterDirection(SETTINGS_ROUTE, LANGUAGE_ROUTE))
     }
 }
