@@ -97,12 +97,12 @@ fun SettingsRoute(
             Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
                 Text(
                     text = stringResource(R.string.app_version) + BuildConfig.VERSION_NAME,
-                    style = MaterialTheme.typography.labelSmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.tertiary,
                 )
                 Text(
                     text = stringResource(R.string.latest_game_version) + stringResource(R.string.v_, gameVersion),
-                    style = MaterialTheme.typography.labelSmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.padding(top = 2.dp)
                 )

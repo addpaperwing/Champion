@@ -2,9 +2,11 @@ package com.zzy.champions.ui.index.compose
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -15,10 +17,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -91,8 +103,64 @@ fun ChampionIndexScreen(
     }
 
     if (!showLandingScreen && championsState is UiState.Success) {
-        Column(modifier = modifier.windowInsetsPadding(WindowInsets.statusBars)) {
-            Header()
+        val density = LocalDensity.current
+        // Natural (fully expanded) header height, captured once from the first
+        // layout pass before any collapsing has been applied.
+        var headerHeightPx by remember { mutableFloatStateOf(0f) }
+        // How many px of the header are currently collapsed away, in [0, headerHeightPx].
+        var headerCollapsedPx by remember { mutableFloatStateOf(0f) }
+
+        val nestedScrollConnection = remember {
+            object : NestedScrollConnection {
+                // Scrolling the grid up (available.y < 0) collapses the header first,
+                // before the grid itself scrolls.
+                override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                    if (available.y >= 0f || headerHeightPx <= 0f) return Offset.Zero
+                    val collapseBy = -available.y
+                    val previous = headerCollapsedPx
+                    headerCollapsedPx = (previous + collapseBy).coerceAtMost(headerHeightPx)
+                    return Offset(0f, -(headerCollapsedPx - previous))
+                }
+
+                // Once the grid can't consume any more downward scroll (already at the
+                // top), the leftover delta re-expands the header.
+                override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
+                    if (available.y <= 0f || headerHeightPx <= 0f) return Offset.Zero
+                    val expandBy = available.y
+                    val previous = headerCollapsedPx
+                    headerCollapsedPx = (previous - expandBy).coerceAtLeast(0f)
+                    return Offset(0f, previous - headerCollapsedPx)
+                }
+            }
+        }
+
+        val headerVisibleHeightPx = (headerHeightPx - headerCollapsedPx).coerceAtLeast(0f)
+        val collapseFraction = if (headerHeightPx > 0f) (headerCollapsedPx / headerHeightPx).coerceIn(0f, 1f) else 0f
+
+        Column(
+            modifier = modifier
+                .windowInsetsPadding(WindowInsets.statusBars)
+                .nestedScroll(nestedScrollConnection)
+        ) {
+            Box(
+                modifier = Modifier
+                    .then(
+                        if (headerHeightPx > 0f) {
+                            Modifier.height(with(density) { headerVisibleHeightPx.toDp() })
+                        } else {
+                            Modifier
+                        }
+                    )
+                    .clipToBounds()
+            ) {
+                Header(
+                    modifier = Modifier
+                        .onGloballyPositioned { coordinates ->
+                            if (headerHeightPx <= 0f) headerHeightPx = coordinates.size.height.toFloat()
+                        }
+                        .alpha(1f - collapseFraction)
+                )
+            }
             SearchTextField(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 text = searchText,
