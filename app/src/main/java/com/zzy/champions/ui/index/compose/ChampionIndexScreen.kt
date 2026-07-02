@@ -162,7 +162,7 @@ fun ChampionIndexScreen(
                 )
             }
             SearchTextField(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 4.dp),
                 text = searchText,
                 onTextChanged = {
                     searchText = it
@@ -177,7 +177,7 @@ fun ChampionIndexScreen(
                 }
             )
             LazyVerticalGrid(
-                modifier = Modifier.padding(top = 12.dp),
+                modifier = Modifier.padding(top = 4.dp),
                 columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(start = 12.dp, end = 12.dp, bottom = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
