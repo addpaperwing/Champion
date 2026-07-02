@@ -19,6 +19,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zzy.champions.BuildConfig
@@ -64,10 +65,15 @@ fun SettingsRoute(
 
     Scaffold(
         modifier = modifier,
-        topBar = { SettingAppbar() },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         Column(Modifier.padding(padding)) {
+            Text(
+                text = stringResource(R.string.settings),
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+            )
             SettingItem(
                 itemName = stringResource(R.string.switch_language),
                 description = stringResource(R.string.switch_language_desc),
@@ -88,16 +94,17 @@ fun SettingsRoute(
                     contentDescription = null
                 )
             }
-            SettingItem(itemName = stringResource(R.string.app_version)) {
+            Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
                 Text(
-                    text = BuildConfig.VERSION_NAME,
-                    color = MaterialTheme.colorScheme.onSecondary
+                    text = stringResource(R.string.app_version) + BuildConfig.VERSION_NAME,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.tertiary,
                 )
-            }
-            SettingItem(itemName = stringResource(R.string.latest_game_version)) {
                 Text(
-                    text = stringResource(R.string.v_, gameVersion),
-                    color = MaterialTheme.colorScheme.onSecondary
+                    text = stringResource(R.string.latest_game_version) + stringResource(R.string.v_, gameVersion),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    modifier = Modifier.padding(top = 2.dp)
                 )
             }
         }

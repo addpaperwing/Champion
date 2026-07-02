@@ -6,7 +6,6 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -25,10 +24,8 @@ import com.zzy.champions.ui.theme.Golden
 
 private val navItemColors @Composable get() = NavigationBarItemDefaults.colors(
     selectedIconColor = Color.Black,
-    selectedTextColor = Golden,
     indicatorColor = Golden,
     unselectedIconColor = Color(0xff888888),
-    unselectedTextColor = Color(0xff888888),
 )
 
 @Composable
@@ -56,7 +53,6 @@ fun ChampionApp(
                                     contentDescription = stringResource(tab.labelRes),
                                 )
                             },
-                            label = { Text(stringResource(tab.labelRes)) },
                             colors = navItemColors,
                         )
                     }
