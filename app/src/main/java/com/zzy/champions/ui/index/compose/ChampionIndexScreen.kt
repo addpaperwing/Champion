@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.core.os.ConfigurationCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zzy.champions.data.local.ChampionDataPreviewParameterProvider
@@ -111,7 +112,7 @@ fun ChampionIndexScreen(
         // header's natural height via different text wrap -- starts fresh, while an ordinary
         // tab switch or process restore keeps restoring the saved value.
         val configuration = LocalConfiguration.current
-        val configKey = "${configuration.locales}-${configuration.fontScale}"
+        val configKey = "${ConfigurationCompat.getLocales(configuration).toLanguageTags()}-${configuration.fontScale}"
         // Natural (fully expanded) header height, captured once from the first
         // layout pass before any collapsing has been applied. rememberSaveable so the
         // collapse state matches the grid's own saved scroll position across tab switches.
