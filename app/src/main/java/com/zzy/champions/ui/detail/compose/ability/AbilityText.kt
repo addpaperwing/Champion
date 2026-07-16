@@ -1,5 +1,6 @@
 package com.zzy.champions.ui.detail.compose.ability
 
+import android.text.Html
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.compose.foundation.layout.Column
@@ -13,8 +14,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
-import androidx.core.text.HtmlCompat
 import com.zzy.champions.R
 import com.zzy.champions.ui.theme.MyApplicationTheme
 
@@ -31,8 +30,8 @@ fun HtmlText(
         factory = { context -> TextView(context) },
         update = { tv ->
             if (argb != null) tv.setTextColor(argb)
-            else tv.setTextColor(ContextCompat.getColor(tv.context, defaultTextColor))
-            tv.text = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_COMPACT)
+            else tv.setTextColor(tv.context.getColor(defaultTextColor))
+            tv.text = Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT)
         }
     )
 }
