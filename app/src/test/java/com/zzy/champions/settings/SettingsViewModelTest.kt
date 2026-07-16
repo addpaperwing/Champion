@@ -5,6 +5,7 @@ import com.zzy.champions.TestChampionRepository
 import com.zzy.champions.TestItemRepository
 import com.zzy.champions.VERSION_14_0
 import com.zzy.champions.akali
+import com.zzy.champions.data.local.PENDING_VERSION
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.data.repository.AppDataRepository
 import com.zzy.champions.domain.GetChampionDataUseCase
@@ -80,6 +81,18 @@ class SettingsViewModelTest {
     }
 
     @Test
+    fun gameVersionHidesPendingSentinel() = runTest {
+        coEvery { appDataRepository.getLocalVersion() } returns flowOf(PENDING_VERSION)
+        viewModel = SettingsViewModel(
+            appDataRepository, championRepository, getChampionDataUseCase, getItemDataUseCase, Dispatchers.Main
+        )
+        val job = launch(UnconfinedTestDispatcher()) { viewModel.gameVersion.collect() }
+        advanceUntilIdle()
+        assertEquals("", viewModel.gameVersion.value)
+        job.cancel()
+    }
+
+    @Test
     fun languageError_setsErrorState() = runTest {
         coEvery { appDataRepository.getSupportedLanguages() } throws IOException()
         viewModel = SettingsViewModel(
@@ -103,7 +116,7 @@ class SettingsViewModelTest {
         advanceUntilIdle()
 
         coVerify { appDataRepository.setLanguage("zh_CN") }
-        coVerify { appDataRepository.setLocalVersion("0") }
+        coVerify { appDataRepository.setLocalVersion(PENDING_VERSION) }
         assertNull(getChampionDataUseCase.getVersion())
         assertTrue(done)
         assertTrue(championRepository.searchChampionsBy("").isEmpty())
@@ -119,7 +132,7 @@ class SettingsViewModelTest {
         viewModel.refreshData { _ -> done = true }
         advanceUntilIdle()
 
-        coVerify { appDataRepository.setLocalVersion("0") }
+        coVerify { appDataRepository.setLocalVersion(PENDING_VERSION) }
         assertNull(getChampionDataUseCase.getVersion())
         assertTrue(done)
         assertTrue(championRepository.searchChampionsBy("").isEmpty())

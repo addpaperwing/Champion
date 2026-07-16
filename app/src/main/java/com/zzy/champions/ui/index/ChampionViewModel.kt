@@ -5,17 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.zzy.champions.data.model.ChampionData
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.domain.GetChampionDataUseCase
+import com.zzy.champions.util.stateInViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
@@ -34,11 +33,7 @@ class ChampionViewModel @Inject constructor(
             _refreshCounter.filter { it > 0 }.map { _query.value }   // explicit refresh, no debounce
         )
             .map { getChampionDataUseCase(it) }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = UiState.Loading
-            )
+            .stateInViewModel(viewModelScope, initialValue = UiState.Loading)
 
     fun updateSearchKeyword(query: String) { _query.value = query }
 

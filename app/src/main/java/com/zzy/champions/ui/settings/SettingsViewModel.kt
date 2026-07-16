@@ -5,17 +5,18 @@ import androidx.lifecycle.viewModelScope
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.data.repository.AppDataRepository
 import com.zzy.champions.data.repository.ChampionRepository
+import com.zzy.champions.data.repository.invalidateLocalVersion
+import com.zzy.champions.data.repository.localVersionState
 import com.zzy.champions.domain.GetChampionDataUseCase
 import com.zzy.champions.domain.GetItemDataUseCase
+import com.zzy.champions.util.stateInViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,10 +32,9 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val currentLanguage: StateFlow<String> = appDataRepository.getLanguage()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), "")
+        .stateInViewModel(viewModelScope, initialValue = "")
 
-    val gameVersion: StateFlow<String> = appDataRepository.getLocalVersion()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), "")
+    val gameVersion: StateFlow<String> = appDataRepository.localVersionState(viewModelScope)
 
     private val _languages = MutableStateFlow<UiState<List<String>>>(UiState.Loading)
     val languages: StateFlow<UiState<List<String>>> = _languages.asStateFlow()
@@ -80,7 +80,7 @@ class SettingsViewModel @Inject constructor(
         try {
             try {
                 championRepository.clearLocalData()
-                appDataRepository.setLocalVersion("0")
+                appDataRepository.invalidateLocalVersion()
                 language?.let { appDataRepository.setLanguage(it) }
             } finally {
                 getChampionDataUseCase.reset()

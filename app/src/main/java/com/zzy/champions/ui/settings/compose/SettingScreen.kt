@@ -94,18 +94,21 @@ fun SettingsRoute(
                     contentDescription = null
                 )
             }
-            Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+            SettingItem(itemName = stringResource(R.string.app_version)) {
                 Text(
-                    text = stringResource(R.string.app_version) + BuildConfig.VERSION_NAME,
+                    text = BuildConfig.VERSION_NAME,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.tertiary,
+                    color = MaterialTheme.colorScheme.tertiary
                 )
-                Text(
-                    text = stringResource(R.string.latest_game_version) + stringResource(R.string.v_, gameVersion),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.tertiary,
-                    modifier = Modifier.padding(top = 2.dp)
-                )
+            }
+            gameVersion.takeIf { it.isNotEmpty() }?.let { version ->
+                SettingItem(itemName = stringResource(R.string.latest_game_version)) {
+                    Text(
+                        text = stringResource(R.string.v_, version),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+                }
             }
         }
     }

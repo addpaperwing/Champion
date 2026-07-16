@@ -28,7 +28,7 @@ import coil3.compose.AsyncImage
 @Composable
 fun AbilityImage(
     modifier: Modifier = Modifier,
-    model: String,
+    model: String?,
     contentDescription: String?,
     activeColor: Color,
     inactiveColor: Color,

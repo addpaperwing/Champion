@@ -14,7 +14,10 @@ import javax.inject.Inject
 
 private const val PREFERENCE_NAME_SETTING = "com.zzy.champions.settings"
 private const val DEFAULT_LANGUAGE = "en_US"
-private const val DEFAULT_VERSION = "0"
+
+// The default value before any version has ever been stored, and the value
+// SettingsViewModel.clearAndRefresh() writes back to invalidate the cache before a refetch.
+const val PENDING_VERSION = "0"
 
 class DataStoreManager @Inject constructor(@ApplicationContext private val appContext: Context): AppDataSource {
 
@@ -23,7 +26,7 @@ class DataStoreManager @Inject constructor(@ApplicationContext private val appCo
     private val LANGUAGE = stringPreferencesKey("language")
     private val VERSION = stringPreferencesKey("version")
     override fun getLanguage(): Flow<String> = appContext.dataStore.data.map { it[LANGUAGE]?: DEFAULT_LANGUAGE }.distinctUntilChanged()
-    override fun getVersion() = appContext.dataStore.data.map { it[VERSION]?: DEFAULT_VERSION }.distinctUntilChanged()
+    override fun getVersion() = appContext.dataStore.data.map { it[VERSION]?: PENDING_VERSION }.distinctUntilChanged()
 
     override suspend fun setLanguage(language: String) {
         appContext.dataStore.edit { preferences ->
