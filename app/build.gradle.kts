@@ -14,15 +14,12 @@ android {
 
     defaultConfig {
         applicationId = "com.zzy.champions"
-        minSdk = 21
+        minSdk = 24
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
     }
 
 //    signingConfigs {
