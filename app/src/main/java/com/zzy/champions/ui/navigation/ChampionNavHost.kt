@@ -21,18 +21,15 @@ fun ChampionNavHost(
     ) {
         championIndexScreen(
             onItemClick = { navController.navigateToChampionDetail(it.id) },
-            onSettingClick = { navController.navigate(SETTINGS_ROUTE) { launchSingleTop = true } },
             onSplashFinished = onSplashFinished,
         )
 
         championDetailScreen(onLinkClick)
 
         settingsScreen(
-            onBack = { navController.popBackStack() },
             onLanguageClick = { navController.navigate(LANGUAGE_ROUTE) { launchSingleTop = true } },
             onRefreshDone = {
                 navController.signalRefresh()
-                navController.popBackStack()
             }
         )
 
@@ -44,9 +41,7 @@ fun ChampionNavHost(
             }
         )
 
-        itemsScreen(
-            onSettingClick = { navController.navigate(SETTINGS_ROUTE) { launchSingleTop = true } },
-        )
+        itemsScreen()
     }
 }
 

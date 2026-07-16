@@ -48,10 +48,11 @@ import com.zzy.champions.ui.theme.MARKSMAN
 import com.zzy.champions.ui.theme.MyApplicationTheme
 
 internal val PREDICTION_ITEM_HEIGHT = 56.dp
+private val SearchFieldDefaultModifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 4.dp)
 
 @Composable
 fun SearchTextField(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = SearchFieldDefaultModifier,
     text: String,
     onTextChanged: (String) -> Unit,
     onClearText: (() -> Unit)? = null,
@@ -150,7 +151,10 @@ fun <T> PredictionSearchBar(
             .heightIn(max = PREDICTION_ITEM_HEIGHT * 5.5f),
     ) {
         stickyHeader {
+            // Bare modifier: the LazyColumn above already applies horizontal padding to this
+            // sticky header, so the default SearchTextField padding would double it up.
             SearchTextField(
+                modifier = Modifier,
                 text = text,
                 onTextChanged = {
                     text = it

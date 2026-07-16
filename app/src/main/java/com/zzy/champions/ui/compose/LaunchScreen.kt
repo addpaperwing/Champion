@@ -34,7 +34,7 @@ fun LaunchScreen(modifier: Modifier = Modifier, onTimeout: () -> Unit) {
     Box(
         modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         var showWaitText by remember { mutableStateOf(false) }
         val currentOnTimeout by rememberUpdatedState(onTimeout)

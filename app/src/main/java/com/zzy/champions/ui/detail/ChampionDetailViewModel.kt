@@ -10,13 +10,13 @@ import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.data.repository.AppDataRepository
 import com.zzy.champions.data.repository.ChampionBuildRepository
 import com.zzy.champions.data.repository.ChampionRepository
+import com.zzy.champions.data.repository.localVersionState
 import com.zzy.champions.domain.GetChampionDetailUseCase
 import com.zzy.champions.ui.navigation.CHAMPION_ID
+import com.zzy.champions.util.stateInViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,28 +30,17 @@ class ChampionDetailViewModel @Inject constructor(
     private val getChampionDetailUseCase: GetChampionDetailUseCase
 ) : ViewModel() {
 
-    val version = appDataRepository.getLocalVersion().stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = ""
-    )
+    val version = appDataRepository.localVersionState(viewModelScope)
 
     val result: StateFlow<UiState<ChampionAndDetail>> =
         savedStateHandle.getStateFlow(key = CHAMPION_ID, initialValue = "")
             .map { id ->
                 getChampionDetailUseCase(id)
-            }.stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = UiState.Loading,
-            )
+            }.stateInViewModel(viewModelScope, initialValue = UiState.Loading)
 
 
-    val builds: StateFlow<List<ChampionBuild>> = championBuildRepository.getBuilds().stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = emptyList()
-    )
+    val builds: StateFlow<List<ChampionBuild>> = championBuildRepository.getBuilds()
+        .stateInViewModel(viewModelScope, initialValue = emptyList())
 
     fun saveBannerSplash(detail: ChampionDetail, skinNum: Int) {
         viewModelScope.launch {

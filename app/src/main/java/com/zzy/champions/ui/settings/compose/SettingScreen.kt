@@ -19,7 +19,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.zzy.champions.BuildConfig
 import com.zzy.champions.R
 import com.zzy.champions.ui.compose.TextDialog
 import com.zzy.champions.ui.settings.SettingsViewModel
@@ -29,7 +32,6 @@ import kotlinx.coroutines.launch
 fun SettingsRoute(
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel(),
-    onBack: () -> Unit,
     onLanguageClick: () -> Unit,
     onRefreshDone: () -> Unit,
 ) {
@@ -37,6 +39,7 @@ fun SettingsRoute(
     val scope = rememberCoroutineScope()
     val refreshFailedMsg = stringResource(R.string.data_refresh_failed)
     var showRefreshDialog by remember { mutableStateOf(false) }
+    val gameVersion by viewModel.gameVersion.collectAsStateWithLifecycle()
 
     if (showRefreshDialog) {
         TextDialog(
@@ -62,10 +65,15 @@ fun SettingsRoute(
 
     Scaffold(
         modifier = modifier,
-        topBar = { SettingAppbar(onBack = onBack) },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         Column(Modifier.padding(padding)) {
+            Text(
+                text = stringResource(R.string.settings),
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+            )
             SettingItem(
                 itemName = stringResource(R.string.switch_language),
                 description = stringResource(R.string.switch_language_desc),
@@ -85,6 +93,22 @@ fun SettingsRoute(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = null
                 )
+            }
+            SettingItem(itemName = stringResource(R.string.app_version)) {
+                Text(
+                    text = BuildConfig.VERSION_NAME,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+            }
+            gameVersion.takeIf { it.isNotEmpty() }?.let { version ->
+                SettingItem(itemName = stringResource(R.string.latest_game_version)) {
+                    Text(
+                        text = stringResource(R.string.v_, version),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+                }
             }
         }
     }

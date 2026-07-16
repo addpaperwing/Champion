@@ -13,27 +13,25 @@ const val SETTINGS_ROUTE = "settings"
 const val LANGUAGE_ROUTE = "settings/language"
 
 fun NavGraphBuilder.settingsScreen(
-    onBack: () -> Unit,
     onLanguageClick: () -> Unit,
     onRefreshDone: () -> Unit,
 ) {
     composable(
         route = SETTINGS_ROUTE,
         enterTransition = {
-            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(NAV_ANIM_DURATION, easing = EaseIn))
+            slideIntoContainer(
+                towards = tabEnterDirection(SETTINGS_ROUTE, initialState.destination.route),
+                animationSpec = tween(NAV_ANIM_DURATION, easing = EaseIn),
+            )
         },
         exitTransition = {
-            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(NAV_ANIM_DURATION, easing = EaseOut))
-        },
-        popEnterTransition = {
-            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(NAV_ANIM_DURATION, easing = EaseIn))
-        },
-        popExitTransition = {
-            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(NAV_ANIM_DURATION, easing = EaseOut))
+            slideOutOfContainer(
+                towards = tabExitDirection(SETTINGS_ROUTE, targetState.destination.route),
+                animationSpec = tween(NAV_ANIM_DURATION, easing = EaseOut),
+            )
         },
     ) {
         SettingsRoute(
-            onBack = onBack,
             onLanguageClick = onLanguageClick,
             onRefreshDone = onRefreshDone,
         )

@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.zzy.champions.data.model.Item
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.data.repository.AppDataRepository
+import com.zzy.champions.data.repository.localVersionState
 import com.zzy.champions.domain.GetItemDataUseCase
+import com.zzy.champions.util.stateInViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +19,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -49,11 +50,7 @@ class ItemViewModel @Inject constructor(
                 emit(getItemDataUseCase())
             }
         }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = UiState.Loading,
-        )
+        .stateInViewModel(viewModelScope, initialValue = UiState.Loading, started = SharingStarted.Lazily)
 
     // Categorization is computed once from raw items, not re-run on every search keystroke.
     private val _categorizedRawItems: StateFlow<UiState<List<Pair<String, List<Item>>>>> = _rawItems
@@ -64,11 +61,7 @@ class ItemViewModel @Inject constructor(
                 is UiState.Success -> UiState.Success(categorizeItems(state.data))
             }
         }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = UiState.Loading,
-        )
+        .stateInViewModel(viewModelScope, initialValue = UiState.Loading)
 
     val searchQuery: StateFlow<String> = savedStateHandle.getStateFlow(KEY_SEARCH_QUERY, "")
 
@@ -86,20 +79,11 @@ class ItemViewModel @Inject constructor(
                 }
             }
         }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = UiState.Loading,
-        )
+        .stateInViewModel(viewModelScope, initialValue = UiState.Loading)
 
     // Lazily (not WhileSubscribed) so the cached value persists after the UI goes to
     // background — prevents a blank version badge flash on return.
-    val version: StateFlow<String> = appDataRepository.getLocalVersion()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = "",
-        )
+    val version: StateFlow<String> = appDataRepository.localVersionState(viewModelScope, started = SharingStarted.Lazily)
 
     private val _selectedItem = MutableStateFlow<Item?>(null)
     val selectedItem: StateFlow<Item?> = _selectedItem.asStateFlow()

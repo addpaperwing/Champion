@@ -24,6 +24,7 @@
     <string name="settings">Cài đặt</string>
     <string name="latest_game_version">Phiên bản game mới nhất: </string>
     <string name="app_data_version">Phiên bản dữ liệu: </string>
+    <string name="app_version">Phiên bản ứng dụng: </string>
     <string name="language">Ngôn ngữ</string>
     <string name="internet_connection_error">Lỗi kết nối Internet.</string>
     <string name="edit">Chỉnh sửa</string>

@@ -1,5 +1,6 @@
 package com.zzy.champions.domain
 
+import com.zzy.champions.data.local.PENDING_VERSION
 import com.zzy.champions.data.model.VersionInfo
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -42,7 +43,7 @@ class VersionInfoTest {
 
     @Test
     fun defaultLocalZero_needsUpdateAndUsesRemote() {
-        val info = VersionInfo.newVersionInfo(local = "0", remote = "4.0.0")
+        val info = VersionInfo.newVersionInfo(local = PENDING_VERSION, remote = "4.0.0")
 
         assertTrue(info.needsUpdate)
         assertEquals("4.0.0", info.version)

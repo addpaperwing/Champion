@@ -10,6 +10,7 @@ import com.zzy.champions.data.model.Champion
 import com.zzy.champions.data.model.ChampionData
 import com.zzy.champions.data.model.Image
 import com.zzy.champions.data.model.Info
+import com.zzy.champions.data.local.PENDING_VERSION
 import com.zzy.champions.data.model.Stats
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.data.repository.AppDataRepository
@@ -108,7 +109,7 @@ class ChampionViewModelTest {
         assertEquals(null, getChampionDataUseCase.getVersion())
 
         //Mock return local version is 0 (default)
-        coEvery { appDataRepository.getLocalVersion() } returns flowOf("0")
+        coEvery { appDataRepository.getLocalVersion() } returns flowOf(PENDING_VERSION)
         //Mock return remote version to 14.1
         coEvery { appDataRepository.getRemoteVersion() } returns listOf(VERSION_14_1)
 
@@ -178,7 +179,7 @@ class ChampionViewModelTest {
         assertEquals(null, getChampionDataUseCase.getVersion())
 
         //Mock return local version is 0 (default)
-        coEvery { appDataRepository.getLocalVersion() } returns flowOf("0")
+        coEvery { appDataRepository.getLocalVersion() } returns flowOf(PENDING_VERSION)
         //Mock return remote failed, return default earliest version
         coEvery { appDataRepository.getRemoteVersion() } throws IOException()
 
@@ -259,7 +260,7 @@ class ChampionViewModelTest {
         assertEquals(null, getChampionDataUseCase.getVersion())
 
         //Mock return local version is 0 (default)
-        coEvery { appDataRepository.getLocalVersion() } returns flowOf("0")
+        coEvery { appDataRepository.getLocalVersion() } returns flowOf(PENDING_VERSION)
         //Remote version fetch succeeds, but fetching champions for this version throws
         coEvery { appDataRepository.getRemoteVersion() } returns listOf(VERSION_THAT_FAILS_CHAMPION_FETCH)
 
@@ -278,7 +279,7 @@ class ChampionViewModelTest {
         assertEquals(
             UiState.Success(
                 ChampionData(
-                    version = "0",
+                    version = PENDING_VERSION,
                     champions = emptyList()
                 )
             ), viewModel.champions.value

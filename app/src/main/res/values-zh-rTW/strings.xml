@@ -24,6 +24,7 @@
     <string name="settings">設定</string>
     <string name="latest_game_version">最新遊戲版本：</string>
     <string name="app_data_version">應用程式資料版本：</string>
+    <string name="app_version">應用程式版本：</string>
     <string name="language">語言</string>
     <string name="internet_connection_error">網路連線錯誤。</string>
     <string name="edit">編輯</string>

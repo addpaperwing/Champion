@@ -24,6 +24,7 @@
     <string name="settings">Paramètres</string>
     <string name="latest_game_version">Dernière version du jeu : </string>
     <string name="app_data_version">Version des données : </string>
+    <string name="app_version">Version de l\'app : </string>
     <string name="language">Langue</string>
     <string name="internet_connection_error">Erreur de connexion Internet.</string>
     <string name="edit">Modifier</string>
