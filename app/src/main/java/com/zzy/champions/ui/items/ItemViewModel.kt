@@ -50,6 +50,11 @@ sealed interface ItemListDisplay {
     data class Flat(val items: List<Item>) : ItemListDisplay
 }
 
+private data class CategorizedData(
+    val groups: List<Pair<String, List<Item>>>,
+    val categoryByItemId: Map<String, String>,
+)
+
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ItemViewModel @Inject constructor(
@@ -69,13 +74,19 @@ class ItemViewModel @Inject constructor(
         }
         .stateInViewModel(viewModelScope, initialValue = UiState.Loading, started = SharingStarted.Lazily)
 
-    // Categorization is computed once from raw items, not re-run on every search keystroke.
-    private val _categorizedRawItems: StateFlow<UiState<List<Pair<String, List<Item>>>>> = _rawItems
+    // Categorization (and the category-by-item-id index derived from it) is computed once
+    // from raw items, not re-run on every search keystroke. Both are carried in one state
+    // object so they can never drift out of sync with each other across combine emissions.
+    private val _categorizedRawItems: StateFlow<UiState<CategorizedData>> = _rawItems
         .map { state ->
             when (state) {
                 is UiState.Loading -> UiState.Loading
                 is UiState.Error -> state
-                is UiState.Success -> UiState.Success(categorizeItems(state.data))
+                is UiState.Success -> {
+                    val groups = categorizeItems(state.data)
+                    val categoryByItemId = groups.flatMap { (name, items) -> items.map { it.id to name } }.toMap()
+                    UiState.Success(CategorizedData(groups, categoryByItemId))
+                }
             }
         }
         .stateInViewModel(viewModelScope, initialValue = UiState.Loading)
@@ -93,32 +104,22 @@ class ItemViewModel @Inject constructor(
         }
         .stateInViewModel(viewModelScope, initialValue = emptyList())
 
-    // Derived once from the raw categorized data so it isn't rebuilt on every
-    // combine emission below (e.g. every search keystroke).
-    private val _categoryByItemId: StateFlow<Map<String, String>> = _categorizedRawItems
-        .map { state ->
-            when (state) {
-                is UiState.Success -> state.data.flatMap { (name, items) -> items.map { it.id to name } }.toMap()
-                else -> emptyMap()
-            }
-        }
-        .stateInViewModel(viewModelScope, initialValue = emptyMap())
-
     val itemListState: StateFlow<UiState<ItemListDisplay>> =
-        combine(_categorizedRawItems, searchQuery, selectedCategories, selectedTags, _categoryByItemId) { state, query, categories, tags, categoryByItemId ->
+        combine(_categorizedRawItems, searchQuery, selectedCategories, selectedTags) { state, query, categories, tags ->
             when (state) {
                 is UiState.Loading -> UiState.Loading
                 is UiState.Error -> state
                 is UiState.Success -> {
+                    val (groups, categoryByItemId) = state.data
                     if (categories.isEmpty() && tags.isEmpty()) {
-                        val filtered = if (query.isBlank()) state.data
-                        else state.data.mapNotNull { (name, items) ->
+                        val filtered = if (query.isBlank()) groups
+                        else groups.mapNotNull { (name, items) ->
                             val matched = items.filter { it.name.contains(query, ignoreCase = true) }
                             if (matched.isEmpty()) null else name to matched
                         }
                         UiState.Success(ItemListDisplay.Categorized(filtered))
                     } else {
-                        val flat = state.data.flatMap { it.second }.filter { item ->
+                        val flat = groups.flatMap { it.second }.filter { item ->
                             (categories.isEmpty() || categoryByItemId[item.id] in categories) &&
                                 (tags.isEmpty() || item.tags.any { it in tags }) &&
                                 (query.isBlank() || item.name.contains(query, ignoreCase = true))
