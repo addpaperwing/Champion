@@ -24,6 +24,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val KEY_SEARCH_QUERY = "search_query"
+private const val KEY_SELECTED_CATEGORIES = "selected_categories"
+private const val KEY_SELECTED_TAGS = "selected_tags"
 
 internal const val CATEGORY_STARTER    = "Starter"
 internal const val CATEGORY_BOOTS      = "Boots"
@@ -32,6 +34,21 @@ internal const val CATEGORY_LEGENDARY  = "Legendary"
 internal const val CATEGORY_COMPONENTS = "Components"
 internal const val CATEGORY_EPIC       = "Epic"
 internal const val CATEGORY_OTHER      = "Other"
+
+internal val ALL_CATEGORIES = listOf(
+    CATEGORY_STARTER,
+    CATEGORY_BOOTS,
+    CATEGORY_MYTHIC,
+    CATEGORY_LEGENDARY,
+    CATEGORY_COMPONENTS,
+    CATEGORY_EPIC,
+    CATEGORY_OTHER,
+)
+
+internal sealed interface ItemListDisplay {
+    data class Categorized(val groups: List<Pair<String, List<Item>>>) : ItemListDisplay
+    data class Flat(val items: List<Item>) : ItemListDisplay
+}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -64,7 +81,19 @@ class ItemViewModel @Inject constructor(
         .stateInViewModel(viewModelScope, initialValue = UiState.Loading)
 
     val searchQuery: StateFlow<String> = savedStateHandle.getStateFlow(KEY_SEARCH_QUERY, "")
+    val selectedCategories: StateFlow<Set<String>> = savedStateHandle.getStateFlow(KEY_SELECTED_CATEGORIES, emptySet())
+    val selectedTags: StateFlow<Set<String>> = savedStateHandle.getStateFlow(KEY_SELECTED_TAGS, emptySet())
 
+    val availableTags: StateFlow<List<String>> = _rawItems
+        .map { state ->
+            when (state) {
+                is UiState.Success -> state.data.flatMap { it.tags }.distinct().sorted()
+                else -> emptyList()
+            }
+        }
+        .stateInViewModel(viewModelScope, initialValue = emptyList())
+
+    // Backward compatibility for existing UI code
     val categorizedItems: StateFlow<UiState<List<Pair<String, List<Item>>>>> =
         combine(_categorizedRawItems, searchQuery) { state, query ->
             when (state) {
@@ -76,6 +105,35 @@ class ItemViewModel @Inject constructor(
                         val filtered = items.filter { it.name.contains(query, ignoreCase = true) }
                         if (filtered.isEmpty()) null else name to filtered
                     })
+                }
+            }
+        }
+        .stateInViewModel(viewModelScope, initialValue = UiState.Loading)
+
+    internal val itemListState: StateFlow<UiState<ItemListDisplay>> =
+        combine(_categorizedRawItems, searchQuery, selectedCategories, selectedTags) { state, query, categories, tags ->
+            when (state) {
+                is UiState.Loading -> UiState.Loading
+                is UiState.Error -> state
+                is UiState.Success -> {
+                    if (categories.isEmpty() && tags.isEmpty()) {
+                        val filtered = if (query.isBlank()) state.data
+                        else state.data.mapNotNull { (name, items) ->
+                            val matched = items.filter { it.name.contains(query, ignoreCase = true) }
+                            if (matched.isEmpty()) null else name to matched
+                        }
+                        UiState.Success(ItemListDisplay.Categorized(filtered))
+                    } else {
+                        val categoryByItemId = state.data
+                            .flatMap { (name, items) -> items.map { it.id to name } }
+                            .toMap()
+                        val flat = state.data.flatMap { it.second }.filter { item ->
+                            (categories.isEmpty() || categoryByItemId[item.id] in categories) &&
+                                (tags.isEmpty() || item.tags.any { it in tags }) &&
+                                (query.isBlank() || item.name.contains(query, ignoreCase = true))
+                        }
+                        UiState.Success(ItemListDisplay.Flat(flat))
+                    }
                 }
             }
         }
@@ -101,6 +159,22 @@ class ItemViewModel @Inject constructor(
     }
 
     fun updateSearchQuery(query: String) { savedStateHandle[KEY_SEARCH_QUERY] = query }
+
+    fun toggleCategoryFilter(category: String) {
+        val current = selectedCategories.value
+        savedStateHandle[KEY_SELECTED_CATEGORIES] = if (category in current) current - category else current + category
+    }
+
+    fun toggleTagFilter(tag: String) {
+        val current = selectedTags.value
+        savedStateHandle[KEY_SELECTED_TAGS] = if (tag in current) current - tag else current + tag
+    }
+
+    fun clearFilters() {
+        savedStateHandle[KEY_SELECTED_CATEGORIES] = emptySet<String>()
+        savedStateHandle[KEY_SELECTED_TAGS] = emptySet<String>()
+    }
+
     fun selectItem(item: Item) { _selectedItem.value = item }
     fun dismissItem() { _selectedItem.value = null }
     fun retry() { _retryTrigger.update { it + 1 } }

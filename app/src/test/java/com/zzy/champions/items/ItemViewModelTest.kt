@@ -8,6 +8,11 @@ import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.data.repository.AppDataRepository
 import com.zzy.champions.domain.GetItemDataUseCase
 import com.zzy.champions.infinityEdge
+import com.zzy.champions.longSword
+import com.zzy.champions.sorceresShoes
+import com.zzy.champions.ui.items.CATEGORY_BOOTS
+import com.zzy.champions.ui.items.CATEGORY_LEGENDARY
+import com.zzy.champions.ui.items.ItemListDisplay
 import com.zzy.champions.ui.items.ItemViewModel
 import androidx.lifecycle.SavedStateHandle
 import io.mockk.MockKAnnotations
@@ -22,6 +27,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -48,17 +54,19 @@ class ItemViewModelTest {
 
     @Test
     fun stateIsInitiallyLoading() {
-        assertEquals(UiState.Loading, viewModel.categorizedItems.value)
+        assertEquals(UiState.Loading, viewModel.itemListState.value)
     }
 
     @Test
     fun items_loadsSuccessfully() = runTest {
-        val job = launch { viewModel.categorizedItems.collect() }
+        val job = launch { viewModel.itemListState.collect() }
         advanceUntilIdle()
 
-        val state = viewModel.categorizedItems.value
-        assert(state is UiState.Success)
-        val totalItems = (state as UiState.Success).data.sumOf { it.second.size }
+        val state = viewModel.itemListState.value
+        assertTrue(state is UiState.Success)
+        val display = (state as UiState.Success).data
+        assertTrue(display is ItemListDisplay.Categorized)
+        val totalItems = (display as ItemListDisplay.Categorized).groups.sumOf { it.second.size }
         assertEquals(3, totalItems)
         job.cancel()
     }
@@ -79,5 +87,105 @@ class ItemViewModelTest {
         viewModel.selectItem(infinityEdge)
         viewModel.dismissItem()
         assertNull(viewModel.selectedItem.value)
+    }
+
+    @Test
+    fun categoryFilter_showsFlatDisplayWithMatchingItems() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+
+        viewModel.toggleCategoryFilter(CATEGORY_BOOTS)
+        advanceUntilIdle()
+
+        val display = (viewModel.itemListState.value as UiState.Success).data
+        assertTrue(display is ItemListDisplay.Flat)
+        assertEquals(listOf(sorceresShoes), (display as ItemListDisplay.Flat).items)
+        job.cancel()
+    }
+
+    @Test
+    fun tagFilter_showsFlatDisplayWithMatchingItems() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+
+        viewModel.toggleTagFilter("Damage")
+        advanceUntilIdle()
+
+        val display = (viewModel.itemListState.value as UiState.Success).data
+        assertTrue(display is ItemListDisplay.Flat)
+        assertEquals(listOf(longSword, infinityEdge), (display as ItemListDisplay.Flat).items)
+        job.cancel()
+    }
+
+    @Test
+    fun multipleTagsSelected_matchEitherTag() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+
+        viewModel.toggleTagFilter("Boots")
+        viewModel.toggleTagFilter("CriticalStrike")
+        advanceUntilIdle()
+
+        val display = (viewModel.itemListState.value as UiState.Success).data
+        assertTrue(display is ItemListDisplay.Flat)
+        assertEquals(listOf(sorceresShoes, infinityEdge), (display as ItemListDisplay.Flat).items)
+        job.cancel()
+    }
+
+    @Test
+    fun categoryAndTagCombined_mustMatchBoth() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+
+        viewModel.toggleCategoryFilter(CATEGORY_LEGENDARY)
+        viewModel.toggleTagFilter("Damage")
+        advanceUntilIdle()
+
+        val display = (viewModel.itemListState.value as UiState.Success).data
+        assertTrue(display is ItemListDisplay.Flat)
+        assertEquals(listOf(infinityEdge), (display as ItemListDisplay.Flat).items)
+        job.cancel()
+    }
+
+    @Test
+    fun clearFilters_returnsToCategorizedDisplay() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+
+        viewModel.toggleCategoryFilter(CATEGORY_BOOTS)
+        advanceUntilIdle()
+        viewModel.clearFilters()
+        advanceUntilIdle()
+
+        val display = (viewModel.itemListState.value as UiState.Success).data
+        assertTrue(display is ItemListDisplay.Categorized)
+        job.cancel()
+    }
+
+    @Test
+    fun searchText_narrowsActiveTagFilter() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+
+        viewModel.toggleTagFilter("Damage")
+        viewModel.updateSearchQuery("Infinity")
+        advanceUntilIdle()
+
+        val display = (viewModel.itemListState.value as UiState.Success).data
+        assertTrue(display is ItemListDisplay.Flat)
+        assertEquals(listOf(infinityEdge), (display as ItemListDisplay.Flat).items)
+        job.cancel()
+    }
+
+    @Test
+    fun availableTags_derivedFromLoadedItems() = runTest {
+        val job = launch { viewModel.availableTags.collect() }
+        advanceUntilIdle()
+
+        assertEquals(
+            listOf("Boots", "CriticalStrike", "Damage", "Legendary", "SpellDamage"),
+            viewModel.availableTags.value,
+        )
+        job.cancel()
     }
 }
