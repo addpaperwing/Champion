@@ -93,23 +93,6 @@ class ItemViewModel @Inject constructor(
         }
         .stateInViewModel(viewModelScope, initialValue = emptyList())
 
-    // Bridge for ItemScreen.kt, which still reads this directly; removed once Task 4 migrates ItemScreen.kt to itemListState.
-    val categorizedItems: StateFlow<UiState<List<Pair<String, List<Item>>>>> =
-        combine(_categorizedRawItems, searchQuery) { state, query ->
-            when (state) {
-                is UiState.Loading -> UiState.Loading
-                is UiState.Error -> state
-                is UiState.Success -> {
-                    if (query.isBlank()) state
-                    else UiState.Success(state.data.mapNotNull { (name, items) ->
-                        val filtered = items.filter { it.name.contains(query, ignoreCase = true) }
-                        if (filtered.isEmpty()) null else name to filtered
-                    })
-                }
-            }
-        }
-        .stateInViewModel(viewModelScope, initialValue = UiState.Loading)
-
     val itemListState: StateFlow<UiState<ItemListDisplay>> =
         combine(_categorizedRawItems, searchQuery, selectedCategories, selectedTags) { state, query, categories, tags ->
             when (state) {

@@ -21,7 +21,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -45,6 +48,7 @@ import com.zzy.champions.ui.items.CATEGORY_LEGENDARY
 import com.zzy.champions.ui.items.CATEGORY_MYTHIC
 import com.zzy.champions.ui.items.CATEGORY_OTHER
 import com.zzy.champions.ui.items.CATEGORY_STARTER
+import com.zzy.champions.ui.items.ItemListDisplay
 import com.zzy.champions.ui.items.ItemViewModel
 import com.zzy.champions.ui.theme.Golden
 
@@ -76,11 +80,15 @@ fun ItemRoute(
         }
     }
 
-    val categorizedState by viewModel.categorizedItems.collectAsStateWithLifecycle()
+    val itemListState by viewModel.itemListState.collectAsStateWithLifecycle()
     val selectedItem by viewModel.selectedItem.collectAsStateWithLifecycle()
     val version by viewModel.version.collectAsStateWithLifecycle()
     val searchText by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val selectedCategories by viewModel.selectedCategories.collectAsStateWithLifecycle()
+    val selectedTags by viewModel.selectedTags.collectAsStateWithLifecycle()
+    val availableTags by viewModel.availableTags.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
+    var showFilterSheet by rememberSaveable { mutableStateOf(false) }
 
     BackHandler(enabled = searchText.isNotBlank()) {
         viewModel.updateSearchQuery("")
@@ -88,15 +96,29 @@ fun ItemRoute(
 
     ItemScreen(
         modifier = modifier,
-        categorizedState = categorizedState,
+        itemListState = itemListState,
         version = version,
         searchText = searchText,
         onSearchTextChange = { viewModel.updateSearchQuery(it) },
         onSearchDone = { keyboardController?.hide() },
         onClearSearch = { viewModel.updateSearchQuery("") },
+        isFilterActive = selectedCategories.isNotEmpty() || selectedTags.isNotEmpty(),
+        onFilterIconClick = { showFilterSheet = true },
         onItemClick = viewModel::selectItem,
         onReloadClick = viewModel::retry,
     )
+
+    if (showFilterSheet) {
+        ItemFilterBottomSheet(
+            availableTags = availableTags,
+            selectedCategories = selectedCategories,
+            selectedTags = selectedTags,
+            onCategoryToggle = viewModel::toggleCategoryFilter,
+            onTagToggle = viewModel::toggleTagFilter,
+            onClearAll = viewModel::clearFilters,
+            onDismiss = { showFilterSheet = false },
+        )
+    }
 
     val resolveItem = remember(viewModel) { viewModel::getItemById }
     val onComponentClick = remember(viewModel) { { componentId: String ->
@@ -105,7 +127,7 @@ fun ItemRoute(
     } }
     // Don't overlay the error screen: dismiss the sheet when the load fails so
     // the user can reach the reload button.
-    selectedItem?.takeIf { categorizedState !is UiState.Error }?.let { item ->
+    selectedItem?.takeIf { itemListState !is UiState.Error }?.let { item ->
         ItemBottomSheet(
             item = item,
             version = version,
@@ -119,12 +141,14 @@ fun ItemRoute(
 @Composable
 fun ItemScreen(
     modifier: Modifier = Modifier,
-    categorizedState: UiState<List<Pair<String, List<Item>>>>,
+    itemListState: UiState<ItemListDisplay>,
     version: String,
     searchText: String = "",
     onSearchTextChange: (String) -> Unit = {},
     onSearchDone: () -> Unit = {},
     onClearSearch: (() -> Unit)? = null,
+    isFilterActive: Boolean = false,
+    onFilterIconClick: () -> Unit = {},
     onItemClick: (Item) -> Unit,
     onReloadClick: () -> Unit = {},
 ) {
@@ -138,8 +162,11 @@ fun ItemScreen(
             onTextChanged = onSearchTextChange,
             onClearText = onClearSearch,
             onDone = { onSearchDone() },
+            trailingContent = {
+                FilterIconButton(isActive = isFilterActive, onClick = onFilterIconClick)
+            },
         )
-        when (categorizedState) {
+        when (itemListState) {
             is UiState.Loading -> LoadingAndErrorScreen(
                 isLoading = true,
                 isError = false,
@@ -156,16 +183,29 @@ fun ItemScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
                 ) {
-                    categorizedState.data.forEach { (categoryName, categoryItems) ->
-                        item(span = { GridItemSpan(GRID_COLUMNS) }, contentType = "header") {
-                            CategoryHeader(name = categoryName)
+                    when (val display = itemListState.data) {
+                        is ItemListDisplay.Categorized -> {
+                            display.groups.forEach { (categoryName, categoryItems) ->
+                                item(span = { GridItemSpan(GRID_COLUMNS) }, contentType = "header") {
+                                    CategoryHeader(name = categoryName)
+                                }
+                                items(categoryItems, key = { it.id }, contentType = { "item" }) { item ->
+                                    ItemCard(
+                                        item = item,
+                                        version = version,
+                                        onClick = { onItemClick(item) },
+                                    )
+                                }
+                            }
                         }
-                        items(categoryItems, key = { it.id }, contentType = { "item" }) { item ->
-                            ItemCard(
-                                item = item,
-                                version = version,
-                                onClick = { onItemClick(item) },
-                            )
+                        is ItemListDisplay.Flat -> {
+                            items(display.items, key = { it.id }, contentType = { "item" }) { item ->
+                                ItemCard(
+                                    item = item,
+                                    version = version,
+                                    onClick = { onItemClick(item) },
+                                )
+                            }
                         }
                     }
                 }
