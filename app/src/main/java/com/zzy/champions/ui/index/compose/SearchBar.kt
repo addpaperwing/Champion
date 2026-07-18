@@ -56,7 +56,8 @@ fun SearchTextField(
     text: String,
     onTextChanged: (String) -> Unit,
     onClearText: (() -> Unit)? = null,
-    onDone: (String) -> Unit
+    onDone: (String) -> Unit,
+    trailingContent: (@Composable () -> Unit)? = null,
 ) {
     Surface(modifier = modifier, color = MaterialTheme.colorScheme.background) {
         TextField(
@@ -76,10 +77,13 @@ fun SearchTextField(
                 )
             },
             trailingIcon = {
-                if (onClearText != null && text.isNotBlank()) {
-                    IconButton(onClick = onClearText) {
-                        Icon(imageVector = Icons.Default.Clear, contentDescription = "Clear")
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (onClearText != null && text.isNotBlank()) {
+                        IconButton(onClick = onClearText) {
+                            Icon(imageVector = Icons.Default.Clear, contentDescription = "Clear")
+                        }
                     }
+                    trailingContent?.invoke()
                 }
             },
             colors = TextFieldDefaults.colors(
