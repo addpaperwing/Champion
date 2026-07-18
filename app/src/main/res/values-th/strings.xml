@@ -32,6 +32,7 @@
     <string name="filter_category">หมวดหมู่</string>
     <string name="filter_tags">แท็ก</string>
     <string name="filter_clear_all">ล้างทั้งหมด</string>
+    <string name="filter_no_results">ไม่มีไอเทมที่ตรงกับตัวกรองของคุณ</string>
     <string name="delete">ลบ</string>
     <string name="build_name">ชื่อ</string>
     <string name="build_content">เนื้อหาบิลด์</string>

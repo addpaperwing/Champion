@@ -32,6 +32,7 @@
     <string name="filter_category">Κατηγορία</string>
     <string name="filter_tags">Ετικέτες</string>
     <string name="filter_clear_all">Απαλοιφή όλων</string>
+    <string name="filter_no_results">Κανένα αντικείμενο δεν ταιριάζει με τα φίλτρα σας.</string>
     <string name="delete">Διαγραφή</string>
     <string name="build_name">Όνομα</string>
     <string name="build_content">Περιεχόμενο build</string>

@@ -183,9 +183,26 @@ class ItemViewModelTest {
         advanceUntilIdle()
 
         assertEquals(
-            listOf("Boots", "CriticalStrike", "Damage", "Legendary", "SpellDamage"),
+            listOf("CriticalStrike", "Damage", "SpellDamage"),
             viewModel.availableTags.value,
         )
+        job.cancel()
+    }
+
+    @Test
+    fun availableTags_excludesTagsMatchingCategoryNames() = runTest {
+        // sorceresShoes carries the raw tag "Boots" and infinityEdge carries "Legendary" —
+        // both are also fixed category names, so they should not appear as separate
+        // "raw tag" chips alongside the "Category: Boots" / "Category: Legendary" chips.
+        val job = launch { viewModel.availableTags.collect() }
+        advanceUntilIdle()
+
+        val tags = viewModel.availableTags.value
+        assertTrue("Boots" !in tags)
+        assertTrue("Legendary" !in tags)
+        assertTrue("Damage" in tags)
+        assertTrue("CriticalStrike" in tags)
+        assertTrue("SpellDamage" in tags)
         job.cancel()
     }
 }

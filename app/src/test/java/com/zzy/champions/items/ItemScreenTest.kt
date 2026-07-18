@@ -12,6 +12,7 @@ import com.zzy.champions.sorceresShoes
 import com.zzy.champions.ui.items.ItemListDisplay
 import com.zzy.champions.ui.items.compose.ItemScreen
 import com.zzy.champions.ui.theme.MyApplicationTheme
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -81,6 +82,36 @@ class ItemScreenTest {
 
         composeTestRule.onNodeWithContentDescription("Filter items").performClick()
 
-        assert(clicked)
+        assertTrue(clicked)
+    }
+
+    @Test
+    fun emptyFlatDisplay_showsNoResultsMessage() {
+        composeTestRule.setContent {
+            MyApplicationTheme {
+                ItemScreen(
+                    itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
+                    version = "",
+                    onItemClick = {},
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("No items match your filters.").assertExists()
+    }
+
+    @Test
+    fun nonEmptyFlatDisplay_doesNotShowNoResultsMessage() {
+        composeTestRule.setContent {
+            MyApplicationTheme {
+                ItemScreen(
+                    itemListState = UiState.Success(ItemListDisplay.Flat(listOf(sorceresShoes))),
+                    version = "",
+                    onItemClick = {},
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("No items match your filters.").assertDoesNotExist()
     }
 }

@@ -32,6 +32,7 @@
     <string name="filter_category">Kategori</string>
     <string name="filter_tags">Etiketler</string>
     <string name="filter_clear_all">Tümünü temizle</string>
+    <string name="filter_no_results">Filtrelerinize uyan eşya yok.</string>
     <string name="delete">Sil</string>
     <string name="build_name">Ad</string>
     <string name="build_content">Derleme İçeriği</string>

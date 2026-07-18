@@ -87,14 +87,25 @@ class ItemViewModel @Inject constructor(
     val availableTags: StateFlow<List<String>> = _rawItems
         .map { state ->
             when (state) {
-                is UiState.Success -> state.data.flatMap { it.tags }.distinct().sorted()
+                is UiState.Success -> state.data.flatMap { it.tags }.filter { it !in ALL_CATEGORIES }.distinct().sorted()
                 else -> emptyList()
             }
         }
         .stateInViewModel(viewModelScope, initialValue = emptyList())
 
+    // Derived once from the raw categorized data so it isn't rebuilt on every
+    // combine emission below (e.g. every search keystroke).
+    private val _categoryByItemId: StateFlow<Map<String, String>> = _categorizedRawItems
+        .map { state ->
+            when (state) {
+                is UiState.Success -> state.data.flatMap { (name, items) -> items.map { it.id to name } }.toMap()
+                else -> emptyMap()
+            }
+        }
+        .stateInViewModel(viewModelScope, initialValue = emptyMap())
+
     val itemListState: StateFlow<UiState<ItemListDisplay>> =
-        combine(_categorizedRawItems, searchQuery, selectedCategories, selectedTags) { state, query, categories, tags ->
+        combine(_categorizedRawItems, searchQuery, selectedCategories, selectedTags, _categoryByItemId) { state, query, categories, tags, categoryByItemId ->
             when (state) {
                 is UiState.Loading -> UiState.Loading
                 is UiState.Error -> state
@@ -107,9 +118,6 @@ class ItemViewModel @Inject constructor(
                         }
                         UiState.Success(ItemListDisplay.Categorized(filtered))
                     } else {
-                        val categoryByItemId = state.data
-                            .flatMap { (name, items) -> items.map { it.id to name } }
-                            .toMap()
                         val flat = state.data.flatMap { it.second }.filter { item ->
                             (categories.isEmpty() || categoryByItemId[item.id] in categories) &&
                                 (tags.isEmpty() || item.tags.any { it in tags }) &&

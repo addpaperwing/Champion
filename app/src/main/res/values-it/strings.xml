@@ -32,6 +32,7 @@
     <string name="filter_category">Categoria</string>
     <string name="filter_tags">Tag</string>
     <string name="filter_clear_all">Cancella tutto</string>
+    <string name="filter_no_results">Nessun oggetto corrisponde ai tuoi filtri.</string>
     <string name="delete">Elimina</string>
     <string name="build_name">Nome</string>
     <string name="build_content">Contenuto build</string>

@@ -41,6 +41,7 @@
     <string name="filter_category">カテゴリー</string>
     <string name="filter_tags">タグ</string>
     <string name="filter_clear_all">すべてクリア</string>
+    <string name="filter_no_results">フィルターに一致するアイテムがありません。</string>
     <string name="delete">削除</string>
 
     <string name="build_name">名前</string>

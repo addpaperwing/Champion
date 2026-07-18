@@ -32,6 +32,7 @@
     <string name="filter_category">分类</string>
     <string name="filter_tags">标签</string>
     <string name="filter_clear_all">全部清除</string>
+    <string name="filter_no_results">没有符合筛选条件的物品。</string>
     <string name="delete">删除</string>
     <string name="build_name">名称</string>
     <string name="build_content">配置内容</string>

@@ -25,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -178,33 +179,43 @@ fun ItemScreen(
                 onReloadClick = onReloadClick,
             )
             is UiState.Success -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(GRID_COLUMNS),
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
-                ) {
-                    when (val display = itemListState.data) {
-                        is ItemListDisplay.Categorized -> {
-                            display.groups.forEach { (categoryName, categoryItems) ->
-                                item(span = { GridItemSpan(GRID_COLUMNS) }, contentType = "header") {
-                                    CategoryHeader(name = categoryName)
+                val display = itemListState.data
+                if (display is ItemListDisplay.Flat && display.items.isEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxSize().padding(32.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(text = stringResource(id = R.string.filter_no_results))
+                    }
+                } else {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(GRID_COLUMNS),
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
+                    ) {
+                        when (display) {
+                            is ItemListDisplay.Categorized -> {
+                                display.groups.forEach { (categoryName, categoryItems) ->
+                                    item(span = { GridItemSpan(GRID_COLUMNS) }, contentType = "header") {
+                                        CategoryHeader(name = categoryName)
+                                    }
+                                    items(categoryItems, key = { it.id }, contentType = { "item" }) { item ->
+                                        ItemCard(
+                                            item = item,
+                                            version = version,
+                                            onClick = { onItemClick(item) },
+                                        )
+                                    }
                                 }
-                                items(categoryItems, key = { it.id }, contentType = { "item" }) { item ->
+                            }
+                            is ItemListDisplay.Flat -> {
+                                items(display.items, key = { it.id }, contentType = { "item" }) { item ->
                                     ItemCard(
                                         item = item,
                                         version = version,
                                         onClick = { onItemClick(item) },
                                     )
                                 }
-                            }
-                        }
-                        is ItemListDisplay.Flat -> {
-                            items(display.items, key = { it.id }, contentType = { "item" }) { item ->
-                                ItemCard(
-                                    item = item,
-                                    version = version,
-                                    onClick = { onItemClick(item) },
-                                )
                             }
                         }
                     }

@@ -32,6 +32,7 @@
     <string name="filter_category">Kategória</string>
     <string name="filter_tags">Címkék</string>
     <string name="filter_clear_all">Összes törlése</string>
+    <string name="filter_no_results">Egyetlen tárgy sem felel meg a szűrőknek.</string>
     <string name="delete">Törlés</string>
     <string name="build_name">Név</string>
     <string name="build_content">Összeállítás tartalma</string>
