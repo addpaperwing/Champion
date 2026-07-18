@@ -45,7 +45,7 @@ internal val ALL_CATEGORIES = listOf(
     CATEGORY_OTHER,
 )
 
-internal sealed interface ItemListDisplay {
+sealed interface ItemListDisplay {
     data class Categorized(val groups: List<Pair<String, List<Item>>>) : ItemListDisplay
     data class Flat(val items: List<Item>) : ItemListDisplay
 }
@@ -93,7 +93,7 @@ class ItemViewModel @Inject constructor(
         }
         .stateInViewModel(viewModelScope, initialValue = emptyList())
 
-    // Backward compatibility for existing UI code
+    // Bridge for ItemScreen.kt, which still reads this directly; removed once Task 4 migrates ItemScreen.kt to itemListState.
     val categorizedItems: StateFlow<UiState<List<Pair<String, List<Item>>>>> =
         combine(_categorizedRawItems, searchQuery) { state, query ->
             when (state) {
@@ -110,7 +110,7 @@ class ItemViewModel @Inject constructor(
         }
         .stateInViewModel(viewModelScope, initialValue = UiState.Loading)
 
-    internal val itemListState: StateFlow<UiState<ItemListDisplay>> =
+    val itemListState: StateFlow<UiState<ItemListDisplay>> =
         combine(_categorizedRawItems, searchQuery, selectedCategories, selectedTags) { state, query, categories, tags ->
             when (state) {
                 is UiState.Loading -> UiState.Loading
