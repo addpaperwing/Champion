@@ -135,6 +135,7 @@ dependencies {
 
 //    testImplementation(libs.espresso.core)
 //    testImplementation(libs.ui.test.junit4)
+    testImplementation(libs.android.compose.ui.test)
     testImplementation(libs.android.compose.ui.test.junit4)
 
     testImplementation(libs.robolectric)
