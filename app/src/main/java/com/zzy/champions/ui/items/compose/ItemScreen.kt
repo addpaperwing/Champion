@@ -52,7 +52,7 @@ private const val GRID_COLUMNS = 5
 internal val itemCutCornerShape = CutCornerShape(topEnd = 8.dp, bottomStart = 8.dp)
 private val categoryHeaderBrush = Brush.horizontalGradient(listOf(Golden.copy(alpha = 0.25f), Color.Transparent))
 
-private val categoryNameResIds = mapOf(
+internal val categoryNameResIds = mapOf(
     CATEGORY_STARTER    to R.string.category_starter,
     CATEGORY_BOOTS      to R.string.category_boots,
     CATEGORY_MYTHIC     to R.string.category_mythic,

@@ -28,6 +28,10 @@
     <string name="language">Ngôn ngữ</string>
     <string name="internet_connection_error">Lỗi kết nối Internet.</string>
     <string name="edit">Chỉnh sửa</string>
+    <string name="filter_items">Lọc vật phẩm</string>
+    <string name="filter_category">Danh mục</string>
+    <string name="filter_tags">Thẻ</string>
+    <string name="filter_clear_all">Xóa tất cả</string>
     <string name="delete">Xóa</string>
     <string name="build_name">Tên</string>
     <string name="build_content">Nội dung build</string>

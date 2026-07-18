@@ -55,6 +55,10 @@
     <string name="internet_connection_error">Internet connection error.</string>
     
     <string name="edit">Edit</string>
+    <string name="filter_items">Filter items</string>
+    <string name="filter_category">Category</string>
+    <string name="filter_tags">Tags</string>
+    <string name="filter_clear_all">Clear all</string>
     <string name="delete">Delete</string>
     
     <string name="build_name">Name</string>

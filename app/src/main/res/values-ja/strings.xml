@@ -37,6 +37,10 @@
     <string name="internet_connection_error">インターネット接続エラー。</string>
 
     <string name="edit">編集</string>
+    <string name="filter_items">アイテムをフィルター</string>
+    <string name="filter_category">カテゴリー</string>
+    <string name="filter_tags">タグ</string>
+    <string name="filter_clear_all">すべてクリア</string>
     <string name="delete">削除</string>
 
     <string name="build_name">名前</string>

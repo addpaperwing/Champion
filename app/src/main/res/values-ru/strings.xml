@@ -28,6 +28,10 @@
     <string name="language">Язык</string>
     <string name="internet_connection_error">Ошибка подключения к интернету.</string>
     <string name="edit">Изменить</string>
+    <string name="filter_items">Фильтр предметов</string>
+    <string name="filter_category">Категория</string>
+    <string name="filter_tags">Теги</string>
+    <string name="filter_clear_all">Очистить всё</string>
     <string name="delete">Удалить</string>
     <string name="build_name">Название</string>
     <string name="build_content">Содержимое сборки</string>

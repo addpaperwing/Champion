@@ -28,6 +28,10 @@
     <string name="language">Bahasa</string>
     <string name="internet_connection_error">Kesalahan koneksi Internet.</string>
     <string name="edit">Ubah</string>
+    <string name="filter_items">Filter item</string>
+    <string name="filter_category">Kategori</string>
+    <string name="filter_tags">Tag</string>
+    <string name="filter_clear_all">Hapus semua</string>
     <string name="delete">Hapus</string>
     <string name="build_name">Nama</string>
     <string name="build_content">Isi Build</string>

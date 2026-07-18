@@ -28,6 +28,10 @@
     <string name="language">Dil</string>
     <string name="internet_connection_error">İnternet bağlantısı hatası.</string>
     <string name="edit">Düzenle</string>
+    <string name="filter_items">Eşyaları filtrele</string>
+    <string name="filter_category">Kategori</string>
+    <string name="filter_tags">Etiketler</string>
+    <string name="filter_clear_all">Tümünü temizle</string>
     <string name="delete">Sil</string>
     <string name="build_name">Ad</string>
     <string name="build_content">Derleme İçeriği</string>

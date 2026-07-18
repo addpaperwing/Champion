@@ -28,6 +28,10 @@
     <string name="language">ภาษา</string>
     <string name="internet_connection_error">เกิดข้อผิดพลาดในการเชื่อมต่ออินเทอร์เน็ต</string>
     <string name="edit">แก้ไข</string>
+    <string name="filter_items">กรองไอเทม</string>
+    <string name="filter_category">หมวดหมู่</string>
+    <string name="filter_tags">แท็ก</string>
+    <string name="filter_clear_all">ล้างทั้งหมด</string>
     <string name="delete">ลบ</string>
     <string name="build_name">ชื่อ</string>
     <string name="build_content">เนื้อหาบิลด์</string>

@@ -1,0 +1,105 @@
+package com.zzy.champions.ui.items.compose
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.zzy.champions.R
+import com.zzy.champions.ui.items.ALL_CATEGORIES
+import com.zzy.champions.ui.theme.Golden
+
+@Composable
+fun FilterIconButton(
+    isActive: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    IconButton(onClick = onClick, modifier = modifier) {
+        Icon(
+            painter = painterResource(R.drawable.ic_filter_list),
+            contentDescription = stringResource(R.string.filter_items),
+            tint = if (isActive) Golden else MaterialTheme.colorScheme.tertiary,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+fun ItemFilterBottomSheet(
+    availableTags: List<String>,
+    selectedCategories: Set<String>,
+    selectedTags: Set<String>,
+    onCategoryToggle: (String) -> Unit,
+    onTagToggle: (String) -> Unit,
+    onClearAll: () -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(),
+        modifier = modifier,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 24.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.filter_category),
+                style = MaterialTheme.typography.titleSmall,
+            )
+            FlowRow(
+                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                ALL_CATEGORIES.forEach { category ->
+                    val label = categoryNameResIds[category]?.let { stringResource(it) } ?: category
+                    FilterChip(
+                        selected = category in selectedCategories,
+                        onClick = { onCategoryToggle(category) },
+                        label = { Text(label) },
+                    )
+                }
+            }
+
+            Text(
+                text = stringResource(R.string.filter_tags),
+                style = MaterialTheme.typography.titleSmall,
+            )
+            FlowRow(
+                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                availableTags.forEach { tag ->
+                    FilterChip(
+                        selected = tag in selectedTags,
+                        onClick = { onTagToggle(tag) },
+                        label = { Text(tag) },
+                    )
+                }
+            }
+
+            TextButton(onClick = onClearAll) {
+                Text(stringResource(R.string.filter_clear_all))
+            }
+        }
+    }
+}

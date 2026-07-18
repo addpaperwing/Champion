@@ -28,6 +28,10 @@
     <string name="language">Idioma</string>
     <string name="internet_connection_error">Erro de conexão com a Internet.</string>
     <string name="edit">Editar</string>
+    <string name="filter_items">Filtrar itens</string>
+    <string name="filter_category">Categoria</string>
+    <string name="filter_tags">Tags</string>
+    <string name="filter_clear_all">Limpar tudo</string>
     <string name="delete">Excluir</string>
     <string name="build_name">Nome</string>
     <string name="build_content">Conteúdo do build</string>

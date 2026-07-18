@@ -28,6 +28,10 @@
     <string name="language">Limbă</string>
     <string name="internet_connection_error">Eroare de conexiune la Internet.</string>
     <string name="edit">Editare</string>
+    <string name="filter_items">Filtrează obiectele</string>
+    <string name="filter_category">Categorie</string>
+    <string name="filter_tags">Etichete</string>
+    <string name="filter_clear_all">Șterge tot</string>
     <string name="delete">Ștergere</string>
     <string name="build_name">Nume</string>
     <string name="build_content">Conținut build</string>
