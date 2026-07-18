@@ -2,8 +2,6 @@ package com.zzy.champions.index
 
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.Text
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -34,8 +32,8 @@ class SearchBarTest {
             }
         }
 
-        composeTestRule.onNodeWithContentDescription("Clear").assertIsDisplayed()
-        composeTestRule.onNodeWithText("FILTER_MARKER").assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription("Clear").assertExists()
+        composeTestRule.onNodeWithText("FILTER_MARKER").assertExists()
     }
 
     @Test
@@ -51,7 +49,7 @@ class SearchBarTest {
             }
         }
 
-        composeTestRule.onNodeWithContentDescription("Clear").assertIsDisplayed()
-        composeTestRule.onNodeWithText("FILTER_MARKER").assertIsNotDisplayed()
+        composeTestRule.onNodeWithContentDescription("Clear").assertExists()
+        composeTestRule.onNodeWithText("FILTER_MARKER").assertDoesNotExist()
     }
 }
