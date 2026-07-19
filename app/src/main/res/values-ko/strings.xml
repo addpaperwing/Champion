@@ -42,6 +42,11 @@
     <string name="filter_tags">태그</string>
     <string name="filter_clear_all">모두 지우기</string>
     <string name="filter_no_results">필터와 일치하는 아이템이 없습니다.</string>
+    <string name="filter_game_mode">게임 모드</string>
+    <string name="game_mode_summoners_rift">소환사의 협곡</string>
+    <string name="game_mode_aram">ARAM</string>
+    <string name="game_mode_arena">아레나</string>
+    <string name="clear_game_mode_filter">게임 모드 필터 지우기</string>
     <string name="delete">삭제</string>
 
     <string name="build_name">이름</string>

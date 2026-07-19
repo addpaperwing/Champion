@@ -60,6 +60,11 @@
     <string name="filter_tags">Tags</string>
     <string name="filter_clear_all">Clear all</string>
     <string name="filter_no_results">No items match your filters.</string>
+    <string name="filter_game_mode">Game Mode</string>
+    <string name="game_mode_summoners_rift">Summoner\'s Rift</string>
+    <string name="game_mode_aram">ARAM</string>
+    <string name="game_mode_arena">Arena</string>
+    <string name="clear_game_mode_filter">Clear game mode filter</string>
     <string name="delete">Delete</string>
     
     <string name="build_name">Name</string>

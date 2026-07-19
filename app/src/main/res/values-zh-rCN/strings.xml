@@ -42,6 +42,11 @@
     <string name="filter_tags">标签</string>
     <string name="filter_clear_all">全部清除</string>
     <string name="filter_no_results">没有符合筛选条件的物品。</string>
+    <string name="filter_game_mode">游戏模式</string>
+    <string name="game_mode_summoners_rift">召唤师峡谷</string>
+    <string name="game_mode_aram">大乱斗</string>
+    <string name="game_mode_arena">竞技场</string>
+    <string name="clear_game_mode_filter">清除游戏模式筛选</string>
     <string name="delete">删除</string>
 
     <string name="build_name">名称</string>

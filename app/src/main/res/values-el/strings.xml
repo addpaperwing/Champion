@@ -33,6 +33,11 @@
     <string name="filter_tags">Ετικέτες</string>
     <string name="filter_clear_all">Απαλοιφή όλων</string>
     <string name="filter_no_results">Κανένα αντικείμενο δεν ταιριάζει με τα φίλτρα σας.</string>
+    <string name="filter_game_mode">Λειτουργία παιχνιδιού</string>
+    <string name="game_mode_summoners_rift">Χαράδρα του Επικαλεστή</string>
+    <string name="game_mode_aram">ARAM</string>
+    <string name="game_mode_arena">Αρένα</string>
+    <string name="clear_game_mode_filter">Απαλοιφή φίλτρου λειτουργίας παιχνιδιού</string>
     <string name="delete">Διαγραφή</string>
     <string name="build_name">Όνομα</string>
     <string name="build_content">Περιεχόμενο build</string>

@@ -49,6 +49,9 @@ import com.zzy.champions.ui.items.CATEGORY_LEGENDARY
 import com.zzy.champions.ui.items.CATEGORY_MYTHIC
 import com.zzy.champions.ui.items.CATEGORY_OTHER
 import com.zzy.champions.ui.items.CATEGORY_STARTER
+import com.zzy.champions.ui.items.GAME_MODE_ARAM
+import com.zzy.champions.ui.items.GAME_MODE_ARENA
+import com.zzy.champions.ui.items.GAME_MODE_SUMMONERS_RIFT
 import com.zzy.champions.ui.items.ItemListDisplay
 import com.zzy.champions.ui.items.ItemViewModel
 import com.zzy.champions.ui.theme.Golden
@@ -65,6 +68,12 @@ internal val categoryNameResIds = mapOf(
     CATEGORY_COMPONENTS to R.string.category_components,
     CATEGORY_EPIC       to R.string.category_epic,
     CATEGORY_OTHER      to R.string.category_other,
+)
+
+internal val gameModeNameResIds = mapOf(
+    GAME_MODE_SUMMONERS_RIFT to R.string.game_mode_summoners_rift,
+    GAME_MODE_ARAM           to R.string.game_mode_aram,
+    GAME_MODE_ARENA          to R.string.game_mode_arena,
 )
 
 @Composable
@@ -87,6 +96,7 @@ fun ItemRoute(
     val searchText by viewModel.searchQuery.collectAsStateWithLifecycle()
     val selectedCategories by viewModel.selectedCategories.collectAsStateWithLifecycle()
     val selectedTags by viewModel.selectedTags.collectAsStateWithLifecycle()
+    val selectedGameMode by viewModel.selectedGameMode.collectAsStateWithLifecycle()
     val availableTags by viewModel.availableTags.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
     var showFilterSheet by rememberSaveable { mutableStateOf(false) }
@@ -114,8 +124,10 @@ fun ItemRoute(
             availableTags = availableTags,
             selectedCategories = selectedCategories,
             selectedTags = selectedTags,
+            selectedGameMode = selectedGameMode,
             onCategoryToggle = viewModel::toggleCategoryFilter,
             onTagToggle = viewModel::toggleTagFilter,
+            onGameModeSelect = viewModel::selectGameMode,
             onClearAll = viewModel::clearFilters,
             onDismiss = { showFilterSheet = false },
         )

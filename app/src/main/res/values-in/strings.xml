@@ -33,6 +33,11 @@
     <string name="filter_tags">Tag</string>
     <string name="filter_clear_all">Hapus semua</string>
     <string name="filter_no_results">Tidak ada item yang cocok dengan filter Anda.</string>
+    <string name="filter_game_mode">Mode permainan</string>
+    <string name="game_mode_summoners_rift">Summoner\'s Rift</string>
+    <string name="game_mode_aram">ARAM</string>
+    <string name="game_mode_arena">Arena</string>
+    <string name="clear_game_mode_filter">Hapus filter mode permainan</string>
     <string name="delete">Hapus</string>
     <string name="build_name">Nama</string>
     <string name="build_content">Isi Build</string>

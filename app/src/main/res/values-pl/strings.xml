@@ -33,6 +33,11 @@
     <string name="filter_tags">Tagi</string>
     <string name="filter_clear_all">Wyczyść wszystko</string>
     <string name="filter_no_results">Żaden przedmiot nie pasuje do filtrów.</string>
+    <string name="filter_game_mode">Tryb gry</string>
+    <string name="game_mode_summoners_rift">Bagno Przyzywaczy</string>
+    <string name="game_mode_aram">ARAM</string>
+    <string name="game_mode_arena">Arena</string>
+    <string name="clear_game_mode_filter">Wyczyść filtr trybu gry</string>
     <string name="delete">Usuń</string>
     <string name="build_name">Nazwa</string>
     <string name="build_content">Zawartość buildu</string>

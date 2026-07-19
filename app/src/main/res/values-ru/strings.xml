@@ -33,6 +33,11 @@
     <string name="filter_tags">Теги</string>
     <string name="filter_clear_all">Очистить всё</string>
     <string name="filter_no_results">Нет предметов, соответствующих вашим фильтрам.</string>
+    <string name="filter_game_mode">Режим игры</string>
+    <string name="game_mode_summoners_rift">Расселина призывателя</string>
+    <string name="game_mode_aram">ARAM</string>
+    <string name="game_mode_arena">Арена</string>
+    <string name="clear_game_mode_filter">Очистить фильтр режима игры</string>
     <string name="delete">Удалить</string>
     <string name="build_name">Название</string>
     <string name="build_content">Содержимое сборки</string>

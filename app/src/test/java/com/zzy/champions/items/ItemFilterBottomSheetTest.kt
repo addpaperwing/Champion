@@ -9,6 +9,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.zzy.champions.ui.items.GAME_MODE_ARAM
 import com.zzy.champions.ui.items.compose.ItemFilterBottomSheet
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import org.junit.Assert.assertEquals
@@ -49,8 +50,10 @@ class ItemFilterBottomSheetTest {
                     availableTags = listOf("Boots", "Damage"),
                     selectedCategories = emptySet(),
                     selectedTags = emptySet(),
+                    selectedGameMode = null,
                     onCategoryToggle = {},
                     onTagToggle = { toggledTag = it },
+                    onGameModeSelect = {},
                     onClearAll = {},
                     onDismiss = {},
                 )
@@ -72,8 +75,10 @@ class ItemFilterBottomSheetTest {
                     availableTags = listOf("Boots"),
                     selectedCategories = setOf("Boots"),
                     selectedTags = emptySet(),
+                    selectedGameMode = null,
                     onCategoryToggle = {},
                     onTagToggle = {},
+                    onGameModeSelect = {},
                     onClearAll = { cleared = true },
                     onDismiss = {},
                 )
@@ -83,5 +88,30 @@ class ItemFilterBottomSheetTest {
         composeTestRule.onNodeWithText("Clear all").performClick()
 
         assertTrue(cleared)
+    }
+
+    @Test
+    fun tappingGameModeChip_invokesOnGameModeSelect() {
+        var selectedMode: String? = null
+
+        composeTestRule.setContent {
+            TestTheme {
+                ItemFilterBottomSheet(
+                    availableTags = emptyList(),
+                    selectedCategories = emptySet(),
+                    selectedTags = emptySet(),
+                    selectedGameMode = null,
+                    onCategoryToggle = {},
+                    onTagToggle = {},
+                    onGameModeSelect = { selectedMode = it },
+                    onClearAll = {},
+                    onDismiss = {},
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("ARAM").performClick()
+
+        assertEquals(GAME_MODE_ARAM, selectedMode)
     }
 }

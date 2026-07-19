@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.zzy.champions.R
 import com.zzy.champions.ui.items.ALL_CATEGORIES
+import com.zzy.champions.ui.items.ALL_GAME_MODES
 import com.zzy.champions.ui.theme.Golden
 
 @Composable
@@ -39,14 +42,22 @@ fun FilterIconButton(
     }
 }
 
+@Composable
+private fun goldenFilterChipColors() = FilterChipDefaults.filterChipColors(
+    selectedContainerColor = Golden.copy(alpha = 0.25f),
+    selectedLabelColor = Golden,
+)
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ItemFilterBottomSheet(
     availableTags: List<String>,
     selectedCategories: Set<String>,
     selectedTags: Set<String>,
+    selectedGameMode: String?,
     onCategoryToggle: (String) -> Unit,
     onTagToggle: (String) -> Unit,
+    onGameModeSelect: (String) -> Unit,
     onClearAll: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
@@ -76,6 +87,26 @@ fun ItemFilterBottomSheet(
                         selected = category in selectedCategories,
                         onClick = { onCategoryToggle(category) },
                         label = { Text(label) },
+                        colors = goldenFilterChipColors(),
+                    )
+                }
+            }
+
+            Text(
+                text = stringResource(R.string.filter_game_mode),
+                style = MaterialTheme.typography.titleSmall,
+            )
+            FlowRow(
+                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                ALL_GAME_MODES.forEach { mode ->
+                    val label = gameModeNameResIds[mode]?.let { stringResource(it) } ?: mode
+                    FilterChip(
+                        selected = mode == selectedGameMode,
+                        onClick = { onGameModeSelect(mode) },
+                        label = { Text(label) },
+                        colors = goldenFilterChipColors(),
                     )
                 }
             }
@@ -93,11 +124,15 @@ fun ItemFilterBottomSheet(
                         selected = tag in selectedTags,
                         onClick = { onTagToggle(tag) },
                         label = { Text(tag) },
+                        colors = goldenFilterChipColors(),
                     )
                 }
             }
 
-            TextButton(onClick = onClearAll) {
+            TextButton(
+                onClick = onClearAll,
+                colors = ButtonDefaults.textButtonColors(contentColor = Golden),
+            ) {
                 Text(stringResource(R.string.filter_clear_all))
             }
         }
