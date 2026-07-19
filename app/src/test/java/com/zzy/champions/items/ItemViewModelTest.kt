@@ -121,17 +121,34 @@ class ItemViewModelTest {
     }
 
     @Test
-    fun multipleTagsSelected_matchEitherTag() = runTest {
+    fun multipleTagsSelected_matchesOnlyItemWithBothTags() = runTest {
         val job = launch { viewModel.itemListState.collect() }
         advanceUntilIdle()
 
+        viewModel.toggleTagFilter("Damage")
+        viewModel.toggleTagFilter("CriticalStrike")
+        advanceUntilIdle()
+
+        val display = (viewModel.itemListState.value as UiState.Success).data
+        assertTrue(display is ItemListDisplay.Flat)
+        assertEquals(listOf(infinityEdge), (display as ItemListDisplay.Flat).items)
+        job.cancel()
+    }
+
+    @Test
+    fun multipleTagsSelected_excludesItemsMissingOneTag() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+
+        // sorceresShoes has "Boots" but not "CriticalStrike"; infinityEdge has "CriticalStrike"
+        // but not "Boots". Neither item has both, so AND semantics must exclude both.
         viewModel.toggleTagFilter("Boots")
         viewModel.toggleTagFilter("CriticalStrike")
         advanceUntilIdle()
 
         val display = (viewModel.itemListState.value as UiState.Success).data
         assertTrue(display is ItemListDisplay.Flat)
-        assertEquals(listOf(sorceresShoes, infinityEdge), (display as ItemListDisplay.Flat).items)
+        assertTrue((display as ItemListDisplay.Flat).items.isEmpty())
         job.cancel()
     }
 
@@ -210,8 +227,8 @@ class ItemViewModelTest {
     }
 
     @Test
-    fun selectedGameMode_isNullInitially() {
-        assertNull(viewModel.selectedGameMode.value)
+    fun selectedGameModes_isEmptyInitially() {
+        assertTrue(viewModel.selectedGameModes.value.isEmpty())
     }
 
     @Test
@@ -219,7 +236,7 @@ class ItemViewModelTest {
         val job = launch { viewModel.itemListState.collect() }
         advanceUntilIdle()
 
-        viewModel.selectGameMode(GAME_MODE_ARENA)
+        viewModel.toggleGameMode(GAME_MODE_ARENA)
         advanceUntilIdle()
 
         val display = (viewModel.itemListState.value as UiState.Success).data
@@ -229,35 +246,38 @@ class ItemViewModelTest {
     }
 
     @Test
-    fun selectingSameGameModeAgain_clearsSelection() = runTest {
+    fun togglingSameGameModeTwice_clearsSelection() = runTest {
         val job = launch { viewModel.itemListState.collect() }
         advanceUntilIdle()
 
-        viewModel.selectGameMode(GAME_MODE_SUMMONERS_RIFT)
+        viewModel.toggleGameMode(GAME_MODE_SUMMONERS_RIFT)
         advanceUntilIdle()
-        viewModel.selectGameMode(GAME_MODE_SUMMONERS_RIFT)
+        viewModel.toggleGameMode(GAME_MODE_SUMMONERS_RIFT)
         advanceUntilIdle()
 
-        assertNull(viewModel.selectedGameMode.value)
+        assertTrue(viewModel.selectedGameModes.value.isEmpty())
         val display = (viewModel.itemListState.value as UiState.Success).data
         assertTrue(display is ItemListDisplay.Categorized)
         job.cancel()
     }
 
     @Test
-    fun selectingDifferentGameMode_replacesSelection() = runTest {
+    fun togglingTwoGameModes_bothStaySelectedAndMustBothMatch() = runTest {
         val job = launch { viewModel.itemListState.collect() }
         advanceUntilIdle()
 
-        viewModel.selectGameMode(GAME_MODE_SUMMONERS_RIFT)
+        viewModel.toggleGameMode(GAME_MODE_SUMMONERS_RIFT)
         advanceUntilIdle()
         var display = (viewModel.itemListState.value as UiState.Success).data
         assertEquals(listOf(longSword, infinityEdge), (display as ItemListDisplay.Flat).items)
 
-        viewModel.selectGameMode(GAME_MODE_ARAM)
+        // Adding ARAM on top of Summoner's Rift narrows to items available on BOTH —
+        // longSword is Summoner's Rift only (maps["12"] == false), so it must drop out.
+        viewModel.toggleGameMode(GAME_MODE_ARAM)
         advanceUntilIdle()
+        assertEquals(setOf(GAME_MODE_SUMMONERS_RIFT, GAME_MODE_ARAM), viewModel.selectedGameModes.value)
         display = (viewModel.itemListState.value as UiState.Success).data
-        assertEquals(listOf(sorceresShoes, infinityEdge), (display as ItemListDisplay.Flat).items)
+        assertEquals(listOf(infinityEdge), (display as ItemListDisplay.Flat).items)
         job.cancel()
     }
 
@@ -269,7 +289,7 @@ class ItemViewModelTest {
         // infinityEdge is the only CATEGORY_LEGENDARY item, but it has no Arena availability —
         // AND semantics must exclude it even though the category alone would match it.
         viewModel.toggleCategoryFilter(CATEGORY_LEGENDARY)
-        viewModel.selectGameMode(GAME_MODE_ARENA)
+        viewModel.toggleGameMode(GAME_MODE_ARENA)
         advanceUntilIdle()
 
         val display = (viewModel.itemListState.value as UiState.Success).data
@@ -286,7 +306,7 @@ class ItemViewModelTest {
         // sorceresShoes is the only item tagged "SpellDamage", but it has no Summoner's Rift
         // availability — AND semantics must exclude it even though the tag alone would match it.
         viewModel.toggleTagFilter("SpellDamage")
-        viewModel.selectGameMode(GAME_MODE_SUMMONERS_RIFT)
+        viewModel.toggleGameMode(GAME_MODE_SUMMONERS_RIFT)
         advanceUntilIdle()
 
         val display = (viewModel.itemListState.value as UiState.Success).data
@@ -300,7 +320,7 @@ class ItemViewModelTest {
         val job = launch { viewModel.itemListState.collect() }
         advanceUntilIdle()
 
-        viewModel.selectGameMode(GAME_MODE_ARAM)
+        viewModel.toggleGameMode(GAME_MODE_ARAM)
         viewModel.updateSearchQuery("Sorcerer")
         advanceUntilIdle()
 
@@ -315,12 +335,12 @@ class ItemViewModelTest {
         val job = launch { viewModel.itemListState.collect() }
         advanceUntilIdle()
 
-        viewModel.selectGameMode(GAME_MODE_SUMMONERS_RIFT)
+        viewModel.toggleGameMode(GAME_MODE_SUMMONERS_RIFT)
         advanceUntilIdle()
         viewModel.clearFilters()
         advanceUntilIdle()
 
-        assertNull(viewModel.selectedGameMode.value)
+        assertTrue(viewModel.selectedGameModes.value.isEmpty())
         val display = (viewModel.itemListState.value as UiState.Success).data
         assertTrue(display is ItemListDisplay.Categorized)
         job.cancel()

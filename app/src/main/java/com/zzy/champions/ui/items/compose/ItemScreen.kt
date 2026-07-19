@@ -102,7 +102,12 @@ fun ItemRoute(
     val searchText by viewModel.searchQuery.collectAsStateWithLifecycle()
     val selectedCategories by viewModel.selectedCategories.collectAsStateWithLifecycle()
     val selectedTags by viewModel.selectedTags.collectAsStateWithLifecycle()
-    val selectedGameMode by viewModel.selectedGameMode.collectAsStateWithLifecycle()
+    val selectedGameModes by viewModel.selectedGameModes.collectAsStateWithLifecycle()
+    // Bridge: ItemScreen/ItemFilterBottomSheet still take a single-select `String?` game mode
+    // param; multi-select UI wiring lands in a later task. Task 2 only changed the ViewModel's
+    // API shape, so this narrows the new Set<String> down to the first entry to keep the
+    // existing single-select call sites compiling unchanged.
+    val selectedGameMode = selectedGameModes.firstOrNull()
     val availableTags by viewModel.availableTags.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
     var showFilterSheet by rememberSaveable { mutableStateOf(false) }
@@ -122,7 +127,7 @@ fun ItemRoute(
         isFilterActive = selectedCategories.isNotEmpty() || selectedTags.isNotEmpty() || selectedGameMode != null,
         onFilterIconClick = { showFilterSheet = true },
         selectedGameMode = selectedGameMode,
-        onGameModeClear = { selectedGameMode?.let(viewModel::selectGameMode) },
+        onGameModeClear = { selectedGameMode?.let(viewModel::toggleGameMode) },
         onItemClick = viewModel::selectItem,
         onReloadClick = viewModel::retry,
     )
@@ -135,7 +140,7 @@ fun ItemRoute(
             selectedGameMode = selectedGameMode,
             onCategoryToggle = viewModel::toggleCategoryFilter,
             onTagToggle = viewModel::toggleTagFilter,
-            onGameModeSelect = viewModel::selectGameMode,
+            onGameModeSelect = viewModel::toggleGameMode,
             onClearAll = viewModel::clearFilters,
             onDismiss = { showFilterSheet = false },
         )
