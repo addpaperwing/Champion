@@ -10,9 +10,11 @@ import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.longSword
 import com.zzy.champions.sorceresShoes
 import com.zzy.champions.ui.items.GAME_MODE_ARAM
+import com.zzy.champions.ui.items.GAME_MODE_SUMMONERS_RIFT
 import com.zzy.champions.ui.items.ItemListDisplay
 import com.zzy.champions.ui.items.compose.ItemScreen
 import com.zzy.champions.ui.theme.MyApplicationTheme
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -123,7 +125,7 @@ class ItemScreenTest {
                 ItemScreen(
                     itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
                     version = "",
-                    selectedGameMode = GAME_MODE_ARAM,
+                    selectedGameModes = setOf(GAME_MODE_ARAM),
                     onItemClick = {},
                 )
             }
@@ -139,7 +141,7 @@ class ItemScreenTest {
                 ItemScreen(
                     itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
                     version = "",
-                    selectedGameMode = null,
+                    selectedGameModes = emptySet(),
                     onItemClick = {},
                 )
             }
@@ -150,14 +152,14 @@ class ItemScreenTest {
 
     @Test
     fun activeGameModeChip_clickInvokesOnGameModeClear() {
-        var cleared = false
+        var clearedMode: String? = null
         composeTestRule.setContent {
             MyApplicationTheme {
                 ItemScreen(
                     itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
                     version = "",
-                    selectedGameMode = GAME_MODE_ARAM,
-                    onGameModeClear = { cleared = true },
+                    selectedGameModes = setOf(GAME_MODE_ARAM),
+                    onGameModeClear = { clearedMode = it },
                     onItemClick = {},
                 )
             }
@@ -165,6 +167,43 @@ class ItemScreenTest {
 
         composeTestRule.onNodeWithText("ARAM").performClick()
 
-        assertTrue(cleared)
+        assertEquals(GAME_MODE_ARAM, clearedMode)
+    }
+
+    @Test
+    fun multipleActiveGameModeChips_renderOneChipEach() {
+        composeTestRule.setContent {
+            MyApplicationTheme {
+                ItemScreen(
+                    itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
+                    version = "",
+                    selectedGameModes = setOf(GAME_MODE_ARAM, GAME_MODE_SUMMONERS_RIFT),
+                    onItemClick = {},
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("ARAM").assertExists()
+        composeTestRule.onNodeWithText("Summoner's Rift").assertExists()
+    }
+
+    @Test
+    fun clickingOneOfMultipleChips_clearsOnlyThatMode() {
+        var clearedMode: String? = null
+        composeTestRule.setContent {
+            MyApplicationTheme {
+                ItemScreen(
+                    itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
+                    version = "",
+                    selectedGameModes = setOf(GAME_MODE_ARAM, GAME_MODE_SUMMONERS_RIFT),
+                    onGameModeClear = { clearedMode = it },
+                    onItemClick = {},
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("ARAM").performClick()
+
+        assertEquals(GAME_MODE_ARAM, clearedMode)
     }
 }

@@ -3,8 +3,11 @@ package com.zzy.champions.ui.items.compose
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -103,23 +106,6 @@ fun ItemRoute(
     val selectedCategories by viewModel.selectedCategories.collectAsStateWithLifecycle()
     val selectedTags by viewModel.selectedTags.collectAsStateWithLifecycle()
     val selectedGameModes by viewModel.selectedGameModes.collectAsStateWithLifecycle()
-    // Bridge: ItemScreen/ItemFilterBottomSheet still take a single-select `String?` game mode
-    // param; multi-select UI wiring lands in a later task. Task 2 only changed the ViewModel's
-    // API shape, so this narrows the new Set<String> down to the first entry to keep the
-    // existing single-select call sites compiling unchanged.
-    val selectedGameMode = selectedGameModes.firstOrNull()
-    // toggleGameMode only adds/removes from the set; it never replaces. To preserve the old
-    // single-select "replace" semantics through this bridge (and keep the invariant that
-    // selectedGameModes never holds more than 1 entry until real multi-select UI lands), clear
-    // out any previously selected mode(s) before toggling the newly tapped one on.
-    val onGameModeSelect: (String) -> Unit = { mode ->
-        if (mode in selectedGameModes) {
-            viewModel.toggleGameMode(mode)
-        } else {
-            selectedGameModes.forEach(viewModel::toggleGameMode)
-            viewModel.toggleGameMode(mode)
-        }
-    }
     val availableTags by viewModel.availableTags.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
     var showFilterSheet by rememberSaveable { mutableStateOf(false) }
@@ -136,10 +122,10 @@ fun ItemRoute(
         onSearchTextChange = { viewModel.updateSearchQuery(it) },
         onSearchDone = { keyboardController?.hide() },
         onClearSearch = { viewModel.updateSearchQuery("") },
-        isFilterActive = selectedCategories.isNotEmpty() || selectedTags.isNotEmpty() || selectedGameMode != null,
+        isFilterActive = selectedCategories.isNotEmpty() || selectedTags.isNotEmpty() || selectedGameModes.isNotEmpty(),
         onFilterIconClick = { showFilterSheet = true },
-        selectedGameMode = selectedGameMode,
-        onGameModeClear = { selectedGameMode?.let(viewModel::toggleGameMode) },
+        selectedGameModes = selectedGameModes,
+        onGameModeClear = viewModel::toggleGameMode,
         onItemClick = viewModel::selectItem,
         onReloadClick = viewModel::retry,
     )
@@ -152,7 +138,7 @@ fun ItemRoute(
             selectedGameModes = selectedGameModes,
             onCategoryToggle = viewModel::toggleCategoryFilter,
             onTagToggle = viewModel::toggleTagFilter,
-            onGameModeToggle = { mode -> onGameModeSelect(mode) },
+            onGameModeToggle = viewModel::toggleGameMode,
             onClearAll = viewModel::clearFilters,
             onDismiss = { showFilterSheet = false },
         )
@@ -176,6 +162,7 @@ fun ItemRoute(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ItemScreen(
     modifier: Modifier = Modifier,
@@ -187,8 +174,8 @@ fun ItemScreen(
     onClearSearch: (() -> Unit)? = null,
     isFilterActive: Boolean = false,
     onFilterIconClick: () -> Unit = {},
-    selectedGameMode: String? = null,
-    onGameModeClear: () -> Unit = {},
+    selectedGameModes: Set<String> = emptySet(),
+    onGameModeClear: (String) -> Unit = {},
     onItemClick: (Item) -> Unit,
     onReloadClick: () -> Unit = {},
 ) {
@@ -206,12 +193,18 @@ fun ItemScreen(
                 FilterIconButton(isActive = isFilterActive, onClick = onFilterIconClick)
             },
         )
-        if (selectedGameMode != null) {
-            ActiveGameModeChip(
-                gameMode = selectedGameMode,
-                onClear = onGameModeClear,
+        if (selectedGameModes.isNotEmpty()) {
+            FlowRow(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-            )
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                selectedGameModes.forEach { mode ->
+                    ActiveGameModeChip(
+                        gameMode = mode,
+                        onClear = { onGameModeClear(mode) },
+                    )
+                }
+            }
         }
         when (itemListState) {
             is UiState.Loading -> LoadingAndErrorScreen(
