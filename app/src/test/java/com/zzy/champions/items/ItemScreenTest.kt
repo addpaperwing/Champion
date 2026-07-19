@@ -9,6 +9,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.longSword
 import com.zzy.champions.sorceresShoes
+import com.zzy.champions.ui.items.GAME_MODE_ARAM
 import com.zzy.champions.ui.items.ItemListDisplay
 import com.zzy.champions.ui.items.compose.ItemScreen
 import com.zzy.champions.ui.theme.MyApplicationTheme
@@ -113,5 +114,57 @@ class ItemScreenTest {
         }
 
         composeTestRule.onNodeWithText("No items match your filters.").assertDoesNotExist()
+    }
+
+    @Test
+    fun activeGameModeChip_rendersWhenSelected() {
+        composeTestRule.setContent {
+            MyApplicationTheme {
+                ItemScreen(
+                    itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
+                    version = "",
+                    selectedGameMode = GAME_MODE_ARAM,
+                    onItemClick = {},
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("ARAM").assertExists()
+    }
+
+    @Test
+    fun activeGameModeChip_hiddenWhenNoneSelected() {
+        composeTestRule.setContent {
+            MyApplicationTheme {
+                ItemScreen(
+                    itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
+                    version = "",
+                    selectedGameMode = null,
+                    onItemClick = {},
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("ARAM").assertDoesNotExist()
+    }
+
+    @Test
+    fun activeGameModeChip_clickInvokesOnGameModeClear() {
+        var cleared = false
+        composeTestRule.setContent {
+            MyApplicationTheme {
+                ItemScreen(
+                    itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
+                    version = "",
+                    selectedGameMode = GAME_MODE_ARAM,
+                    onGameModeClear = { cleared = true },
+                    onItemClick = {},
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("ARAM").performClick()
+
+        assertTrue(cleared)
     }
 }

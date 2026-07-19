@@ -17,6 +17,12 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.InputChip
+import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -113,8 +119,10 @@ fun ItemRoute(
         onSearchTextChange = { viewModel.updateSearchQuery(it) },
         onSearchDone = { keyboardController?.hide() },
         onClearSearch = { viewModel.updateSearchQuery("") },
-        isFilterActive = selectedCategories.isNotEmpty() || selectedTags.isNotEmpty(),
+        isFilterActive = selectedCategories.isNotEmpty() || selectedTags.isNotEmpty() || selectedGameMode != null,
         onFilterIconClick = { showFilterSheet = true },
+        selectedGameMode = selectedGameMode,
+        onGameModeClear = { selectedGameMode?.let(viewModel::selectGameMode) },
         onItemClick = viewModel::selectItem,
         onReloadClick = viewModel::retry,
     )
@@ -162,6 +170,8 @@ fun ItemScreen(
     onClearSearch: (() -> Unit)? = null,
     isFilterActive: Boolean = false,
     onFilterIconClick: () -> Unit = {},
+    selectedGameMode: String? = null,
+    onGameModeClear: () -> Unit = {},
     onItemClick: (Item) -> Unit,
     onReloadClick: () -> Unit = {},
 ) {
@@ -179,6 +189,13 @@ fun ItemScreen(
                 FilterIconButton(isActive = isFilterActive, onClick = onFilterIconClick)
             },
         )
+        if (selectedGameMode != null) {
+            ActiveGameModeChip(
+                gameMode = selectedGameMode,
+                onClear = onGameModeClear,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+            )
+        }
         when (itemListState) {
             is UiState.Loading -> LoadingAndErrorScreen(
                 isLoading = true,
@@ -235,6 +252,29 @@ fun ItemScreen(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ActiveGameModeChip(gameMode: String, onClear: () -> Unit, modifier: Modifier = Modifier) {
+    val label = gameModeNameResIds[gameMode]?.let { stringResource(it) } ?: gameMode
+    InputChip(
+        selected = true,
+        onClick = onClear,
+        label = { Text(label) },
+        trailingIcon = {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = stringResource(R.string.clear_game_mode_filter),
+            )
+        },
+        colors = InputChipDefaults.inputChipColors(
+            selectedContainerColor = Golden.copy(alpha = 0.25f),
+            selectedLabelColor = Golden,
+            selectedTrailingIconColor = Golden,
+        ),
+        modifier = modifier,
+    )
 }
 
 @Composable
