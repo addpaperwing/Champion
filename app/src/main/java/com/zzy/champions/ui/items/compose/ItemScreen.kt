@@ -108,6 +108,18 @@ fun ItemRoute(
     // API shape, so this narrows the new Set<String> down to the first entry to keep the
     // existing single-select call sites compiling unchanged.
     val selectedGameMode = selectedGameModes.firstOrNull()
+    // toggleGameMode only adds/removes from the set; it never replaces. To preserve the old
+    // single-select "replace" semantics through this bridge (and keep the invariant that
+    // selectedGameModes never holds more than 1 entry until real multi-select UI lands), clear
+    // out any previously selected mode(s) before toggling the newly tapped one on.
+    val onGameModeSelect: (String) -> Unit = { mode ->
+        if (mode in selectedGameModes) {
+            viewModel.toggleGameMode(mode)
+        } else {
+            selectedGameModes.forEach(viewModel::toggleGameMode)
+            viewModel.toggleGameMode(mode)
+        }
+    }
     val availableTags by viewModel.availableTags.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
     var showFilterSheet by rememberSaveable { mutableStateOf(false) }
@@ -140,7 +152,7 @@ fun ItemRoute(
             selectedGameMode = selectedGameMode,
             onCategoryToggle = viewModel::toggleCategoryFilter,
             onTagToggle = viewModel::toggleTagFilter,
-            onGameModeSelect = viewModel::toggleGameMode,
+            onGameModeSelect = onGameModeSelect,
             onClearAll = viewModel::clearFilters,
             onDismiss = { showFilterSheet = false },
         )
