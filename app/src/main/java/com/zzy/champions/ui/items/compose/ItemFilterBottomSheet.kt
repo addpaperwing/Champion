@@ -54,10 +54,10 @@ fun ItemFilterBottomSheet(
     availableTags: List<String>,
     selectedCategories: Set<String>,
     selectedTags: Set<String>,
-    selectedGameMode: String?,
+    selectedGameModes: Set<String>,
     onCategoryToggle: (String) -> Unit,
     onTagToggle: (String) -> Unit,
-    onGameModeSelect: (String) -> Unit,
+    onGameModeToggle: (String) -> Unit,
     onClearAll: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
@@ -103,8 +103,8 @@ fun ItemFilterBottomSheet(
                 ALL_GAME_MODES.forEach { mode ->
                     val label = gameModeNameResIds[mode]?.let { stringResource(it) } ?: mode
                     FilterChip(
-                        selected = mode == selectedGameMode,
-                        onClick = { onGameModeSelect(mode) },
+                        selected = mode in selectedGameModes,
+                        onClick = { onGameModeToggle(mode) },
                         label = { Text(label) },
                         colors = goldenFilterChipColors(),
                     )

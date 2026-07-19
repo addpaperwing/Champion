@@ -4,12 +4,15 @@ import androidx.activity.ComponentActivity
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.test.assertIsNotSelected
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.zzy.champions.ui.items.GAME_MODE_ARAM
+import com.zzy.champions.ui.items.GAME_MODE_ARENA
 import com.zzy.champions.ui.items.compose.ItemFilterBottomSheet
 import com.zzy.champions.ui.theme.MyApplicationTheme
 import org.junit.Assert.assertEquals
@@ -50,10 +53,10 @@ class ItemFilterBottomSheetTest {
                     availableTags = listOf("Boots", "Damage"),
                     selectedCategories = emptySet(),
                     selectedTags = emptySet(),
-                    selectedGameMode = null,
+                    selectedGameModes = emptySet(),
                     onCategoryToggle = {},
                     onTagToggle = { toggledTag = it },
-                    onGameModeSelect = {},
+                    onGameModeToggle = {},
                     onClearAll = {},
                     onDismiss = {},
                 )
@@ -75,10 +78,10 @@ class ItemFilterBottomSheetTest {
                     availableTags = listOf("Boots"),
                     selectedCategories = setOf("Boots"),
                     selectedTags = emptySet(),
-                    selectedGameMode = null,
+                    selectedGameModes = emptySet(),
                     onCategoryToggle = {},
                     onTagToggle = {},
-                    onGameModeSelect = {},
+                    onGameModeToggle = {},
                     onClearAll = { cleared = true },
                     onDismiss = {},
                 )
@@ -91,8 +94,8 @@ class ItemFilterBottomSheetTest {
     }
 
     @Test
-    fun tappingGameModeChip_invokesOnGameModeSelect() {
-        var selectedMode: String? = null
+    fun tappingGameModeChip_invokesOnGameModeToggle() {
+        var toggledMode: String? = null
 
         composeTestRule.setContent {
             TestTheme {
@@ -100,10 +103,10 @@ class ItemFilterBottomSheetTest {
                     availableTags = emptyList(),
                     selectedCategories = emptySet(),
                     selectedTags = emptySet(),
-                    selectedGameMode = null,
+                    selectedGameModes = emptySet(),
                     onCategoryToggle = {},
                     onTagToggle = {},
-                    onGameModeSelect = { selectedMode = it },
+                    onGameModeToggle = { toggledMode = it },
                     onClearAll = {},
                     onDismiss = {},
                 )
@@ -112,6 +115,29 @@ class ItemFilterBottomSheetTest {
 
         composeTestRule.onNodeWithText("ARAM").performClick()
 
-        assertEquals(GAME_MODE_ARAM, selectedMode)
+        assertEquals(GAME_MODE_ARAM, toggledMode)
+    }
+
+    @Test
+    fun multipleGameModeChipsCanBeSelectedSimultaneously() {
+        composeTestRule.setContent {
+            TestTheme {
+                ItemFilterBottomSheet(
+                    availableTags = emptyList(),
+                    selectedCategories = emptySet(),
+                    selectedTags = emptySet(),
+                    selectedGameModes = setOf(GAME_MODE_ARAM, GAME_MODE_ARENA),
+                    onCategoryToggle = {},
+                    onTagToggle = {},
+                    onGameModeToggle = {},
+                    onClearAll = {},
+                    onDismiss = {},
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("ARAM").assertIsSelected()
+        composeTestRule.onNodeWithText("Arena").assertIsSelected()
+        composeTestRule.onNodeWithText("Summoner's Rift").assertIsNotSelected()
     }
 }

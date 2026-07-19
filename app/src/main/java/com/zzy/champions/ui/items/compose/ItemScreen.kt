@@ -149,10 +149,10 @@ fun ItemRoute(
             availableTags = availableTags,
             selectedCategories = selectedCategories,
             selectedTags = selectedTags,
-            selectedGameMode = selectedGameMode,
+            selectedGameModes = selectedGameModes,
             onCategoryToggle = viewModel::toggleCategoryFilter,
             onTagToggle = viewModel::toggleTagFilter,
-            onGameModeSelect = onGameModeSelect,
+            onGameModeToggle = { mode -> onGameModeSelect(mode) },
             onClearAll = viewModel::clearFilters,
             onDismiss = { showFilterSheet = false },
         )
