@@ -26,6 +26,7 @@ import javax.inject.Inject
 private const val KEY_SEARCH_QUERY = "search_query"
 private const val KEY_SELECTED_CATEGORIES = "selected_categories"
 private const val KEY_SELECTED_TAGS = "selected_tags"
+private const val KEY_SELECTED_GAME_MODE = "selected_game_mode"
 
 internal const val CATEGORY_STARTER    = "Starter"
 internal const val CATEGORY_BOOTS      = "Boots"
@@ -43,6 +44,16 @@ internal val ALL_CATEGORIES = listOf(
     CATEGORY_COMPONENTS,
     CATEGORY_EPIC,
     CATEGORY_OTHER,
+)
+
+internal const val GAME_MODE_SUMMONERS_RIFT = "11"
+internal const val GAME_MODE_ARAM           = "12"
+internal const val GAME_MODE_ARENA          = "22"
+
+internal val ALL_GAME_MODES = listOf(
+    GAME_MODE_SUMMONERS_RIFT,
+    GAME_MODE_ARAM,
+    GAME_MODE_ARENA,
 )
 
 sealed interface ItemListDisplay {
@@ -94,6 +105,7 @@ class ItemViewModel @Inject constructor(
     val searchQuery: StateFlow<String> = savedStateHandle.getStateFlow(KEY_SEARCH_QUERY, "")
     val selectedCategories: StateFlow<Set<String>> = savedStateHandle.getStateFlow(KEY_SELECTED_CATEGORIES, emptySet())
     val selectedTags: StateFlow<Set<String>> = savedStateHandle.getStateFlow(KEY_SELECTED_TAGS, emptySet())
+    val selectedGameMode: StateFlow<String?> = savedStateHandle.getStateFlow(KEY_SELECTED_GAME_MODE, null)
 
     val availableTags: StateFlow<List<String>> = _rawItems
         .map { state ->
@@ -105,13 +117,13 @@ class ItemViewModel @Inject constructor(
         .stateInViewModel(viewModelScope, initialValue = emptyList())
 
     val itemListState: StateFlow<UiState<ItemListDisplay>> =
-        combine(_categorizedRawItems, searchQuery, selectedCategories, selectedTags) { state, query, categories, tags ->
+        combine(_categorizedRawItems, searchQuery, selectedCategories, selectedTags, selectedGameMode) { state, query, categories, tags, gameMode ->
             when (state) {
                 is UiState.Loading -> UiState.Loading
                 is UiState.Error -> state
                 is UiState.Success -> {
                     val (groups, categoryByItemId) = state.data
-                    if (categories.isEmpty() && tags.isEmpty()) {
+                    if (categories.isEmpty() && tags.isEmpty() && gameMode == null) {
                         val filtered = if (query.isBlank()) groups
                         else groups.mapNotNull { (name, items) ->
                             val matched = items.filter { it.name.contains(query, ignoreCase = true) }
@@ -122,6 +134,7 @@ class ItemViewModel @Inject constructor(
                         val flat = groups.flatMap { it.second }.filter { item ->
                             (categories.isEmpty() || categoryByItemId[item.id] in categories) &&
                                 (tags.isEmpty() || item.tags.any { it in tags }) &&
+                                (gameMode == null || item.maps[gameMode] == true) &&
                                 (query.isBlank() || item.name.contains(query, ignoreCase = true))
                         }
                         UiState.Success(ItemListDisplay.Flat(flat))
@@ -162,9 +175,14 @@ class ItemViewModel @Inject constructor(
         savedStateHandle[KEY_SELECTED_TAGS] = if (tag in current) current - tag else current + tag
     }
 
+    fun selectGameMode(mapId: String) {
+        savedStateHandle[KEY_SELECTED_GAME_MODE] = if (selectedGameMode.value == mapId) null else mapId
+    }
+
     fun clearFilters() {
         savedStateHandle[KEY_SELECTED_CATEGORIES] = emptySet<String>()
         savedStateHandle[KEY_SELECTED_TAGS] = emptySet<String>()
+        savedStateHandle[KEY_SELECTED_GAME_MODE] = null
     }
 
     fun selectItem(item: Item) { _selectedItem.value = item }

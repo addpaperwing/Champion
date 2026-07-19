@@ -12,6 +12,9 @@ import com.zzy.champions.longSword
 import com.zzy.champions.sorceresShoes
 import com.zzy.champions.ui.items.CATEGORY_BOOTS
 import com.zzy.champions.ui.items.CATEGORY_LEGENDARY
+import com.zzy.champions.ui.items.GAME_MODE_ARAM
+import com.zzy.champions.ui.items.GAME_MODE_ARENA
+import com.zzy.champions.ui.items.GAME_MODE_SUMMONERS_RIFT
 import com.zzy.champions.ui.items.ItemListDisplay
 import com.zzy.champions.ui.items.ItemViewModel
 import androidx.lifecycle.SavedStateHandle
@@ -203,6 +206,106 @@ class ItemViewModelTest {
         assertTrue("Damage" in tags)
         assertTrue("CriticalStrike" in tags)
         assertTrue("SpellDamage" in tags)
+        job.cancel()
+    }
+
+    @Test
+    fun selectedGameMode_isNullInitially() {
+        assertNull(viewModel.selectedGameMode.value)
+    }
+
+    @Test
+    fun gameModeFilter_showsFlatDisplayWithMatchingItems() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+
+        viewModel.selectGameMode(GAME_MODE_ARENA)
+        advanceUntilIdle()
+
+        val display = (viewModel.itemListState.value as UiState.Success).data
+        assertTrue(display is ItemListDisplay.Flat)
+        assertEquals(listOf(sorceresShoes), (display as ItemListDisplay.Flat).items)
+        job.cancel()
+    }
+
+    @Test
+    fun selectingSameGameModeAgain_clearsSelection() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+
+        viewModel.selectGameMode(GAME_MODE_SUMMONERS_RIFT)
+        advanceUntilIdle()
+        viewModel.selectGameMode(GAME_MODE_SUMMONERS_RIFT)
+        advanceUntilIdle()
+
+        assertNull(viewModel.selectedGameMode.value)
+        val display = (viewModel.itemListState.value as UiState.Success).data
+        assertTrue(display is ItemListDisplay.Categorized)
+        job.cancel()
+    }
+
+    @Test
+    fun selectingDifferentGameMode_replacesSelection() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+
+        viewModel.selectGameMode(GAME_MODE_SUMMONERS_RIFT)
+        advanceUntilIdle()
+        var display = (viewModel.itemListState.value as UiState.Success).data
+        assertEquals(listOf(longSword, infinityEdge), (display as ItemListDisplay.Flat).items)
+
+        viewModel.selectGameMode(GAME_MODE_ARAM)
+        advanceUntilIdle()
+        display = (viewModel.itemListState.value as UiState.Success).data
+        assertEquals(listOf(sorceresShoes, infinityEdge), (display as ItemListDisplay.Flat).items)
+        job.cancel()
+    }
+
+    @Test
+    fun gameModeAndCategoryCombined_mustMatchBoth() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+
+        // infinityEdge is the only CATEGORY_LEGENDARY item, but it has no Arena availability —
+        // AND semantics must exclude it even though the category alone would match it.
+        viewModel.toggleCategoryFilter(CATEGORY_LEGENDARY)
+        viewModel.selectGameMode(GAME_MODE_ARENA)
+        advanceUntilIdle()
+
+        val display = (viewModel.itemListState.value as UiState.Success).data
+        assertTrue(display is ItemListDisplay.Flat)
+        assertTrue((display as ItemListDisplay.Flat).items.isEmpty())
+        job.cancel()
+    }
+
+    @Test
+    fun searchText_combinedWithGameMode() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+
+        viewModel.selectGameMode(GAME_MODE_ARAM)
+        viewModel.updateSearchQuery("Sorcerer")
+        advanceUntilIdle()
+
+        val display = (viewModel.itemListState.value as UiState.Success).data
+        assertTrue(display is ItemListDisplay.Flat)
+        assertEquals(listOf(sorceresShoes), (display as ItemListDisplay.Flat).items)
+        job.cancel()
+    }
+
+    @Test
+    fun clearFilters_alsoClearsGameMode() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+
+        viewModel.selectGameMode(GAME_MODE_SUMMONERS_RIFT)
+        advanceUntilIdle()
+        viewModel.clearFilters()
+        advanceUntilIdle()
+
+        assertNull(viewModel.selectedGameMode.value)
+        val display = (viewModel.itemListState.value as UiState.Success).data
+        assertTrue(display is ItemListDisplay.Categorized)
         job.cancel()
     }
 }
