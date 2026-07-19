@@ -48,7 +48,7 @@ internal val ALL_CATEGORIES = listOf(
 
 internal const val GAME_MODE_SUMMONERS_RIFT = "11"
 internal const val GAME_MODE_ARAM           = "12"
-internal const val GAME_MODE_ARENA          = "22"
+internal const val GAME_MODE_ARENA          = "30"
 
 internal val ALL_GAME_MODES = listOf(
     GAME_MODE_SUMMONERS_RIFT,

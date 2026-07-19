@@ -13,7 +13,7 @@ internal val longSword = Item(
     image = Image("1036.png"),
     gold = ItemGold(base = 350, purchasable = true, total = 350, sell = 245),
     tags = listOf("Damage"),
-    maps = mapOf("11" to true, "12" to false, "22" to false), // Summoner's Rift only
+    maps = mapOf("11" to true, "12" to false, "22" to false, "30" to false), // Summoner's Rift only
     stats = mapOf("FlatPhysicalDamageMod" to 10.0),
     components = emptyList(),
     upgrades = listOf("3153"),
@@ -27,7 +27,7 @@ internal val infinityEdge = Item(
     image = Image("3031.png"),
     gold = ItemGold(base = 625, purchasable = true, total = 3400, sell = 2380),
     tags = listOf("Damage", "CriticalStrike", "Legendary"),
-    maps = mapOf("11" to true, "12" to true, "22" to false), // Summoner's Rift + ARAM
+    maps = mapOf("11" to true, "12" to true, "22" to false, "30" to false), // Summoner's Rift + ARAM
     stats = mapOf("FlatPhysicalDamageMod" to 80.0, "FlatCritChanceMod" to 0.2),
     components = listOf("1038", "1018"),
     upgrades = emptyList(),
@@ -41,7 +41,7 @@ internal val sorceresShoes = Item(
     image = Image("3020.png"),
     gold = ItemGold(base = 600, purchasable = true, total = 1100, sell = 770),
     tags = listOf("Boots", "SpellDamage"),
-    maps = mapOf("11" to false, "12" to true, "22" to true), // ARAM + Arena
+    maps = mapOf("11" to false, "12" to true, "22" to false, "30" to true), // ARAM + Arena
     stats = mapOf("FlatMovementSpeedMod" to 45.0, "FlatMagicPenetrationMod" to 18.0),
     components = listOf("1001"),
     upgrades = emptyList(),
