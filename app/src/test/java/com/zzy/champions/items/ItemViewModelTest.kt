@@ -279,6 +279,23 @@ class ItemViewModelTest {
     }
 
     @Test
+    fun gameModeAndTagCombined_mustMatchBoth() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+
+        // sorceresShoes is the only item tagged "SpellDamage", but it has no Summoner's Rift
+        // availability — AND semantics must exclude it even though the tag alone would match it.
+        viewModel.toggleTagFilter("SpellDamage")
+        viewModel.selectGameMode(GAME_MODE_SUMMONERS_RIFT)
+        advanceUntilIdle()
+
+        val display = (viewModel.itemListState.value as UiState.Success).data
+        assertTrue(display is ItemListDisplay.Flat)
+        assertTrue((display as ItemListDisplay.Flat).items.isEmpty())
+        job.cancel()
+    }
+
+    @Test
     fun searchText_combinedWithGameMode() = runTest {
         val job = launch { viewModel.itemListState.collect() }
         advanceUntilIdle()

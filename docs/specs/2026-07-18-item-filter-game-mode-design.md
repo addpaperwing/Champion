@@ -160,8 +160,8 @@ if (categories.isEmpty() && tags.isEmpty() && gameMode == null) {
 
 ## Localization
 
-Four new strings (`filter_game_mode`, `game_mode_summoners_rift`,
-`game_mode_aram`, `game_mode_arena`) added to all 21 `values*/strings.xml`
-files, following the exact process used for the original feature's four
-strings (insert at a consistent anchor point, translate per-locale, verify
-with `:app:processDebugResources`).
+Five new strings (`filter_game_mode`, `game_mode_summoners_rift`,
+`game_mode_aram`, `game_mode_arena`, `clear_game_mode_filter`) added to all
+21 `values*/strings.xml` files, following the exact process used for the
+original feature's four strings (insert at a consistent anchor point,
+translate per-locale, verify with `:app:processDebugResources`).
