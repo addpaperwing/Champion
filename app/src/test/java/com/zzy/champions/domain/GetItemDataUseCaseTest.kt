@@ -3,10 +3,13 @@ package com.zzy.champions.domain
 import com.zzy.champions.LANGUAGE_US
 import com.zzy.champions.TestItemRepository
 import com.zzy.champions.VERSION_14_0
+import com.zzy.champions.data.local.PENDING_VERSION
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.data.repository.AppDataRepository
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coJustRun
+import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
@@ -59,5 +62,21 @@ class GetItemDataUseCaseTest {
         val result = useCase()
 
         assertTrue(result is UiState.Error)
+    }
+
+    @Test
+    fun invoke_whenLocalVersionIsPending_resolvesRealVersionAndPersistsIt() = runTest {
+        // Mirrors what SettingsViewModel.clearAndRefresh() does on every language switch:
+        // local items cleared, local version reset to the PENDING_VERSION sentinel.
+        itemRepository.saveLocalItems(emptyList())
+        coEvery { appDataRepository.getLocalVersion() } returns flowOf(PENDING_VERSION)
+        coEvery { appDataRepository.getRemoteVersion() } returns listOf(VERSION_14_0)
+        coJustRun { appDataRepository.setLocalVersion(any()) }
+
+        val result = useCase()
+
+        assertTrue(result is UiState.Success)
+        assertEquals(VERSION_14_0, itemRepository.lastRequestedVersion)
+        coVerify { appDataRepository.setLocalVersion(VERSION_14_0) }
     }
 }

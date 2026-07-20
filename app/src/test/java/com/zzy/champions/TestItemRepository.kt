@@ -67,8 +67,10 @@ internal class TestItemRepository : ItemRepository {
     // Separate local store so clearning local doesn't affect remote
     private val localItems = mutableListOf(longSword, infinityEdge, sorceresShoes, retiredTrinket)
     var shouldThrowOnFetch = false
+    var lastRequestedVersion: String? = null
 
     override suspend fun getRemoteItems(version: String, language: String): List<Item> {
+        lastRequestedVersion = version
         if (shouldThrowOnFetch) throw java.io.IOException("Network error")
         return remoteItems
     }

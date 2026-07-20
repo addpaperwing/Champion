@@ -30,7 +30,7 @@ class GetItemDataUseCase @Inject constructor(
                 return@withContext UiState.Success(cached)
             }
             val (version, language) = coroutineScope {
-                val v = async { appDataRepository.getLocalVersion().first() }
+                val v = async { resolveVersion() }
                 val l = async { appDataRepository.getLanguage().first() }
                 v.await() to l.await()
             }
@@ -40,6 +40,7 @@ class GetItemDataUseCase @Inject constructor(
             val langAfterFetch = appDataRepository.getLanguage().first()
             return@withContext if (langAfterFetch == language) {
                 itemRepository.saveLocalItems(fetched)
+                appDataRepository.setLocalVersion(version)
                 // If language changed during the DB write, evict stale data so the
                 // next retry re-fetches in the new language.
                 if (appDataRepository.getLanguage().first() != language) {
@@ -59,6 +60,22 @@ class GetItemDataUseCase @Inject constructor(
             e.printStackTrace()
             val fallback = try { itemRepository.getLocalItems() } catch (ce: CancellationException) { throw ce } catch (_: Exception) { emptyList() }
             if (fallback.isNotEmpty()) UiState.Success(fallback) else UiState.Error(e)
+        }
+    }
+
+    // The local version can be the PENDING_VERSION sentinel (SettingsViewModel.clearAndRefresh()
+    // writes it on every language switch and manual refresh) or simply unset on first launch.
+    // Resolving against the remote version list before every fetch — mirroring
+    // GetChampionDataUseCase's own cold-cache resolution — guarantees a real, fetchable CDN
+    // version instead of blindly trusting whatever local storage currently holds.
+    private suspend fun resolveVersion(): String {
+        val local = appDataRepository.getLocalVersion().first()
+        return try {
+            appDataRepository.getRemoteVersion().firstOrNull() ?: local
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            local
         }
     }
 }
