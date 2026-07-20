@@ -27,6 +27,7 @@ import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -54,14 +55,16 @@ class ChampionViewModelTest {
     private lateinit var getChampionDataUseCase: GetChampionDataUseCase
 
     private lateinit var viewModel: ChampionViewModel
+    private val dataRefreshed = MutableSharedFlow<Unit>()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
         coEvery { appDataRepository.getLanguage() } returns flowOf(LANGUAGE_US)
+        coEvery { appDataRepository.dataRefreshed } returns dataRefreshed
 
         getChampionDataUseCase = GetChampionDataUseCase(championRepository, appDataRepository, Dispatchers.Main)
-        viewModel = ChampionViewModel(getChampionDataUseCase)
+        viewModel = ChampionViewModel(getChampionDataUseCase, appDataRepository)
     }
 
     @Test
@@ -307,6 +310,30 @@ class ChampionViewModelTest {
         advanceUntilIdle()
 
         // Assert: version updated to 14.1
+        assertEquals(VERSION_14_1, getChampionDataUseCase.getVersion())
+
+        collectJob.cancel()
+    }
+
+    @Test
+    fun dataRefreshed_triggersReload() = runTest {
+        // Arrange: local = remote = 14.0 → no update, serve local (empty)
+        coEvery { appDataRepository.getLocalVersion() } returns flowOf(VERSION_14_0)
+        coEvery { appDataRepository.getRemoteVersion() } returns listOf(VERSION_14_0)
+        coJustRun { appDataRepository.setLocalVersion(any()) }
+
+        val collectJob = launch { viewModel.champions.collect() }
+        advanceUntilIdle()
+
+        // Simulates SettingsViewModel.clearAndRefresh(): use-case cache reset, then the shared
+        // signal fires. This must reach ChampionViewModel even though — in the real app — the
+        // Champion tab's NavBackStackEntry may not currently be live on the back stack.
+        getChampionDataUseCase.reset()
+        coEvery { appDataRepository.getRemoteVersion() } returns listOf(VERSION_14_1)
+
+        dataRefreshed.emit(Unit)
+        advanceUntilIdle()
+
         assertEquals(VERSION_14_1, getChampionDataUseCase.getVersion())
 
         collectJob.cancel()

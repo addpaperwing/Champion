@@ -68,9 +68,11 @@ internal class TestItemRepository : ItemRepository {
     private val localItems = mutableListOf(longSword, infinityEdge, sorceresShoes, retiredTrinket)
     var shouldThrowOnFetch = false
     var lastRequestedVersion: String? = null
+    var getRemoteItemsCallCount = 0
 
     override suspend fun getRemoteItems(version: String, language: String): List<Item> {
         lastRequestedVersion = version
+        getRemoteItemsCallCount++
         if (shouldThrowOnFetch) throw java.io.IOException("Network error")
         return remoteItems
     }

@@ -28,7 +28,6 @@ import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -89,16 +88,7 @@ internal val gameModeNameResIds = mapOf(
 fun ItemRoute(
     modifier: Modifier = Modifier,
     viewModel: ItemViewModel = hiltViewModel(),
-    refreshStamp: Int = 0,
-    onStampConsumed: () -> Unit = {},
 ) {
-    LaunchedEffect(refreshStamp) {
-        if (refreshStamp > 0) {
-            viewModel.retry()
-            onStampConsumed()
-        }
-    }
-
     val itemListState by viewModel.itemListState.collectAsStateWithLifecycle()
     val selectedItem by viewModel.selectedItem.collectAsStateWithLifecycle()
     val version by viewModel.version.collectAsStateWithLifecycle()

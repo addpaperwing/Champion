@@ -33,7 +33,6 @@ fun SettingsRoute(
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel(),
     onLanguageClick: () -> Unit,
-    onRefreshDone: () -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -50,8 +49,7 @@ fun SettingsRoute(
             onPositiveButtonClick = {
                 showRefreshDialog = false
                 viewModel.refreshData(onDone = { success ->
-                    if (success) onRefreshDone()
-                    else scope.launch { snackbarHostState.showSnackbar(refreshFailedMsg) }
+                    if (!success) scope.launch { snackbarHostState.showSnackbar(refreshFailedMsg) }
                 })
             },
             onNegativeButtonClick = { showRefreshDialog = false }

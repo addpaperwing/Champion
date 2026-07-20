@@ -75,17 +75,28 @@ class SettingsViewModel @Inject constructor(
     // error in clearLocalItems) also yields onDone(false), preventing a split-brain where the
     // caller applies the new locale while the item cache was not actually cleared.
     // onDone(success) is in the outer finally so it fires regardless of whether the cleanup threw.
+    //
+    // Version invalidation only happens for a plain refresh (language == null) — a language
+    // switch doesn't imply the game data version changed, and forcing it back to the pending
+    // sentinel would blank the "latest game version" tile for no reason. GetItemDataUseCase/
+    // GetChampionDataUseCase reuse the existing local version for a language-only reload, and
+    // GetChampionDataUseCase's own version check (triggered by reset() below) still corrects it
+    // if the remote version actually did move on.
+    //
+    // notifyDataRefreshed() fires only after a clean clear, so ChampionViewModel/ItemViewModel
+    // never retry against a cache that's still mid-clear or wasn't cleared at all.
     private suspend fun clearAndRefresh(onDone: (success: Boolean) -> Unit, language: String? = null) {
         var succeeded = false
         try {
             try {
                 championRepository.clearLocalData()
-                appDataRepository.invalidateLocalVersion()
+                if (language == null) appDataRepository.invalidateLocalVersion()
                 language?.let { appDataRepository.setLanguage(it) }
             } finally {
                 getChampionDataUseCase.reset()
                 getItemDataUseCase.reset()
             }
+            appDataRepository.notifyDataRefreshed()
             succeeded = true
         } finally {
             withContext(NonCancellable + Dispatchers.Main) { onDone(succeeded) }

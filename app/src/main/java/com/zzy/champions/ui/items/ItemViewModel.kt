@@ -141,6 +141,14 @@ class ItemViewModel @Inject constructor(
                 if (state is UiState.Success) _lastKnownItems = state.data.associateBy { it.id }
             }
         }
+        // Lives in this ViewModel's own scope rather than a nav-destination refresh signal:
+        // the Items tab's NavBackStackEntry is popped-with-saveState (not live) whenever the
+        // user is on a different tab, so a signal routed through it is silently lost. This
+        // ViewModel instance itself persists across tab switches (saveState/restoreState), so
+        // collecting here reaches it regardless of which tab is currently visible.
+        viewModelScope.launch {
+            appDataRepository.dataRefreshed.collect { retry() }
+        }
     }
 
     fun updateSearchQuery(query: String) { savedStateHandle[KEY_SEARCH_QUERY] = query }

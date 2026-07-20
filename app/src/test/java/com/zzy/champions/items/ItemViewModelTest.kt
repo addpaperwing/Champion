@@ -25,6 +25,7 @@ import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -46,12 +47,14 @@ class ItemViewModelTest {
     private lateinit var itemRepository: TestItemRepository
     private lateinit var useCase: GetItemDataUseCase
     private lateinit var viewModel: ItemViewModel
+    private val dataRefreshed = MutableSharedFlow<Unit>()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
         coEvery { appDataRepository.getLocalVersion() } returns flowOf(VERSION_14_0)
         coEvery { appDataRepository.getLanguage() } returns flowOf(LANGUAGE_US)
+        coEvery { appDataRepository.dataRefreshed } returns dataRefreshed
         itemRepository = TestItemRepository()
         useCase = GetItemDataUseCase(itemRepository, appDataRepository, Dispatchers.Main)
         viewModel = ItemViewModel(useCase, appDataRepository, SavedStateHandle())
@@ -73,6 +76,26 @@ class ItemViewModelTest {
         val groups = groupsNow()
         assertEquals(listOf(CATEGORY_STARTER, CATEGORY_BOOTS, CATEGORY_LEGENDARY), groups.map { it.first })
         assertEquals(3, groups.sumOf { it.second.size })
+        job.cancel()
+    }
+
+    @Test
+    fun dataRefreshed_triggersRefetch() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+        // TestItemRepository starts pre-cached, so the initial load serves local data directly
+        // without ever calling the remote fetch.
+        assertEquals(0, itemRepository.getRemoteItemsCallCount)
+
+        // Simulates SettingsViewModel.clearAndRefresh(): local cache cleared, then the shared
+        // signal fires. This must reach ItemViewModel even though — in the real app — the
+        // Items tab's NavBackStackEntry may not currently be live on the back stack.
+        itemRepository.clearLocalItems()
+        dataRefreshed.emit(Unit)
+        advanceUntilIdle()
+
+        assertEquals(1, itemRepository.getRemoteItemsCallCount)
+        assertEquals(3, groupsNow().sumOf { it.second.size })
         job.cancel()
     }
 
