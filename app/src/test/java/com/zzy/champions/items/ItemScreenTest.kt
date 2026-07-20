@@ -39,7 +39,7 @@ class ItemScreenTest {
             MyApplicationTheme {
                 ItemScreen(
                     itemListState = UiState.Success(
-                        ItemListDisplay.Categorized(listOf("Starter" to listOf(longSword)))
+                        ItemListDisplay(listOf("Starter" to listOf(longSword)))
                     ),
                     version = "",
                     onItemClick = {},
@@ -52,30 +52,12 @@ class ItemScreenTest {
     }
 
     @Test
-    fun flatDisplay_showsNoHeaders() {
-        composeTestRule.setContent {
-            MyApplicationTheme {
-                ItemScreen(
-                    itemListState = UiState.Success(
-                        ItemListDisplay.Flat(listOf(sorceresShoes))
-                    ),
-                    version = "",
-                    onItemClick = {},
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("STARTER").assertDoesNotExist()
-        composeTestRule.onNodeWithText(sorceresShoes.name).assertExists()
-    }
-
-    @Test
     fun filterIconClick_invokesCallback() {
         var clicked = false
         composeTestRule.setContent {
             MyApplicationTheme {
                 ItemScreen(
-                    itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
+                    itemListState = UiState.Success(ItemListDisplay(emptyList())),
                     version = "",
                     onFilterIconClick = { clicked = true },
                     onItemClick = {},
@@ -89,11 +71,11 @@ class ItemScreenTest {
     }
 
     @Test
-    fun emptyFlatDisplay_showsNoResultsMessage() {
+    fun emptyGroups_showsNoResultsMessage() {
         composeTestRule.setContent {
             MyApplicationTheme {
                 ItemScreen(
-                    itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
+                    itemListState = UiState.Success(ItemListDisplay(emptyList())),
                     version = "",
                     onItemClick = {},
                 )
@@ -104,11 +86,11 @@ class ItemScreenTest {
     }
 
     @Test
-    fun nonEmptyFlatDisplay_doesNotShowNoResultsMessage() {
+    fun nonEmptyGroups_doesNotShowNoResultsMessage() {
         composeTestRule.setContent {
             MyApplicationTheme {
                 ItemScreen(
-                    itemListState = UiState.Success(ItemListDisplay.Flat(listOf(sorceresShoes))),
+                    itemListState = UiState.Success(ItemListDisplay(listOf("Starter" to listOf(sorceresShoes)))),
                     version = "",
                     onItemClick = {},
                 )
@@ -123,7 +105,7 @@ class ItemScreenTest {
         composeTestRule.setContent {
             MyApplicationTheme {
                 ItemScreen(
-                    itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
+                    itemListState = UiState.Success(ItemListDisplay(emptyList())),
                     version = "",
                     selectedGameModes = setOf(GAME_MODE_ARAM),
                     onItemClick = {},
@@ -139,7 +121,7 @@ class ItemScreenTest {
         composeTestRule.setContent {
             MyApplicationTheme {
                 ItemScreen(
-                    itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
+                    itemListState = UiState.Success(ItemListDisplay(emptyList())),
                     version = "",
                     selectedGameModes = emptySet(),
                     onItemClick = {},
@@ -156,7 +138,7 @@ class ItemScreenTest {
         composeTestRule.setContent {
             MyApplicationTheme {
                 ItemScreen(
-                    itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
+                    itemListState = UiState.Success(ItemListDisplay(emptyList())),
                     version = "",
                     selectedGameModes = setOf(GAME_MODE_ARAM),
                     onGameModeClear = { clearedMode = it },
@@ -175,7 +157,7 @@ class ItemScreenTest {
         composeTestRule.setContent {
             MyApplicationTheme {
                 ItemScreen(
-                    itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
+                    itemListState = UiState.Success(ItemListDisplay(emptyList())),
                     version = "",
                     selectedGameModes = setOf(GAME_MODE_ARAM, GAME_MODE_SUMMONERS_RIFT),
                     onItemClick = {},
@@ -193,7 +175,7 @@ class ItemScreenTest {
         composeTestRule.setContent {
             MyApplicationTheme {
                 ItemScreen(
-                    itemListState = UiState.Success(ItemListDisplay.Flat(emptyList())),
+                    itemListState = UiState.Success(ItemListDisplay(emptyList())),
                     version = "",
                     selectedGameModes = setOf(GAME_MODE_ARAM, GAME_MODE_SUMMONERS_RIFT),
                     onGameModeClear = { clearedMode = it },

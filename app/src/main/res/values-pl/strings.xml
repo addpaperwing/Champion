@@ -29,7 +29,6 @@
     <string name="internet_connection_error">Błąd połączenia z internetem.</string>
     <string name="edit">Edytuj</string>
     <string name="filter_items">Filtruj przedmioty</string>
-    <string name="filter_category">Kategoria</string>
     <string name="filter_tags">Tagi</string>
     <string name="filter_clear_all">Wyczyść wszystko</string>
     <string name="filter_no_results">Żaden przedmiot nie pasuje do filtrów.</string>

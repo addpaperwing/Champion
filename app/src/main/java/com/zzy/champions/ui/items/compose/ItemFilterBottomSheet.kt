@@ -23,7 +23,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.zzy.champions.R
-import com.zzy.champions.ui.items.ALL_CATEGORIES
 import com.zzy.champions.ui.items.ALL_GAME_MODES
 import com.zzy.champions.ui.theme.Golden
 
@@ -52,10 +51,8 @@ private fun goldenFilterChipColors() = FilterChipDefaults.filterChipColors(
 @Composable
 fun ItemFilterBottomSheet(
     availableTags: List<String>,
-    selectedCategories: Set<String>,
     selectedTags: Set<String>,
     selectedGameModes: Set<String>,
-    onCategoryToggle: (String) -> Unit,
     onTagToggle: (String) -> Unit,
     onGameModeToggle: (String) -> Unit,
     onClearAll: () -> Unit,
@@ -73,25 +70,6 @@ fun ItemFilterBottomSheet(
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 24.dp),
         ) {
-            Text(
-                text = stringResource(R.string.filter_category),
-                style = MaterialTheme.typography.titleSmall,
-            )
-            FlowRow(
-                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                ALL_CATEGORIES.forEach { category ->
-                    val label = categoryNameResIds[category]?.let { stringResource(it) } ?: category
-                    FilterChip(
-                        selected = category in selectedCategories,
-                        onClick = { onCategoryToggle(category) },
-                        label = { Text(label) },
-                        colors = goldenFilterChipColors(),
-                    )
-                }
-            }
-
             Text(
                 text = stringResource(R.string.filter_game_mode),
                 style = MaterialTheme.typography.titleSmall,

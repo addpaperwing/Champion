@@ -29,7 +29,6 @@
     <string name="internet_connection_error">Σφάλμα σύνδεσης Internet.</string>
     <string name="edit">Επεξεργασία</string>
     <string name="filter_items">Φιλτράρισμα αντικειμένων</string>
-    <string name="filter_category">Κατηγορία</string>
     <string name="filter_tags">Ετικέτες</string>
     <string name="filter_clear_all">Απαλοιφή όλων</string>
     <string name="filter_no_results">Κανένα αντικείμενο δεν ταιριάζει με τα φίλτρα σας.</string>

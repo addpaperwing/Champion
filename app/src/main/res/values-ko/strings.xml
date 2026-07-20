@@ -38,7 +38,6 @@
 
     <string name="edit">편집</string>
     <string name="filter_items">아이템 필터</string>
-    <string name="filter_category">카테고리</string>
     <string name="filter_tags">태그</string>
     <string name="filter_clear_all">모두 지우기</string>
     <string name="filter_no_results">필터와 일치하는 아이템이 없습니다.</string>

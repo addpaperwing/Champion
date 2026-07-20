@@ -29,7 +29,6 @@
     <string name="internet_connection_error">Eroare de conexiune la Internet.</string>
     <string name="edit">Editare</string>
     <string name="filter_items">Filtrează obiectele</string>
-    <string name="filter_category">Categorie</string>
     <string name="filter_tags">Etichete</string>
     <string name="filter_clear_all">Șterge tot</string>
     <string name="filter_no_results">Niciun obiect nu corespunde filtrelor tale.</string>

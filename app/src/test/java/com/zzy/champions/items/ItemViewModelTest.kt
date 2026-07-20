@@ -9,10 +9,11 @@ import com.zzy.champions.data.repository.AppDataRepository
 import com.zzy.champions.domain.GetItemDataUseCase
 import com.zzy.champions.infinityEdge
 import com.zzy.champions.longSword
-import com.zzy.champions.sorceresShoes
 import com.zzy.champions.retiredTrinket
+import com.zzy.champions.sorceresShoes
 import com.zzy.champions.ui.items.CATEGORY_BOOTS
 import com.zzy.champions.ui.items.CATEGORY_LEGENDARY
+import com.zzy.champions.ui.items.CATEGORY_STARTER
 import com.zzy.champions.ui.items.GAME_MODE_ARAM
 import com.zzy.champions.ui.items.GAME_MODE_ARENA
 import com.zzy.champions.ui.items.GAME_MODE_SUMMONERS_RIFT
@@ -56,6 +57,9 @@ class ItemViewModelTest {
         viewModel = ItemViewModel(useCase, appDataRepository, SavedStateHandle())
     }
 
+    private fun groupsNow(): List<Pair<String, List<com.zzy.champions.data.model.Item>>> =
+        (viewModel.itemListState.value as UiState.Success).data.groups
+
     @Test
     fun stateIsInitiallyLoading() {
         assertEquals(UiState.Loading, viewModel.itemListState.value)
@@ -66,31 +70,10 @@ class ItemViewModelTest {
         val job = launch { viewModel.itemListState.collect() }
         advanceUntilIdle()
 
-        val state = viewModel.itemListState.value
-        assertTrue(state is UiState.Success)
-        val display = (state as UiState.Success).data
-        assertTrue(display is ItemListDisplay.Categorized)
-        val totalItems = (display as ItemListDisplay.Categorized).groups.sumOf { it.second.size }
-        assertEquals(3, totalItems)
+        val groups = groupsNow()
+        assertEquals(listOf(CATEGORY_STARTER, CATEGORY_BOOTS, CATEGORY_LEGENDARY), groups.map { it.first })
+        assertEquals(3, groups.sumOf { it.second.size })
         job.cancel()
-    }
-
-    @Test
-    fun selectedItem_isNullInitially() {
-        assertNull(viewModel.selectedItem.value)
-    }
-
-    @Test
-    fun selectItem_updatesSelectedItem() = runTest {
-        viewModel.selectItem(infinityEdge)
-        assertEquals(infinityEdge, viewModel.selectedItem.value)
-    }
-
-    @Test
-    fun dismissItem_clearsSelectedItem() = runTest {
-        viewModel.selectItem(infinityEdge)
-        viewModel.dismissItem()
-        assertNull(viewModel.selectedItem.value)
     }
 
     @Test
@@ -98,9 +81,7 @@ class ItemViewModelTest {
         val job = launch { viewModel.itemListState.collect() }
         advanceUntilIdle()
 
-        val display = (viewModel.itemListState.value as UiState.Success).data
-        assertTrue(display is ItemListDisplay.Categorized)
-        val allItems = (display as ItemListDisplay.Categorized).groups.flatMap { it.second }
+        val allItems = groupsNow().flatMap { it.second }
         assertTrue(retiredTrinket !in allItems)
         assertEquals(3, allItems.size)
         job.cancel()
@@ -123,30 +104,38 @@ class ItemViewModelTest {
     }
 
     @Test
-    fun categoryFilter_showsFlatDisplayWithMatchingItems() = runTest {
-        val job = launch { viewModel.itemListState.collect() }
-        advanceUntilIdle()
-
-        viewModel.toggleCategoryFilter(CATEGORY_BOOTS)
-        advanceUntilIdle()
-
-        val display = (viewModel.itemListState.value as UiState.Success).data
-        assertTrue(display is ItemListDisplay.Flat)
-        assertEquals(listOf(sorceresShoes), (display as ItemListDisplay.Flat).items)
-        job.cancel()
+    fun selectedItem_isNullInitially() {
+        assertNull(viewModel.selectedItem.value)
     }
 
     @Test
-    fun tagFilter_showsFlatDisplayWithMatchingItems() = runTest {
+    fun selectItem_updatesSelectedItem() = runTest {
+        viewModel.selectItem(infinityEdge)
+        assertEquals(infinityEdge, viewModel.selectedItem.value)
+    }
+
+    @Test
+    fun dismissItem_clearsSelectedItem() = runTest {
+        viewModel.selectItem(infinityEdge)
+        viewModel.dismissItem()
+        assertNull(viewModel.selectedItem.value)
+    }
+
+    @Test
+    fun tagFilter_hidesEmptyCategoriesButKeepsMatchingOnes() = runTest {
         val job = launch { viewModel.itemListState.collect() }
         advanceUntilIdle()
 
+        // Only longSword and infinityEdge carry "Damage"; sorceresShoes doesn't, so
+        // CATEGORY_BOOTS (its only member) must drop out entirely, header included,
+        // while CATEGORY_STARTER and CATEGORY_LEGENDARY keep their (unfiltered) members.
         viewModel.toggleTagFilter("Damage")
         advanceUntilIdle()
 
-        val display = (viewModel.itemListState.value as UiState.Success).data
-        assertTrue(display is ItemListDisplay.Flat)
-        assertEquals(listOf(longSword, infinityEdge), (display as ItemListDisplay.Flat).items)
+        val groups = groupsNow()
+        assertEquals(listOf(CATEGORY_STARTER, CATEGORY_LEGENDARY), groups.map { it.first })
+        assertEquals(listOf(longSword), groups.first { it.first == CATEGORY_STARTER }.second)
+        assertEquals(listOf(infinityEdge), groups.first { it.first == CATEGORY_LEGENDARY }.second)
         job.cancel()
     }
 
@@ -159,9 +148,7 @@ class ItemViewModelTest {
         viewModel.toggleTagFilter("CriticalStrike")
         advanceUntilIdle()
 
-        val display = (viewModel.itemListState.value as UiState.Success).data
-        assertTrue(display is ItemListDisplay.Flat)
-        assertEquals(listOf(infinityEdge), (display as ItemListDisplay.Flat).items)
+        assertEquals(listOf(CATEGORY_LEGENDARY to listOf(infinityEdge)), groupsNow())
         job.cancel()
     }
 
@@ -171,44 +158,29 @@ class ItemViewModelTest {
         advanceUntilIdle()
 
         // sorceresShoes has "Boots" but not "CriticalStrike"; infinityEdge has "CriticalStrike"
-        // but not "Boots". Neither item has both, so AND semantics must exclude both.
+        // but not "Boots". Neither item has both, so AND semantics must exclude both, leaving
+        // every group empty.
         viewModel.toggleTagFilter("Boots")
         viewModel.toggleTagFilter("CriticalStrike")
         advanceUntilIdle()
 
-        val display = (viewModel.itemListState.value as UiState.Success).data
-        assertTrue(display is ItemListDisplay.Flat)
-        assertTrue((display as ItemListDisplay.Flat).items.isEmpty())
+        assertTrue(groupsNow().isEmpty())
         job.cancel()
     }
 
     @Test
-    fun categoryAndTagCombined_mustMatchBoth() = runTest {
+    fun clearFilters_restoresAllCategories() = runTest {
         val job = launch { viewModel.itemListState.collect() }
         advanceUntilIdle()
 
-        viewModel.toggleCategoryFilter(CATEGORY_LEGENDARY)
         viewModel.toggleTagFilter("Damage")
-        advanceUntilIdle()
-
-        val display = (viewModel.itemListState.value as UiState.Success).data
-        assertTrue(display is ItemListDisplay.Flat)
-        assertEquals(listOf(infinityEdge), (display as ItemListDisplay.Flat).items)
-        job.cancel()
-    }
-
-    @Test
-    fun clearFilters_returnsToCategorizedDisplay() = runTest {
-        val job = launch { viewModel.itemListState.collect() }
-        advanceUntilIdle()
-
-        viewModel.toggleCategoryFilter(CATEGORY_BOOTS)
         advanceUntilIdle()
         viewModel.clearFilters()
         advanceUntilIdle()
 
-        val display = (viewModel.itemListState.value as UiState.Success).data
-        assertTrue(display is ItemListDisplay.Categorized)
+        val groups = groupsNow()
+        assertEquals(listOf(CATEGORY_STARTER, CATEGORY_BOOTS, CATEGORY_LEGENDARY), groups.map { it.first })
+        assertEquals(3, groups.sumOf { it.second.size })
         job.cancel()
     }
 
@@ -221,9 +193,7 @@ class ItemViewModelTest {
         viewModel.updateSearchQuery("Infinity")
         advanceUntilIdle()
 
-        val display = (viewModel.itemListState.value as UiState.Success).data
-        assertTrue(display is ItemListDisplay.Flat)
-        assertEquals(listOf(infinityEdge), (display as ItemListDisplay.Flat).items)
+        assertEquals(listOf(CATEGORY_LEGENDARY to listOf(infinityEdge)), groupsNow())
         job.cancel()
     }
 
@@ -243,7 +213,7 @@ class ItemViewModelTest {
     fun availableTags_excludesTagsMatchingCategoryNames() = runTest {
         // sorceresShoes carries the raw tag "Boots" and infinityEdge carries "Legendary" —
         // both are also fixed category names, so they should not appear as separate
-        // "raw tag" chips alongside the "Category: Boots" / "Category: Legendary" chips.
+        // "raw tag" chips alongside the category headers of the same name.
         val job = launch { viewModel.availableTags.collect() }
         advanceUntilIdle()
 
@@ -262,16 +232,14 @@ class ItemViewModelTest {
     }
 
     @Test
-    fun gameModeFilter_showsFlatDisplayWithMatchingItems() = runTest {
+    fun gameModeFilter_hidesEmptyCategoriesButKeepsMatchingOnes() = runTest {
         val job = launch { viewModel.itemListState.collect() }
         advanceUntilIdle()
 
         viewModel.toggleGameMode(GAME_MODE_ARENA)
         advanceUntilIdle()
 
-        val display = (viewModel.itemListState.value as UiState.Success).data
-        assertTrue(display is ItemListDisplay.Flat)
-        assertEquals(listOf(sorceresShoes), (display as ItemListDisplay.Flat).items)
+        assertEquals(listOf(CATEGORY_BOOTS to listOf(sorceresShoes)), groupsNow())
         job.cancel()
     }
 
@@ -286,8 +254,8 @@ class ItemViewModelTest {
         advanceUntilIdle()
 
         assertTrue(viewModel.selectedGameModes.value.isEmpty())
-        val display = (viewModel.itemListState.value as UiState.Success).data
-        assertTrue(display is ItemListDisplay.Categorized)
+        val groups = groupsNow()
+        assertEquals(listOf(CATEGORY_STARTER, CATEGORY_BOOTS, CATEGORY_LEGENDARY), groups.map { it.first })
         job.cancel()
     }
 
@@ -298,33 +266,18 @@ class ItemViewModelTest {
 
         viewModel.toggleGameMode(GAME_MODE_SUMMONERS_RIFT)
         advanceUntilIdle()
-        var display = (viewModel.itemListState.value as UiState.Success).data
-        assertEquals(listOf(longSword, infinityEdge), (display as ItemListDisplay.Flat).items)
+        assertEquals(
+            listOf(CATEGORY_STARTER to listOf(longSword), CATEGORY_LEGENDARY to listOf(infinityEdge)),
+            groupsNow(),
+        )
 
         // Adding ARAM on top of Summoner's Rift narrows to items available on BOTH —
-        // longSword is Summoner's Rift only (maps["12"] == false), so it must drop out.
+        // longSword is Summoner's Rift only (maps["12"] == false), so it must drop out,
+        // taking CATEGORY_STARTER's header with it.
         viewModel.toggleGameMode(GAME_MODE_ARAM)
         advanceUntilIdle()
         assertEquals(setOf(GAME_MODE_SUMMONERS_RIFT, GAME_MODE_ARAM), viewModel.selectedGameModes.value)
-        display = (viewModel.itemListState.value as UiState.Success).data
-        assertEquals(listOf(infinityEdge), (display as ItemListDisplay.Flat).items)
-        job.cancel()
-    }
-
-    @Test
-    fun gameModeAndCategoryCombined_mustMatchBoth() = runTest {
-        val job = launch { viewModel.itemListState.collect() }
-        advanceUntilIdle()
-
-        // infinityEdge is the only CATEGORY_LEGENDARY item, but it has no Arena availability —
-        // AND semantics must exclude it even though the category alone would match it.
-        viewModel.toggleCategoryFilter(CATEGORY_LEGENDARY)
-        viewModel.toggleGameMode(GAME_MODE_ARENA)
-        advanceUntilIdle()
-
-        val display = (viewModel.itemListState.value as UiState.Success).data
-        assertTrue(display is ItemListDisplay.Flat)
-        assertTrue((display as ItemListDisplay.Flat).items.isEmpty())
+        assertEquals(listOf(CATEGORY_LEGENDARY to listOf(infinityEdge)), groupsNow())
         job.cancel()
     }
 
@@ -339,9 +292,7 @@ class ItemViewModelTest {
         viewModel.toggleGameMode(GAME_MODE_SUMMONERS_RIFT)
         advanceUntilIdle()
 
-        val display = (viewModel.itemListState.value as UiState.Success).data
-        assertTrue(display is ItemListDisplay.Flat)
-        assertTrue((display as ItemListDisplay.Flat).items.isEmpty())
+        assertTrue(groupsNow().isEmpty())
         job.cancel()
     }
 
@@ -354,9 +305,7 @@ class ItemViewModelTest {
         viewModel.updateSearchQuery("Sorcerer")
         advanceUntilIdle()
 
-        val display = (viewModel.itemListState.value as UiState.Success).data
-        assertTrue(display is ItemListDisplay.Flat)
-        assertEquals(listOf(sorceresShoes), (display as ItemListDisplay.Flat).items)
+        assertEquals(listOf(CATEGORY_BOOTS to listOf(sorceresShoes)), groupsNow())
         job.cancel()
     }
 
@@ -371,8 +320,8 @@ class ItemViewModelTest {
         advanceUntilIdle()
 
         assertTrue(viewModel.selectedGameModes.value.isEmpty())
-        val display = (viewModel.itemListState.value as UiState.Success).data
-        assertTrue(display is ItemListDisplay.Categorized)
+        val groups = groupsNow()
+        assertEquals(3, groups.sumOf { it.second.size })
         job.cancel()
     }
 }

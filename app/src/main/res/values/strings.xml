@@ -56,7 +56,6 @@
     
     <string name="edit">Edit</string>
     <string name="filter_items">Filter items</string>
-    <string name="filter_category">Category</string>
     <string name="filter_tags">Tags</string>
     <string name="filter_clear_all">Clear all</string>
     <string name="filter_no_results">No items match your filters.</string>

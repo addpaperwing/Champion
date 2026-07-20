@@ -29,7 +29,6 @@
     <string name="internet_connection_error">Chyba připojení k internetu.</string>
     <string name="edit">Upravit</string>
     <string name="filter_items">Filtrovat položky</string>
-    <string name="filter_category">Kategorie</string>
     <string name="filter_tags">Značky</string>
     <string name="filter_clear_all">Vymazat vše</string>
     <string name="filter_no_results">Žádné položky neodpovídají vašim filtrům.</string>

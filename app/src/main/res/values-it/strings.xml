@@ -29,7 +29,6 @@
     <string name="internet_connection_error">Errore di connessione Internet.</string>
     <string name="edit">Modifica</string>
     <string name="filter_items">Filtra oggetti</string>
-    <string name="filter_category">Categoria</string>
     <string name="filter_tags">Tag</string>
     <string name="filter_clear_all">Cancella tutto</string>
     <string name="filter_no_results">Nessun oggetto corrisponde ai tuoi filtri.</string>

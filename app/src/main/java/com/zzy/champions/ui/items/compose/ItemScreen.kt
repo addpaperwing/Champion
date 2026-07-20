@@ -103,7 +103,6 @@ fun ItemRoute(
     val selectedItem by viewModel.selectedItem.collectAsStateWithLifecycle()
     val version by viewModel.version.collectAsStateWithLifecycle()
     val searchText by viewModel.searchQuery.collectAsStateWithLifecycle()
-    val selectedCategories by viewModel.selectedCategories.collectAsStateWithLifecycle()
     val selectedTags by viewModel.selectedTags.collectAsStateWithLifecycle()
     val selectedGameModes by viewModel.selectedGameModes.collectAsStateWithLifecycle()
     val availableTags by viewModel.availableTags.collectAsStateWithLifecycle()
@@ -122,7 +121,7 @@ fun ItemRoute(
         onSearchTextChange = { viewModel.updateSearchQuery(it) },
         onSearchDone = { keyboardController?.hide() },
         onClearSearch = { viewModel.updateSearchQuery("") },
-        isFilterActive = selectedCategories.isNotEmpty() || selectedTags.isNotEmpty() || selectedGameModes.isNotEmpty(),
+        isFilterActive = selectedTags.isNotEmpty() || selectedGameModes.isNotEmpty(),
         onFilterIconClick = { showFilterSheet = true },
         selectedGameModes = selectedGameModes,
         onGameModeClear = viewModel::toggleGameMode,
@@ -133,10 +132,8 @@ fun ItemRoute(
     if (showFilterSheet) {
         ItemFilterBottomSheet(
             availableTags = availableTags,
-            selectedCategories = selectedCategories,
             selectedTags = selectedTags,
             selectedGameModes = selectedGameModes,
-            onCategoryToggle = viewModel::toggleCategoryFilter,
             onTagToggle = viewModel::toggleTagFilter,
             onGameModeToggle = viewModel::toggleGameMode,
             onClearAll = viewModel::clearFilters,
@@ -219,7 +216,7 @@ fun ItemScreen(
             )
             is UiState.Success -> {
                 val display = itemListState.data
-                if (display is ItemListDisplay.Flat && display.items.isEmpty()) {
+                if (display.groups.isEmpty()) {
                     Box(
                         modifier = Modifier.fillMaxSize().padding(32.dp),
                         contentAlignment = Alignment.Center,
@@ -232,29 +229,16 @@ fun ItemScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
                     ) {
-                        when (display) {
-                            is ItemListDisplay.Categorized -> {
-                                display.groups.forEach { (categoryName, categoryItems) ->
-                                    item(span = { GridItemSpan(GRID_COLUMNS) }, contentType = "header") {
-                                        CategoryHeader(name = categoryName)
-                                    }
-                                    items(categoryItems, key = { it.id }, contentType = { "item" }) { item ->
-                                        ItemCard(
-                                            item = item,
-                                            version = version,
-                                            onClick = { onItemClick(item) },
-                                        )
-                                    }
-                                }
+                        display.groups.forEach { (categoryName, categoryItems) ->
+                            item(span = { GridItemSpan(GRID_COLUMNS) }, contentType = "header") {
+                                CategoryHeader(name = categoryName)
                             }
-                            is ItemListDisplay.Flat -> {
-                                items(display.items, key = { it.id }, contentType = { "item" }) { item ->
-                                    ItemCard(
-                                        item = item,
-                                        version = version,
-                                        onClick = { onItemClick(item) },
-                                    )
-                                }
+                            items(categoryItems, key = { it.id }, contentType = { "item" }) { item ->
+                                ItemCard(
+                                    item = item,
+                                    version = version,
+                                    onClick = { onItemClick(item) },
+                                )
                             }
                         }
                     }

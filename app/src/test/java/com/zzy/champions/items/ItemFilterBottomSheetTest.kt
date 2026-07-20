@@ -51,10 +51,8 @@ class ItemFilterBottomSheetTest {
             TestTheme {
                 ItemFilterBottomSheet(
                     availableTags = listOf("Boots", "Damage"),
-                    selectedCategories = emptySet(),
                     selectedTags = emptySet(),
                     selectedGameModes = emptySet(),
-                    onCategoryToggle = {},
                     onTagToggle = { toggledTag = it },
                     onGameModeToggle = {},
                     onClearAll = {},
@@ -76,10 +74,8 @@ class ItemFilterBottomSheetTest {
             TestTheme {
                 ItemFilterBottomSheet(
                     availableTags = listOf("Boots"),
-                    selectedCategories = setOf("Boots"),
                     selectedTags = emptySet(),
                     selectedGameModes = emptySet(),
-                    onCategoryToggle = {},
                     onTagToggle = {},
                     onGameModeToggle = {},
                     onClearAll = { cleared = true },
@@ -101,10 +97,8 @@ class ItemFilterBottomSheetTest {
             TestTheme {
                 ItemFilterBottomSheet(
                     availableTags = emptyList(),
-                    selectedCategories = emptySet(),
                     selectedTags = emptySet(),
                     selectedGameModes = emptySet(),
-                    onCategoryToggle = {},
                     onTagToggle = {},
                     onGameModeToggle = { toggledMode = it },
                     onClearAll = {},
@@ -124,10 +118,8 @@ class ItemFilterBottomSheetTest {
             TestTheme {
                 ItemFilterBottomSheet(
                     availableTags = emptyList(),
-                    selectedCategories = emptySet(),
                     selectedTags = emptySet(),
                     selectedGameModes = setOf(GAME_MODE_ARAM, GAME_MODE_ARENA),
-                    onCategoryToggle = {},
                     onTagToggle = {},
                     onGameModeToggle = {},
                     onClearAll = {},

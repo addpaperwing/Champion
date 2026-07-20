@@ -29,7 +29,6 @@
     <string name="internet_connection_error">Kesalahan koneksi Internet.</string>
     <string name="edit">Ubah</string>
     <string name="filter_items">Filter item</string>
-    <string name="filter_category">Kategori</string>
     <string name="filter_tags">Tag</string>
     <string name="filter_clear_all">Hapus semua</string>
     <string name="filter_no_results">Tidak ada item yang cocok dengan filter Anda.</string>

@@ -29,7 +29,6 @@
     <string name="internet_connection_error">İnternet bağlantısı hatası.</string>
     <string name="edit">Düzenle</string>
     <string name="filter_items">Eşyaları filtrele</string>
-    <string name="filter_category">Kategori</string>
     <string name="filter_tags">Etiketler</string>
     <string name="filter_clear_all">Tümünü temizle</string>
     <string name="filter_no_results">Filtrelerinize uyan eşya yok.</string>
