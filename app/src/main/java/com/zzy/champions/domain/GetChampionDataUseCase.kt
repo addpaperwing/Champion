@@ -50,7 +50,16 @@ class GetChampionDataUseCase @Inject constructor(
 
             val language = appDataRepository.getLanguage().first()
 
-            if (versionInfo.needsUpdate) {
+            // A version match alone doesn't guarantee local data is present: a language switch
+            // clears local champion data without touching the version (so the "latest game
+            // version" tile doesn't blank), which would otherwise look "already up to date"
+            // while actually serving zero champions. Force the same refetch path whenever local
+            // data is genuinely empty, regardless of whether the version moved. Short-circuits
+            // before the query, so this extra check is skipped whenever a real update already
+            // needs to happen.
+            val needsUpdate = versionInfo.needsUpdate || championRepository.searchChampionsBy("").isEmpty()
+
+            if (needsUpdate) {
                 try {
                     val champions =
                         championRepository.getRemoteChampions(

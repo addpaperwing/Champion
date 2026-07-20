@@ -6,6 +6,9 @@ import com.zzy.champions.MainDispatcherRule
 import com.zzy.champions.TestChampionRepository
 import com.zzy.champions.VERSION_14_0
 import com.zzy.champions.VERSION_14_1
+import com.zzy.champions.aatrox
+import com.zzy.champions.ahri
+import com.zzy.champions.akali
 import com.zzy.champions.data.model.Champion
 import com.zzy.champions.data.model.ChampionData
 import com.zzy.champions.data.model.Image
@@ -163,13 +166,13 @@ class ChampionViewModelTest {
 
         //Memory cached version up to date
         assertEquals(VERSION_14_1, getChampionDataUseCase.getVersion())
-        //Local version update to date
-        coVerify(exactly = 0) { appDataRepository.setLocalVersion(VERSION_14_1) }
+        // Version matched, but local champion data was never seeded (empty) — the use case
+        // must still refetch rather than silently serving zero champions as "up to date".
+        coVerify { appDataRepository.setLocalVersion(VERSION_14_1) }
 
-        //Data version is 14.1
         assertEquals(UiState.Success(ChampionData(
             version = VERSION_14_1,
-            champions = emptyList() //Test data for local not set
+            champions = listOf(ahri), // fetched fresh since local was empty
         )), viewModel.champions.value)
 
         collectJob1.cancel()
@@ -230,6 +233,9 @@ class ChampionViewModelTest {
         coEvery { appDataRepository.getLocalVersion() } returns flowOf(VERSION_14_0)
         //Mock return remote failed, return default earliest version
         coEvery { appDataRepository.getRemoteVersion() } throws IOException()
+        // Local champion data genuinely present, so the version-fetch failure must fall back
+        // to serving it as-is rather than forcing a refetch attempt.
+        championRepository.saveLocalChampions(listOf(akali))
 
         coJustRun { appDataRepository.setLocalVersion(any()) }
 
@@ -242,12 +248,11 @@ class ChampionViewModelTest {
         //Update local version will not be invoked
         coVerify(exactly = 0) { appDataRepository.setLocalVersion(any()) }
 
-        //Data version is default earliest version
         assertEquals(
             UiState.Success(
                 ChampionData(
                     version = VERSION_14_0,
-                    champions = emptyList() //Test data for local not set
+                    champions = listOf(akali),
                 )
             ), viewModel.champions.value
         )
@@ -335,6 +340,41 @@ class ChampionViewModelTest {
         advanceUntilIdle()
 
         assertEquals(VERSION_14_1, getChampionDataUseCase.getVersion())
+
+        collectJob.cancel()
+    }
+
+    // A language switch clears local champion data (championRepository.clearLocalData()) but
+    // deliberately does NOT invalidate the local version (so the "latest game version" tile
+    // doesn't blank). That means version comparison alone can't tell the use case it needs to
+    // refetch — local data can be genuinely empty while local == remote version.
+    @Test
+    fun dataRefreshed_afterLocalDataClearedWithoutVersionChange_stillRefetches() = runTest {
+        // Arrange: local = remote = 14.0 the whole time (version never changes).
+        coEvery { appDataRepository.getLocalVersion() } returns flowOf(VERSION_14_0)
+        coEvery { appDataRepository.getRemoteVersion() } returns listOf(VERSION_14_0)
+        coJustRun { appDataRepository.setLocalVersion(any()) }
+        championRepository.saveLocalChampions(listOf(akali))
+
+        val collectJob = launch { viewModel.champions.collect() }
+        advanceUntilIdle()
+        assertEquals(listOf(akali), (viewModel.champions.value as UiState.Success).data.champions)
+
+        // Simulates SettingsViewModel.clearAndRefresh(language = ...): local data cleared,
+        // use-case cache reset, version left untouched, then the shared signal fires.
+        championRepository.clearLocalData()
+        getChampionDataUseCase.reset()
+
+        dataRefreshed.emit(Unit)
+        advanceUntilIdle()
+
+        // Remote for VERSION_14_0 always returns [aatrox] in this fake — getting aatrox back
+        // (not akali, not empty) proves a genuine refetch happened and replaced the now-empty
+        // local table, rather than silently caching the empty result as "up to date."
+        assertEquals(
+            listOf(aatrox),
+            (viewModel.champions.value as UiState.Success).data.champions,
+        )
 
         collectJob.cancel()
     }
