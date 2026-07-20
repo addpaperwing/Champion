@@ -53,9 +53,9 @@ internal val retiredTrinket = Item(
     description = "No longer purchasable anywhere",
     plaintext = "Removed from all game modes",
     image = Image("9999.png"),
-    gold = ItemGold(base = 0, purchasable = false, total = 0, sell = 0),
+    gold = ItemGold(base = 0, purchasable = true, total = 0, sell = 0),
     tags = listOf("Trinket"),
-    maps = mapOf("11" to false, "12" to false, "22" to false, "30" to false), // unavailable on every map
+    maps = emptyMap(), // unavailable on every map (empty maps map, not all-false)
     stats = emptyMap(),
     components = emptyList(),
     upgrades = emptyList(),

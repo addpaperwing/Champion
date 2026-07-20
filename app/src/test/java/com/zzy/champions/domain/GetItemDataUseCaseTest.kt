@@ -48,7 +48,7 @@ class GetItemDataUseCaseTest {
         val result = useCase()
 
         assertTrue(result is UiState.Success)
-        assertEquals(3, (result as UiState.Success).data.size)  // re-fetched from fake remote (filtered by purchasable)
+        assertEquals(4, (result as UiState.Success).data.size)  // re-fetched from fake remote; all 4 fixtures are purchasable
     }
 
     @Test
