@@ -80,7 +80,12 @@ class ItemViewModel @Inject constructor(
         .flatMapLatest {
             flow {
                 emit(UiState.Loading)
-                emit(getItemDataUseCase())
+                emit(
+                    when (val result = getItemDataUseCase()) {
+                        is UiState.Success -> UiState.Success(result.data.filter { it.isAvailableOnAnyMap() })
+                        else -> result
+                    },
+                )
             }
         }
         .stateInViewModel(viewModelScope, initialValue = UiState.Loading, started = SharingStarted.Lazily)
@@ -192,6 +197,8 @@ class ItemViewModel @Inject constructor(
 
     fun getItemById(id: String): Item? = _lastKnownItems[id]
 }
+
+private fun Item.isAvailableOnAnyMap() = maps.values.any { it }
 
 internal fun categorizeItems(items: List<Item>): List<Pair<String, List<Item>>> {
     val validItems = items.filter { it.id.isNotEmpty() }

@@ -33,11 +33,12 @@ class GetItemDataUseCaseTest {
 
     @Test
     fun invoke_whenItemsCached_returnsSuccessWithCachedItems() = runTest {
-        // TestItemRepository starts with 3 items seeded
+        // TestItemRepository starts with 4 items seeded (including retiredTrinket)
+        // Cached items are returned as-is without filtering, so 4 items are returned
         val result = useCase()
 
         assertTrue(result is UiState.Success)
-        assertEquals(3, (result as UiState.Success).data.size)
+        assertEquals(4, (result as UiState.Success).data.size)
     }
 
     @Test
@@ -47,7 +48,7 @@ class GetItemDataUseCaseTest {
         val result = useCase()
 
         assertTrue(result is UiState.Success)
-        assertEquals(3, (result as UiState.Success).data.size)  // re-fetched from fake remote
+        assertEquals(3, (result as UiState.Success).data.size)  // re-fetched from fake remote (filtered by purchasable)
     }
 
     @Test

@@ -47,11 +47,25 @@ internal val sorceresShoes = Item(
     upgrades = emptyList(),
 )
 
-private val remoteItems = listOf(longSword, infinityEdge, sorceresShoes)
+internal val retiredTrinket = Item(
+    id = "9999",
+    name = "Retired Trinket",
+    description = "No longer purchasable anywhere",
+    plaintext = "Removed from all game modes",
+    image = Image("9999.png"),
+    gold = ItemGold(base = 0, purchasable = false, total = 0, sell = 0),
+    tags = listOf("Trinket"),
+    maps = mapOf("11" to false, "12" to false, "22" to false, "30" to false), // unavailable on every map
+    stats = emptyMap(),
+    components = emptyList(),
+    upgrades = emptyList(),
+)
+
+private val remoteItems = listOf(longSword, infinityEdge, sorceresShoes, retiredTrinket)
 
 internal class TestItemRepository : ItemRepository {
     // Separate local store so clearning local doesn't affect remote
-    private val localItems = mutableListOf(longSword, infinityEdge, sorceresShoes)
+    private val localItems = mutableListOf(longSword, infinityEdge, sorceresShoes, retiredTrinket)
     var shouldThrowOnFetch = false
 
     override suspend fun getRemoteItems(version: String, language: String): List<Item> {

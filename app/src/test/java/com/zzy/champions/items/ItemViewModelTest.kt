@@ -10,6 +10,7 @@ import com.zzy.champions.domain.GetItemDataUseCase
 import com.zzy.champions.infinityEdge
 import com.zzy.champions.longSword
 import com.zzy.champions.sorceresShoes
+import com.zzy.champions.retiredTrinket
 import com.zzy.champions.ui.items.CATEGORY_BOOTS
 import com.zzy.champions.ui.items.CATEGORY_LEGENDARY
 import com.zzy.champions.ui.items.GAME_MODE_ARAM
@@ -90,6 +91,35 @@ class ItemViewModelTest {
         viewModel.selectItem(infinityEdge)
         viewModel.dismissItem()
         assertNull(viewModel.selectedItem.value)
+    }
+
+    @Test
+    fun unavailableItem_excludedFromItemListState() = runTest {
+        val job = launch { viewModel.itemListState.collect() }
+        advanceUntilIdle()
+
+        val display = (viewModel.itemListState.value as UiState.Success).data
+        assertTrue(display is ItemListDisplay.Categorized)
+        val allItems = (display as ItemListDisplay.Categorized).groups.flatMap { it.second }
+        assertTrue(retiredTrinket !in allItems)
+        assertEquals(3, allItems.size)
+        job.cancel()
+    }
+
+    @Test
+    fun unavailableItem_excludedFromAvailableTags() = runTest {
+        val job = launch { viewModel.availableTags.collect() }
+        advanceUntilIdle()
+
+        assertTrue("Trinket" !in viewModel.availableTags.value)
+        job.cancel()
+    }
+
+    @Test
+    fun unavailableItem_getItemByIdReturnsNull() = runTest {
+        advanceUntilIdle()
+
+        assertNull(viewModel.getItemById(retiredTrinket.id))
     }
 
     @Test
