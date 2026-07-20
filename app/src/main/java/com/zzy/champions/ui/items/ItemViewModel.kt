@@ -55,7 +55,24 @@ internal val ALL_GAME_MODES = listOf(
     GAME_MODE_ARENA,
 )
 
-data class ItemListDisplay(val groups: List<Pair<String, List<Item>>>)
+data class ItemListDisplay(val groups: List<Pair<String, List<ItemGroup>>>)
+
+// Data Dragon ships separately-tuned catalog entries for the same conceptual item across game
+// modes (e.g. Arena's Infinity Edge is id "223031" at 2500g, Summoner's Rift's is "3031" at
+// 3500g) — same name, different id/gold/stats/icon file (image.full always mirrors the item's
+// own id, e.g. "223031.png" vs "3031.png", so it can never be used as a match key — verified
+// against live Data Dragon data: every real mode-variant pair shares a name but never an icon
+// filename). Grouping by name merges these into one card; the bottom sheet breaks variants back
+// out by mode when they actually differ.
+data class ItemGroup(val variants: List<Item>) {
+    // Composite key: stable across recompositions since it's derived from sorted variant ids,
+    // not affected by which variant happens to be picked as primary.
+    val id: String = variants.map { it.id }.sorted().joinToString("+")
+    val primary: Item get() = variants.firstOrNull { it.maps[GAME_MODE_SUMMONERS_RIFT] == true } ?: variants.first()
+}
+
+internal fun groupItems(items: List<Item>): List<ItemGroup> =
+    items.groupBy { it.name }.values.map { ItemGroup(it) }
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -81,12 +98,12 @@ class ItemViewModel @Inject constructor(
         }
         .stateInViewModel(viewModelScope, initialValue = UiState.Loading, started = SharingStarted.Lazily)
 
-    private val _categorizedRawItems: StateFlow<UiState<List<Pair<String, List<Item>>>>> = _rawItems
+    private val _categorizedRawItems: StateFlow<UiState<List<Pair<String, List<ItemGroup>>>>> = _rawItems
         .map { state ->
             when (state) {
                 is UiState.Loading -> UiState.Loading
                 is UiState.Error -> state
-                is UiState.Success -> UiState.Success(categorizeItems(state.data))
+                is UiState.Success -> UiState.Success(categorizeItems(groupItems(state.data)))
             }
         }
         .stateInViewModel(viewModelScope, initialValue = UiState.Loading)
@@ -110,11 +127,11 @@ class ItemViewModel @Inject constructor(
                 is UiState.Loading -> UiState.Loading
                 is UiState.Error -> state
                 is UiState.Success -> {
-                    val filtered = state.data.mapNotNull { (name, items) ->
-                        val matched = items.filter { item ->
-                            (tags.isEmpty() || tags.all { it in item.tags }) &&
-                                (gameModes.isEmpty() || gameModes.all { item.maps[it] == true }) &&
-                                (query.isBlank() || item.name.contains(query, ignoreCase = true))
+                    val filtered = state.data.mapNotNull { (name, groups) ->
+                        val matched = groups.filter { group ->
+                            (tags.isEmpty() || tags.all { it in group.primary.tags }) &&
+                                (gameModes.isEmpty() || group.variants.any { v -> gameModes.all { v.maps[it] == true } }) &&
+                                (query.isBlank() || group.primary.name.contains(query, ignoreCase = true))
                         }
                         if (matched.isEmpty()) null else name to matched
                     }
@@ -128,17 +145,23 @@ class ItemViewModel @Inject constructor(
     // background — prevents a blank version badge flash on return.
     val version: StateFlow<String> = appDataRepository.localVersionState(viewModelScope, started = SharingStarted.Lazily)
 
-    private val _selectedItem = MutableStateFlow<Item?>(null)
-    val selectedItem: StateFlow<Item?> = _selectedItem.asStateFlow()
+    private val _selectedItem = MutableStateFlow<ItemGroup?>(null)
+    val selectedItem: StateFlow<ItemGroup?> = _selectedItem.asStateFlow()
 
-    // Survives retry(): keeps the last successful item list so BottomSheet lookups
-    // continue to work while a new fetch is in-flight (when _rawItems = Loading).
-    private var _lastKnownItems: Map<String, Item> = emptyMap()
+    // Survives retry(): keeps the last successful item list so BottomSheet lookups continue to
+    // work while a new fetch is in-flight (when _rawItems = Loading). Keyed by every variant's
+    // raw id (not just each group's primary), since component/upgrade chips reference a specific
+    // variant's id and must resolve to its owning group.
+    private var _lastKnownGroups: Map<String, ItemGroup> = emptyMap()
 
     init {
         viewModelScope.launch {
             _rawItems.collect { state ->
-                if (state is UiState.Success) _lastKnownItems = state.data.associateBy { it.id }
+                if (state is UiState.Success) {
+                    _lastKnownGroups = groupItems(state.data)
+                        .flatMap { group -> group.variants.map { it.id to group } }
+                        .toMap()
+                }
             }
         }
         // Lives in this ViewModel's own scope rather than a nav-destination refresh signal:
@@ -168,33 +191,33 @@ class ItemViewModel @Inject constructor(
         savedStateHandle[KEY_SELECTED_GAME_MODES] = emptySet<String>()
     }
 
-    fun selectItem(item: Item) { _selectedItem.value = item }
+    fun selectItem(group: ItemGroup) { _selectedItem.value = group }
     fun dismissItem() { _selectedItem.value = null }
     fun retry() { _retryTrigger.update { it + 1 } }
 
-    fun getItemById(id: String): Item? = _lastKnownItems[id]
+    fun getGroupById(id: String): ItemGroup? = _lastKnownGroups[id]
 }
 
 private fun Item.isAvailableOnAnyMap() = maps.values.any { it }
 
-internal fun categorizeItems(items: List<Item>): List<Pair<String, List<Item>>> {
-    val validItems = items.filter { it.id.isNotEmpty() }
-    val allItemIds = validItems.map { it.id }.toSet()
-    val componentIds = validItems.flatMap { it.components }.filter { it in allItemIds }.toSet()
+internal fun categorizeItems(groups: List<ItemGroup>): List<Pair<String, List<ItemGroup>>> {
+    val validGroups = groups.filter { it.primary.id.isNotEmpty() }
+    val allItemIds = validGroups.flatMap { g -> g.variants.map { it.id } }.toSet()
+    val componentIds = validGroups.flatMap { it.primary.components }.filter { it in allItemIds }.toSet()
 
     val categories = listOf(
-        CATEGORY_STARTER    to { item: Item -> item.gold.total in 1..500 && item.id !in componentIds && "Boots" !in item.tags },
-        CATEGORY_BOOTS      to { item: Item -> "Boots" in item.tags },
-        CATEGORY_MYTHIC     to { item: Item -> "Mythic" in item.tags },
-        CATEGORY_LEGENDARY  to { item: Item -> "Legendary" in item.tags },
-        CATEGORY_COMPONENTS to { item: Item -> item.id in componentIds },
-        CATEGORY_EPIC       to { item: Item -> item.gold.total >= 1000 },
-        CATEGORY_OTHER      to { _: Item -> true },
+        CATEGORY_STARTER    to { g: ItemGroup -> g.primary.gold.total in 1..500 && g.variants.none { it.id in componentIds } && "Boots" !in g.primary.tags },
+        CATEGORY_BOOTS      to { g: ItemGroup -> "Boots" in g.primary.tags },
+        CATEGORY_MYTHIC     to { g: ItemGroup -> "Mythic" in g.primary.tags },
+        CATEGORY_LEGENDARY  to { g: ItemGroup -> "Legendary" in g.primary.tags },
+        CATEGORY_COMPONENTS to { g: ItemGroup -> g.variants.any { it.id in componentIds } },
+        CATEGORY_EPIC       to { g: ItemGroup -> g.primary.gold.total >= 1000 },
+        CATEGORY_OTHER      to { _: ItemGroup -> true },
     )
 
     val assigned = mutableSetOf<String>()
     return categories.mapNotNull { (name, predicate) ->
-        val batch = validItems.filter { it.id !in assigned && predicate(it) }
+        val batch = validGroups.filter { it.id !in assigned && predicate(it) }
         if (batch.isEmpty()) null
         else {
             assigned.addAll(batch.map { it.id })

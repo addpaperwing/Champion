@@ -17,6 +17,7 @@ import com.zzy.champions.ui.items.CATEGORY_STARTER
 import com.zzy.champions.ui.items.GAME_MODE_ARAM
 import com.zzy.champions.ui.items.GAME_MODE_ARENA
 import com.zzy.champions.ui.items.GAME_MODE_SUMMONERS_RIFT
+import com.zzy.champions.ui.items.ItemGroup
 import com.zzy.champions.ui.items.ItemListDisplay
 import com.zzy.champions.ui.items.ItemViewModel
 import androidx.lifecycle.SavedStateHandle
@@ -62,6 +63,7 @@ class ItemViewModelTest {
 
     private fun groupsNow(): List<Pair<String, List<com.zzy.champions.data.model.Item>>> =
         (viewModel.itemListState.value as UiState.Success).data.groups
+            .map { (name, groups) -> name to groups.map { it.primary } }
 
     @Test
     fun stateIsInitiallyLoading() {
@@ -123,7 +125,7 @@ class ItemViewModelTest {
     fun unavailableItem_getItemByIdReturnsNull() = runTest {
         advanceUntilIdle()
 
-        assertNull(viewModel.getItemById(retiredTrinket.id))
+        assertNull(viewModel.getGroupById(retiredTrinket.id))
     }
 
     @Test
@@ -133,13 +135,14 @@ class ItemViewModelTest {
 
     @Test
     fun selectItem_updatesSelectedItem() = runTest {
-        viewModel.selectItem(infinityEdge)
-        assertEquals(infinityEdge, viewModel.selectedItem.value)
+        val group = ItemGroup(listOf(infinityEdge))
+        viewModel.selectItem(group)
+        assertEquals(group, viewModel.selectedItem.value)
     }
 
     @Test
     fun dismissItem_clearsSelectedItem() = runTest {
-        viewModel.selectItem(infinityEdge)
+        viewModel.selectItem(ItemGroup(listOf(infinityEdge)))
         viewModel.dismissItem()
         assertNull(viewModel.selectedItem.value)
     }

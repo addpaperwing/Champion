@@ -46,7 +46,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zzy.champions.R
-import com.zzy.champions.data.model.Item
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.ui.detail.compose.LoadingAndErrorScreen
 import com.zzy.champions.ui.index.compose.SearchTextField
@@ -60,6 +59,7 @@ import com.zzy.champions.ui.items.CATEGORY_STARTER
 import com.zzy.champions.ui.items.GAME_MODE_ARAM
 import com.zzy.champions.ui.items.GAME_MODE_ARENA
 import com.zzy.champions.ui.items.GAME_MODE_SUMMONERS_RIFT
+import com.zzy.champions.ui.items.ItemGroup
 import com.zzy.champions.ui.items.ItemListDisplay
 import com.zzy.champions.ui.items.ItemViewModel
 import com.zzy.champions.ui.theme.Golden
@@ -131,7 +131,7 @@ fun ItemRoute(
         )
     }
 
-    val resolveItem = remember(viewModel) { viewModel::getItemById }
+    val resolveItem = remember(viewModel) { viewModel::getGroupById }
     val onComponentClick = remember(viewModel) { { componentId: String ->
         val resolved = resolveItem(componentId)
         if (resolved != null) viewModel.selectItem(resolved)
@@ -163,7 +163,7 @@ fun ItemScreen(
     onFilterIconClick: () -> Unit = {},
     selectedGameModes: Set<String> = emptySet(),
     onGameModeClear: (String) -> Unit = {},
-    onItemClick: (Item) -> Unit,
+    onItemClick: (ItemGroup) -> Unit,
     onReloadClick: () -> Unit = {},
 ) {
     Column(

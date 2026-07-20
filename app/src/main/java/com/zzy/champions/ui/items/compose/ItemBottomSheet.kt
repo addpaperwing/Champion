@@ -30,25 +30,37 @@ import com.zzy.champions.R
 import com.zzy.champions.data.model.Item
 import com.zzy.champions.data.model.itemIconUrl
 import com.zzy.champions.ui.detail.compose.ability.HtmlText
+import com.zzy.champions.ui.items.ALL_GAME_MODES
+import com.zzy.champions.ui.items.ItemGroup
+import com.zzy.champions.ui.theme.Golden
 
-// DDragon anomalies: "Flat"-prefixed stats stored as 0–1 ratios despite the name.
-// Add new entries here if DDragon introduces another such stat.
-private val FLAT_RATIO_STAT_KEYS = setOf("FlatCritChanceMod")
-private val REGEX_STAT_PREFIX = Regex("^(Flat|Percent)")
-private val REGEX_STAT_SUFFIX = Regex("Mod$")
-private val REGEX_ACRONYM_SPLIT = Regex("([A-Z]+)([A-Z][a-z])")
-private val REGEX_CAMEL_SPLIT = Regex("([a-z\\d])([A-Z])")
+// Data Dragon's own description HTML already embeds a complete "<stats>...</stats>" summary
+// (e.g. "<attention>80</attention> Health<br>..."), so it's the single source of truth for
+// stat bonuses here — no separate structured display is derived from Item.stats, which would
+// just duplicate the same numbers under different auto-generated labels.
+//
+// When that block is genuinely empty (items with no stat bonuses, e.g. consumables), Data
+// Dragon still leaves the trailing "<br><br>" that normally separates it from the rest of the
+// text, which otherwise renders as a bare blank gap before the description starts.
+private val EMPTY_STATS_GAP_REGEX = Regex("<stats>\\s*</stats>(<br\\s*/?>)*", RegexOption.IGNORE_CASE)
+private fun stripEmptyStatsGap(description: String): String = description.replace(EMPTY_STATS_GAP_REGEX, "")
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemBottomSheet(
-    item: Item,
+    item: ItemGroup,
     version: String,
     onDismiss: () -> Unit,
     onComponentClick: (String) -> Unit,
-    resolveItem: (String) -> Item?,
+    resolveItem: (String) -> ItemGroup?,
     modifier: Modifier = Modifier,
 ) {
+    val primary = item.primary
+    // Variants only need breaking out by mode when they actually differ; two catalog entries
+    // that happen to share a name/icon but carry identical gold+description are the same item
+    // in every way that matters here and should render exactly like a single-variant item.
+    val distinctVariants = remember(item) { item.variants.distinctBy { it.gold to it.description } }
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(),
@@ -63,19 +75,23 @@ fun ItemBottomSheet(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 AsyncImage(
-                    model = item.getIconUrl(version).takeIf { version.isNotEmpty() },
-                    contentDescription = item.name,
+                    model = primary.getIconUrl(version).takeIf { version.isNotEmpty() },
+                    contentDescription = primary.name,
                     modifier = Modifier.size(56.dp),
                 )
                 Spacer(Modifier.width(12.dp))
                 Column {
                     Text(
-                        text = item.name,
+                        text = primary.name,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
                     Text(
-                        text = "${item.gold.total}g  ·  ${item.tags.firstOrNull() ?: ""}",
+                        text = if (distinctVariants.size <= 1) {
+                            "${primary.gold.total}g  ·  ${primary.tags.firstOrNull() ?: ""}"
+                        } else {
+                            primary.tags.firstOrNull() ?: ""
+                        },
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -86,33 +102,16 @@ fun ItemBottomSheet(
             HorizontalDivider()
             Spacer(Modifier.height(12.dp))
 
-            val statDisplays = remember(item) {
-                item.stats.map { (key, value) ->
-                    // FlatCritChanceMod is stored as a ratio (0.0–1.0) in DDragon despite the Flat prefix.
-                    val isPercent = key.startsWith("Percent") || key in FLAT_RATIO_STAT_KEYS
-                    val display = if (isPercent) "+${(value * 100).toInt()}%" else "+${value.toInt()}"
-                    "$display ${formatStatKey(key)}"
+            if (distinctVariants.size <= 1) {
+                ItemVariantBody(variant = primary, showModeLabel = false)
+            } else {
+                distinctVariants.forEachIndexed { index, variant ->
+                    if (index > 0) Spacer(Modifier.height(16.dp))
+                    ItemVariantBody(variant = variant, showModeLabel = true)
                 }
             }
-            statDisplays.forEach { text ->
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(vertical = 2.dp),
-                )
-            }
 
-            val descText = item.description.ifEmpty { item.plaintext }
-            if (descText.isNotEmpty()) {
-                Spacer(Modifier.height(8.dp))
-                HtmlText(
-                    text = descText,
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-
-            if (item.components.isNotEmpty()) {
+            if (primary.components.isNotEmpty()) {
                 Spacer(Modifier.height(12.dp))
                 Text(
                     text = stringResource(R.string.builds_from),
@@ -120,10 +119,10 @@ fun ItemBottomSheet(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(Modifier.height(4.dp))
-                ItemImageRow(ids = item.components, version = version, onItemClick = onComponentClick)
+                ItemImageRow(ids = primary.components, version = version, onItemClick = onComponentClick)
             }
 
-            val visibleUpgrades = remember(item, resolveItem) { item.upgrades.filter { resolveItem(it) != null } }
+            val visibleUpgrades = remember(item, resolveItem) { primary.upgrades.filter { resolveItem(it) != null } }
             if (visibleUpgrades.isNotEmpty()) {
                 Spacer(Modifier.height(12.dp))
                 Text(
@@ -134,6 +133,34 @@ fun ItemBottomSheet(
                 Spacer(Modifier.height(4.dp))
                 ItemImageRow(ids = visibleUpgrades, version = version, onItemClick = onComponentClick)
             }
+        }
+    }
+}
+
+@Composable
+private fun ItemVariantBody(variant: Item, showModeLabel: Boolean, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        if (showModeLabel) {
+            val modeLabel = ALL_GAME_MODES
+                .filter { variant.maps[it] == true }
+                .mapNotNull { gameModeNameResIds[it] }
+                .map { stringResource(it) }
+                .joinToString(" / ")
+            Text(
+                text = "$modeLabel  ·  ${variant.gold.total}g",
+                style = MaterialTheme.typography.labelMedium,
+                color = Golden,
+            )
+            Spacer(Modifier.height(4.dp))
+        }
+
+        val descText = stripEmptyStatsGap(variant.description.ifEmpty { variant.plaintext })
+        if (descText.isNotEmpty()) {
+            HtmlText(
+                text = descText,
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.onSurface,
+            )
         }
     }
 }
@@ -156,10 +183,3 @@ private fun ItemImageRow(
         }
     }
 }
-
-private fun formatStatKey(key: String): String =
-    key.replace(REGEX_STAT_PREFIX, "")
-        .replace(REGEX_STAT_SUFFIX, "")
-        .replace(REGEX_ACRONYM_SPLIT, "$1 $2")
-        .replace(REGEX_CAMEL_SPLIT, "$1 $2")
-        .trim()

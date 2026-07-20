@@ -22,17 +22,18 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.zzy.champions.data.model.Item
+import com.zzy.champions.ui.items.ItemGroup
 import com.zzy.champions.ui.theme.DarkLight
 import com.zzy.champions.ui.theme.Golden
 
 @Composable
 fun ItemCard(
-    item: Item,
+    item: ItemGroup,
     version: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val display = item.primary
     Box(
         modifier = modifier
             .padding(2.dp)
@@ -49,14 +50,14 @@ fun ItemCard(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AsyncImage(
-                model = item.getIconUrl(version).takeIf { version.isNotEmpty() },
-                contentDescription = item.name,
+                model = display.getIconUrl(version).takeIf { version.isNotEmpty() },
+                contentDescription = display.name,
                 modifier = Modifier
                     .size(40.dp)
                     .clip(RoundedCornerShape(3.dp)),
             )
             Text(
-                text = item.name,
+                text = display.name,
                 fontSize = 7.sp,
                 fontWeight = FontWeight(600),
                 color = Color.White,
@@ -68,7 +69,7 @@ fun ItemCard(
                     .padding(top = 2.dp),
             )
             Text(
-                text = "${item.gold.total}g",
+                text = "${display.gold.total}g",
                 fontSize = 7.sp,
                 color = Golden,
                 maxLines = 1,

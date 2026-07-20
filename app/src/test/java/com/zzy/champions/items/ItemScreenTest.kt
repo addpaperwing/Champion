@@ -11,6 +11,7 @@ import com.zzy.champions.longSword
 import com.zzy.champions.sorceresShoes
 import com.zzy.champions.ui.items.GAME_MODE_ARAM
 import com.zzy.champions.ui.items.GAME_MODE_SUMMONERS_RIFT
+import com.zzy.champions.ui.items.ItemGroup
 import com.zzy.champions.ui.items.ItemListDisplay
 import com.zzy.champions.ui.items.compose.ItemScreen
 import com.zzy.champions.ui.theme.MyApplicationTheme
@@ -39,7 +40,7 @@ class ItemScreenTest {
             MyApplicationTheme {
                 ItemScreen(
                     itemListState = UiState.Success(
-                        ItemListDisplay(listOf("Starter" to listOf(longSword)))
+                        ItemListDisplay(listOf("Starter" to listOf(ItemGroup(listOf(longSword)))))
                     ),
                     version = "",
                     onItemClick = {},
@@ -90,7 +91,7 @@ class ItemScreenTest {
         composeTestRule.setContent {
             MyApplicationTheme {
                 ItemScreen(
-                    itemListState = UiState.Success(ItemListDisplay(listOf("Starter" to listOf(sorceresShoes)))),
+                    itemListState = UiState.Success(ItemListDisplay(listOf("Starter" to listOf(ItemGroup(listOf(sorceresShoes)))))),
                     version = "",
                     onItemClick = {},
                 )
