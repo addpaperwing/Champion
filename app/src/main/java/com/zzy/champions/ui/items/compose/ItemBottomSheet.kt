@@ -80,6 +80,12 @@ private fun variantContent(variant: Item): VariantContent {
     return VariantContent(descText, statLines)
 }
 
+private fun contentGroups(distinctVariants: List<Item>, contents: List<VariantContent>): List<Pair<VariantContent, List<Item>>> =
+    distinctVariants.indices
+        .groupBy { contents[it].descText to contents[it].statLines }
+        .values
+        .map { idxGroup -> contents[idxGroup.first()] to idxGroup.map { distinctVariants[it] } }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemBottomSheet(
@@ -96,6 +102,10 @@ fun ItemBottomSheet(
     // in every way that matters here and should render exactly like a single-variant item.
     val distinctVariants = remember(item) { item.variants.distinctBy { it.gold to it.description } }
     val variantContents = remember(distinctVariants) { distinctVariants.map { variantContent(it) } }
+    // Variants that differ only in gold (e.g. mode-specific pricing) but share the same stats
+    // and description render as one body section with a combined mode+gold header instead of
+    // repeating the same content once per mode.
+    val groups = remember(distinctVariants, variantContents) { contentGroups(distinctVariants, variantContents) }
     val visibleUpgrades = remember(item, resolveItem) { primary.upgrades.filter { resolveItem(it) != null } }
 
     // Multiple distinct variants always have something worth showing (at minimum, their gold
@@ -149,11 +159,11 @@ fun ItemBottomSheet(
 
                 if (hasBodyContent) {
                     if (distinctVariants.size <= 1) {
-                        ItemVariantBody(content = variantContents.first(), variant = primary, showModeLabel = false)
+                        ItemVariantBody(content = variantContents.first(), variants = listOf(primary), showModeLabel = false)
                     } else {
-                        distinctVariants.forEachIndexed { index, variant ->
+                        groups.forEachIndexed { index, (content, variants) ->
                             if (index > 0) Spacer(Modifier.height(16.dp))
-                            ItemVariantBody(content = variantContents[index], variant = variant, showModeLabel = true)
+                            ItemVariantBody(content = content, variants = variants, showModeLabel = true)
                         }
                     }
                 }
@@ -185,16 +195,19 @@ fun ItemBottomSheet(
 }
 
 @Composable
-private fun ItemVariantBody(content: VariantContent, variant: Item, showModeLabel: Boolean, modifier: Modifier = Modifier) {
+private fun ItemVariantBody(content: VariantContent, variants: List<Item>, showModeLabel: Boolean, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         if (showModeLabel) {
-            val modeLabel = ALL_GAME_MODES
-                .filter { variant.maps[it] == true }
-                .mapNotNull { gameModeNameResIds[it] }
-                .map { stringResource(it) }
-                .joinToString(" / ")
+            val header = variants.map { variant ->
+                val modeLabel = ALL_GAME_MODES
+                    .filter { variant.maps[it] == true }
+                    .mapNotNull { gameModeNameResIds[it] }
+                    .map { stringResource(it) }
+                    .joinToString(" / ")
+                "$modeLabel  ·  ${variant.gold.total}g"
+            }.joinToString(" / ")
             Text(
-                text = "$modeLabel  ·  ${variant.gold.total}g",
+                text = header,
                 style = MaterialTheme.typography.labelMedium,
                 color = Golden,
             )
