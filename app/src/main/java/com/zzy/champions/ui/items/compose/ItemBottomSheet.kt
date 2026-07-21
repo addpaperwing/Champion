@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,15 +36,49 @@ import com.zzy.champions.ui.items.ItemGroup
 import com.zzy.champions.ui.theme.Golden
 
 // Data Dragon's own description HTML already embeds a complete "<stats>...</stats>" summary
-// (e.g. "<attention>80</attention> Health<br>..."), so it's the single source of truth for
-// stat bonuses here — no separate structured display is derived from Item.stats, which would
-// just duplicate the same numbers under different auto-generated labels.
+// (e.g. "<attention>80</attention> Health<br>..."), so it's the preferred source of truth for
+// stat bonuses here — showing it alongside the structured Item.stats map would just duplicate
+// the same numbers under different auto-generated labels. Item.stats is only rendered as a
+// fallback for items Data Dragon left with no description text at all (e.g. World Atlas: a real
+// 30 HP Pool bonus, but description/plaintext both blank) so that data isn't silently dropped.
 //
-// When that block is genuinely empty (items with no stat bonuses, e.g. consumables), Data
-// Dragon still leaves the trailing "<br><br>" that normally separates it from the rest of the
-// text, which otherwise renders as a bare blank gap before the description starts.
+// When the description's stats block is present but genuinely empty (items with no stat bonuses,
+// e.g. consumables), Data Dragon still leaves the trailing "<br><br>" that normally separates it
+// from the rest of the text, which otherwise renders as a bare blank gap before the description
+// starts.
 private val EMPTY_STATS_GAP_REGEX = Regex("<stats>\\s*</stats>(<br\\s*/?>)*", RegexOption.IGNORE_CASE)
 private fun stripEmptyStatsGap(description: String): String = description.replace(EMPTY_STATS_GAP_REGEX, "")
+
+// DDragon anomalies: "Flat"-prefixed stats stored as 0–1 ratios despite the name.
+// Add new entries here if DDragon introduces another such stat.
+private val FLAT_RATIO_STAT_KEYS = setOf("FlatCritChanceMod")
+private val REGEX_STAT_PREFIX = Regex("^(Flat|Percent)")
+private val REGEX_STAT_SUFFIX = Regex("Mod$")
+private val REGEX_ACRONYM_SPLIT = Regex("([A-Z]+)([A-Z][a-z])")
+private val REGEX_CAMEL_SPLIT = Regex("([a-z\\d])([A-Z])")
+
+private fun formatStatKey(key: String): String =
+    key.replace(REGEX_STAT_PREFIX, "")
+        .replace(REGEX_STAT_SUFFIX, "")
+        .replace(REGEX_ACRONYM_SPLIT, "$1 $2")
+        .replace(REGEX_CAMEL_SPLIT, "$1 $2")
+        .trim()
+
+private fun formatStatLine(key: String, value: Double): String {
+    val isPercent = key.startsWith("Percent") || key in FLAT_RATIO_STAT_KEYS
+    val display = if (isPercent) "+${(value * 100).toInt()}%" else "+${value.toInt()}"
+    return "$display ${formatStatKey(key)}"
+}
+
+private class VariantContent(val descText: String, val statLines: List<String>) {
+    val isEmpty: Boolean = descText.isEmpty() && statLines.isEmpty()
+}
+
+private fun variantContent(variant: Item): VariantContent {
+    val descText = stripEmptyStatsGap(variant.description.ifEmpty { variant.plaintext })
+    val statLines = if (descText.isNotEmpty()) emptyList() else variant.stats.map { (key, value) -> formatStatLine(key, value) }
+    return VariantContent(descText, statLines)
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,6 +95,15 @@ fun ItemBottomSheet(
     // that happen to share a name/icon but carry identical gold+description are the same item
     // in every way that matters here and should render exactly like a single-variant item.
     val distinctVariants = remember(item) { item.variants.distinctBy { it.gold to it.description } }
+    val variantContents = remember(distinctVariants) { distinctVariants.map { variantContent(it) } }
+    val visibleUpgrades = remember(item, resolveItem) { primary.upgrades.filter { resolveItem(it) != null } }
+
+    // Multiple distinct variants always have something worth showing (at minimum, their gold
+    // differs — that's why they're distinct); a single variant is only worth a body section if
+    // it actually has stats or a description. Hides the divider/section entirely rather than
+    // leaving a gap in front of nothing (e.g. a component with no text and no stats at all).
+    val hasBodyContent = distinctVariants.size > 1 || variantContents.any { !it.isEmpty }
+    val hasAnythingBelowHeader = hasBodyContent || primary.components.isNotEmpty() || visibleUpgrades.isNotEmpty()
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -98,47 +142,50 @@ fun ItemBottomSheet(
                 }
             }
 
-            Spacer(Modifier.height(12.dp))
-            HorizontalDivider()
-            Spacer(Modifier.height(12.dp))
+            if (hasAnythingBelowHeader) {
+                Spacer(Modifier.height(12.dp))
+                HorizontalDivider(modifier = Modifier.testTag("item_detail_divider"))
+                Spacer(Modifier.height(12.dp))
 
-            if (distinctVariants.size <= 1) {
-                ItemVariantBody(variant = primary, showModeLabel = false)
-            } else {
-                distinctVariants.forEachIndexed { index, variant ->
-                    if (index > 0) Spacer(Modifier.height(16.dp))
-                    ItemVariantBody(variant = variant, showModeLabel = true)
+                if (hasBodyContent) {
+                    if (distinctVariants.size <= 1) {
+                        ItemVariantBody(content = variantContents.first(), variant = primary, showModeLabel = false)
+                    } else {
+                        distinctVariants.forEachIndexed { index, variant ->
+                            if (index > 0) Spacer(Modifier.height(16.dp))
+                            ItemVariantBody(content = variantContents[index], variant = variant, showModeLabel = true)
+                        }
+                    }
                 }
-            }
 
-            if (primary.components.isNotEmpty()) {
-                Spacer(Modifier.height(12.dp))
-                Text(
-                    text = stringResource(R.string.builds_from),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Spacer(Modifier.height(4.dp))
-                ItemImageRow(ids = primary.components, version = version, onItemClick = onComponentClick)
-            }
+                if (primary.components.isNotEmpty()) {
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        text = stringResource(R.string.builds_from),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    ItemImageRow(ids = primary.components, version = version, onItemClick = onComponentClick)
+                }
 
-            val visibleUpgrades = remember(item, resolveItem) { primary.upgrades.filter { resolveItem(it) != null } }
-            if (visibleUpgrades.isNotEmpty()) {
-                Spacer(Modifier.height(12.dp))
-                Text(
-                    text = stringResource(R.string.builds_into),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Spacer(Modifier.height(4.dp))
-                ItemImageRow(ids = visibleUpgrades, version = version, onItemClick = onComponentClick)
+                if (visibleUpgrades.isNotEmpty()) {
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        text = stringResource(R.string.builds_into),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    ItemImageRow(ids = visibleUpgrades, version = version, onItemClick = onComponentClick)
+                }
             }
         }
     }
 }
 
 @Composable
-private fun ItemVariantBody(variant: Item, showModeLabel: Boolean, modifier: Modifier = Modifier) {
+private fun ItemVariantBody(content: VariantContent, variant: Item, showModeLabel: Boolean, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         if (showModeLabel) {
             val modeLabel = ALL_GAME_MODES
@@ -151,13 +198,20 @@ private fun ItemVariantBody(variant: Item, showModeLabel: Boolean, modifier: Mod
                 style = MaterialTheme.typography.labelMedium,
                 color = Golden,
             )
-            Spacer(Modifier.height(4.dp))
+            if (!content.isEmpty) Spacer(Modifier.height(4.dp))
         }
 
-        val descText = stripEmptyStatsGap(variant.description.ifEmpty { variant.plaintext })
-        if (descText.isNotEmpty()) {
+        content.statLines.forEach { line ->
+            Text(
+                text = line,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(vertical = 2.dp),
+            )
+        }
+
+        if (content.descText.isNotEmpty()) {
             HtmlText(
-                text = descText,
+                text = content.descText,
                 modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.onSurface,
             )

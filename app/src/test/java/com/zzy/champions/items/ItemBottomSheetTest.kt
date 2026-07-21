@@ -6,6 +6,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -49,12 +50,16 @@ class ItemBottomSheetTest {
         description: String,
         total: Int,
         maps: Map<String, Boolean>,
+        stats: Map<String, Double> = emptyMap(),
+        components: List<String> = emptyList(),
     ) = Item(
         id = id, name = name, description = description, plaintext = "",
         image = Image("$id.png"),
         gold = ItemGold(total = total, purchasable = true),
         tags = listOf("Damage"),
         maps = maps,
+        stats = stats,
+        components = components,
     )
 
     @Test
@@ -81,6 +86,7 @@ class ItemBottomSheetTest {
         composeTestRule.onNodeWithText("80 Health", substring = true).assertExists()
         // No per-mode section header should appear for a single-variant item.
         composeTestRule.onNodeWithText("Summoner's Rift", substring = true).assertDoesNotExist()
+        composeTestRule.onNodeWithTag("item_detail_divider").assertExists()
     }
 
     @Test
@@ -105,6 +111,56 @@ class ItemBottomSheetTest {
         }
 
         composeTestRule.onNodeWithText("Consume", substring = true).assertExists()
+    }
+
+    @Test
+    fun emptyDescription_fallsBackToStructuredStats() {
+        // Mirrors World Atlas: a real Data Dragon item with a non-empty stats map but a
+        // completely blank description and plaintext.
+        val worldAtlas = item(
+            id = "3865", name = "World Atlas", description = "", total = 400,
+            maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true),
+            stats = mapOf("FlatHPPoolMod" to 30.0),
+        )
+
+        composeTestRule.setContent {
+            TestTheme {
+                ItemBottomSheet(
+                    item = ItemGroup(listOf(worldAtlas)),
+                    version = "",
+                    onDismiss = {},
+                    onComponentClick = {},
+                    resolveItem = { null },
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("+30 HP Pool", substring = true).assertExists()
+    }
+
+    @Test
+    fun noStatsNoDescriptionNoComponentsNoUpgrades_hidesBodyEntirely() {
+        val questItem = item(
+            id = "1090", name = "Quest: Top", description = "", total = 0,
+            maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true),
+        )
+
+        composeTestRule.setContent {
+            TestTheme {
+                ItemBottomSheet(
+                    item = ItemGroup(listOf(questItem)),
+                    version = "",
+                    onDismiss = {},
+                    onComponentClick = {},
+                    resolveItem = { null },
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText(questItem.name).assertExists()
+        // The divider/section below the header must not render at all when there is
+        // nothing to show — not just render empty, which would still leave a visible gap.
+        composeTestRule.onNodeWithTag("item_detail_divider").assertDoesNotExist()
     }
 
     @Test

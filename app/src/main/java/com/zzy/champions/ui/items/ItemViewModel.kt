@@ -90,7 +90,7 @@ class ItemViewModel @Inject constructor(
                 emit(UiState.Loading)
                 emit(
                     when (val result = getItemDataUseCase()) {
-                        is UiState.Success -> UiState.Success(result.data.filter { it.isAvailableOnAnyMap() })
+                        is UiState.Success -> UiState.Success(result.data.filter { it.isAvailableOnACuratedGameMode() })
                         else -> result
                     },
                 )
@@ -198,7 +198,11 @@ class ItemViewModel @Inject constructor(
     fun getGroupById(id: String): ItemGroup? = _lastKnownGroups[id]
 }
 
-private fun Item.isAvailableOnAnyMap() = maps.values.any { it }
+// Only the three curated modes are ever offered as a filter (see ALL_GAME_MODES) — an item
+// available only on some other map (Nexus Blitz, Odyssey, etc.) has nowhere to surface in this
+// app, so it's excluded before grouping/categorization ever sees it, not just when its "any true
+// value at all" check happened to pass.
+internal fun Item.isAvailableOnACuratedGameMode() = ALL_GAME_MODES.any { maps[it] == true }
 
 internal fun categorizeItems(groups: List<ItemGroup>): List<Pair<String, List<ItemGroup>>> {
     val validGroups = groups.filter { it.primary.id.isNotEmpty() }

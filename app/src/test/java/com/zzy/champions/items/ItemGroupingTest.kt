@@ -3,11 +3,14 @@ package com.zzy.champions.items
 import com.zzy.champions.data.model.Image
 import com.zzy.champions.data.model.Item
 import com.zzy.champions.data.model.ItemGold
+import com.zzy.champions.ui.items.GAME_MODE_ARAM
 import com.zzy.champions.ui.items.GAME_MODE_ARENA
 import com.zzy.champions.ui.items.GAME_MODE_SUMMONERS_RIFT
 import com.zzy.champions.ui.items.ItemGroup
 import com.zzy.champions.ui.items.groupItems
+import com.zzy.champions.ui.items.isAvailableOnACuratedGameMode
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -89,5 +92,40 @@ class ItemGroupingTest {
         val b = item("3031", "Infinity Edge")
 
         assertEquals(ItemGroup(listOf(a, b)).id, ItemGroup(listOf(b, a)).id)
+    }
+
+    @Test
+    fun isAvailableOnACuratedGameMode_trueWhenAnyOfTheThreeCuratedModesIsTrue() {
+        val srOnly = item("1", "A", maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true))
+        val aramOnly = item("2", "B", maps = mapOf(GAME_MODE_ARAM to true))
+        val arenaOnly = item("3", "C", maps = mapOf(GAME_MODE_ARENA to true))
+
+        assertTrue(srOnly.isAvailableOnACuratedGameMode())
+        assertTrue(aramOnly.isAvailableOnACuratedGameMode())
+        assertTrue(arenaOnly.isAvailableOnACuratedGameMode())
+    }
+
+    @Test
+    fun isAvailableOnACuratedGameMode_falseWhenOnlyAvailableOnANonCuratedMap() {
+        // Map "21" is Nexus Blitz — a real Data Dragon map ID this app has no filter chip for.
+        // Being available there (and nowhere curated) must not be enough to surface the item.
+        val nexusBlitzOnly = item(
+            "1200", "Rocket Belt Prototype",
+            maps = mapOf(
+                GAME_MODE_SUMMONERS_RIFT to false,
+                GAME_MODE_ARAM to false,
+                GAME_MODE_ARENA to false,
+                "21" to true,
+            ),
+        )
+
+        assertFalse(nexusBlitzOnly.isAvailableOnACuratedGameMode())
+    }
+
+    @Test
+    fun isAvailableOnACuratedGameMode_falseWhenMapsIsEmpty() {
+        val noMaps = item("9999", "Retired Trinket", maps = emptyMap())
+
+        assertFalse(noMaps.isAvailableOnACuratedGameMode())
     }
 }
