@@ -68,7 +68,17 @@ data class ItemGroup(val variants: List<Item>) {
     // Composite key: stable across recompositions since it's derived from sorted variant ids,
     // not affected by which variant happens to be picked as primary.
     val id: String = variants.map { it.id }.sorted().joinToString("+")
-    val primary: Item get() = variants.firstOrNull { it.maps[GAME_MODE_SUMMONERS_RIFT] == true } ?: variants.first()
+
+    // The shorter id is always Data Dragon's original/canonical entry — mode-specific reskins
+    // are minted by prefixing digits onto the canonical id (e.g. Arena's "223031" from the
+    // canonical "3031"), so they're always longer. This can't be "prefer the Summoner's Rift
+    // variant": some pairs (e.g. Zeke's Convergence — "3050" and "323050") are BOTH marked
+    // available on Summoner's Rift, which made that rule pick whichever variant happened to
+    // come first from an unordered DB read — non-deterministic. Comparing (length, id) is fully
+    // deterministic regardless of input order, with the id itself only breaking ties between
+    // equal-length ids (which do exist, e.g. Scorchclaw Pup's "1101"/"1107" — functionally
+    // interchangeable either way).
+    val primary: Item get() = variants.minWithOrNull(compareBy({ it.id.length }, { it.id })) ?: variants.first()
 }
 
 internal fun groupItems(items: List<Item>): List<ItemGroup> =

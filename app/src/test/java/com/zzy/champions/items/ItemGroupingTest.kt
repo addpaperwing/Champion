@@ -66,24 +66,38 @@ class ItemGroupingTest {
     }
 
     @Test
-    fun primary_prefersSummonersRiftVariant() {
+    fun primary_prefersTheShorterId() {
         val arenaVariant = item("223031", "Infinity Edge", maps = mapOf(GAME_MODE_ARENA to true, GAME_MODE_SUMMONERS_RIFT to false))
         val srVariant = item("3031", "Infinity Edge", maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true, GAME_MODE_ARENA to false))
 
-        // Order in the input list shouldn't matter — SR variant wins regardless of position.
+        // Order in the input list shouldn't matter — the shorter (canonical) id wins regardless
+        // of position.
         val group = ItemGroup(listOf(arenaVariant, srVariant))
 
         assertEquals(srVariant, group.primary)
     }
 
     @Test
-    fun primary_fallsBackToFirstVariant_whenNoneIsOnSummonersRift() {
+    fun primary_isDeterministic_evenWhenBothVariantsAreOnSummonersRift() {
+        // Real Data Dragon data: Zeke's Convergence ships both "3050" and "323050" marked
+        // available on Summoner's Rift, so "prefer the SR variant" can't disambiguate them —
+        // it would just pick whichever the DB happened to return first. The shorter id must
+        // win regardless of list order.
+        val canonical = item("3050", "Zeke's Convergence", maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true))
+        val reskin = item("323050", "Zeke's Convergence", maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true))
+
+        assertEquals(canonical, ItemGroup(listOf(reskin, canonical)).primary)
+        assertEquals(canonical, ItemGroup(listOf(canonical, reskin)).primary)
+    }
+
+    @Test
+    fun primary_breaksEqualLengthIdTiesDeterministically() {
         val a = item("1101", "Scorchclaw Pup", maps = mapOf(GAME_MODE_SUMMONERS_RIFT to false))
         val b = item("1107", "Scorchclaw Pup", maps = mapOf(GAME_MODE_SUMMONERS_RIFT to false))
 
-        val group = ItemGroup(listOf(a, b))
-
-        assertEquals(a, group.primary)
+        // Same result regardless of input order — "1101" sorts before "1107".
+        assertEquals(a, ItemGroup(listOf(a, b)).primary)
+        assertEquals(a, ItemGroup(listOf(b, a)).primary)
     }
 
     @Test
