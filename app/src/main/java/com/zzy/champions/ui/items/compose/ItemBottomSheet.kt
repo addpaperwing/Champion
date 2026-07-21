@@ -205,7 +205,7 @@ private fun ItemVariantBody(content: VariantContent, variants: List<Item>, showM
                     .map { stringResource(it) }
                     .joinToString(" / ")
                 "$modeLabel  ·  ${variant.gold.total}g"
-            }.joinToString(" / ")
+            }.joinToString(" | ")
             Text(
                 text = header,
                 style = MaterialTheme.typography.labelMedium,

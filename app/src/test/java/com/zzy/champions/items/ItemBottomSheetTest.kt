@@ -13,6 +13,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.zzy.champions.data.model.Image
 import com.zzy.champions.data.model.Item
 import com.zzy.champions.data.model.ItemGold
+import com.zzy.champions.ui.items.GAME_MODE_ARAM
 import com.zzy.champions.ui.items.GAME_MODE_ARENA
 import com.zzy.champions.ui.items.GAME_MODE_SUMMONERS_RIFT
 import com.zzy.champions.ui.items.ItemGroup
@@ -229,17 +230,21 @@ class ItemBottomSheetTest {
         val sameDescription = "<mainText><stats><attention>15</attention> Magic Resist</stats></mainText>"
         val srVariant = item(
             id = "2422", name = "Mercury's Treads", description = sameDescription, total = 1100,
-            maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true, GAME_MODE_ARENA to false),
+            maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true, GAME_MODE_ARAM to false, GAME_MODE_ARENA to false),
+        )
+        val aramVariant = item(
+            id = "322422", name = "Mercury's Treads", description = sameDescription, total = 900,
+            maps = mapOf(GAME_MODE_SUMMONERS_RIFT to false, GAME_MODE_ARAM to true, GAME_MODE_ARENA to false),
         )
         val arenaVariant = item(
             id = "222422", name = "Mercury's Treads", description = sameDescription, total = 800,
-            maps = mapOf(GAME_MODE_SUMMONERS_RIFT to false, GAME_MODE_ARENA to true),
+            maps = mapOf(GAME_MODE_SUMMONERS_RIFT to false, GAME_MODE_ARAM to false, GAME_MODE_ARENA to true),
         )
 
         composeTestRule.setContent {
             TestTheme {
                 ItemBottomSheet(
-                    item = ItemGroup(listOf(srVariant, arenaVariant)),
+                    item = ItemGroup(listOf(srVariant, aramVariant, arenaVariant)),
                     version = "",
                     onDismiss = {},
                     onComponentClick = {},
@@ -250,9 +255,11 @@ class ItemBottomSheetTest {
 
         // Content shown once, not once per mode.
         assertEquals(1, composeTestRule.onAllNodesWithText("15 Magic Resist", substring = true).fetchSemanticsNodes().size)
-        // Both mode+gold segments appear in the single combined header.
+        // All three mode+gold segments appear in the single combined header.
         composeTestRule.onNodeWithText("Summoner's Rift", substring = true).assertExists()
         composeTestRule.onNodeWithText("1100g", substring = true).assertExists()
+        composeTestRule.onNodeWithText("ARAM", substring = true).assertExists()
+        composeTestRule.onNodeWithText("900g", substring = true).assertExists()
         composeTestRule.onNodeWithText("Arena", substring = true).assertExists()
         composeTestRule.onNodeWithText("800g", substring = true).assertExists()
     }
