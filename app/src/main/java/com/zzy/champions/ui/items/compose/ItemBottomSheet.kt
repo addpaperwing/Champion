@@ -106,7 +106,13 @@ fun ItemBottomSheet(
     // and description render as one body section with a combined mode+gold header instead of
     // repeating the same content once per mode.
     val groups = remember(distinctVariants, variantContents) { contentGroups(distinctVariants, variantContents) }
-    val visibleUpgrades = remember(item, resolveItem) { primary.upgrades.filter { resolveItem(it) != null } }
+    // primary.upgrades is raw per-variant data — a mode-specific upgrade id can resolve to the
+    // same merged ItemGroup another upgrade id already resolved to, so dedupe by the resolved
+    // group's identity (not the raw id) and render each distinct result once, using its
+    // canonical (primary) id so the icon always matches what the rest of the app shows for it.
+    val visibleUpgrades = remember(item, resolveItem) {
+        primary.upgrades.mapNotNull { resolveItem(it) }.distinctBy { it.id }.map { it.primary.id }
+    }
 
     // Multiple distinct variants always have something worth showing (at minimum, their gold
     // differs — that's why they're distinct); a single variant is only worth a body section if
@@ -117,7 +123,7 @@ fun ItemBottomSheet(
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        sheetState = rememberModalBottomSheetState(),
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         modifier = modifier,
     ) {
         Column(

@@ -5,7 +5,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.unit.dp
@@ -53,6 +56,7 @@ class ItemBottomSheetTest {
         maps: Map<String, Boolean>,
         stats: Map<String, Double> = emptyMap(),
         components: List<String> = emptyList(),
+        upgrades: List<String> = emptyList(),
     ) = Item(
         id = id, name = name, description = description, plaintext = "",
         image = Image("$id.png"),
@@ -61,6 +65,7 @@ class ItemBottomSheetTest {
         maps = maps,
         stats = stats,
         components = components,
+        upgrades = upgrades,
     )
 
     @Test
@@ -262,5 +267,38 @@ class ItemBottomSheetTest {
         composeTestRule.onNodeWithText("900g", substring = true).assertExists()
         composeTestRule.onNodeWithText("Arena", substring = true).assertExists()
         composeTestRule.onNodeWithText("800g", substring = true).assertExists()
+    }
+
+    @Test
+    fun buildsInto_dedupesUpgradeIdsThatResolveToTheSameMergedGroup() {
+        // The primary variant's own "into" list is raw, per-variant Data Dragon data — its own
+        // SR-flagged id and an Arena-flagged sibling can both be listed as upgrade targets, but
+        // once grouped by name they're the same merged ItemGroup. Showing both raw ids would
+        // render the same next item's icon twice.
+        val srUpgrade = item(id = "6672", name = "Killer Instinct", description = "", total = 3000, maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true))
+        val arenaUpgrade = item(id = "226672", name = "Killer Instinct", description = "", total = 2500, maps = mapOf(GAME_MODE_ARENA to true))
+        val mergedUpgradeGroup = ItemGroup(listOf(srUpgrade, arenaUpgrade))
+
+        val base = item(
+            id = "1036", name = "Long Sword", description = "", total = 350,
+            maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true),
+            upgrades = listOf("6672", "226672"),
+        )
+
+        composeTestRule.setContent {
+            TestTheme {
+                ItemBottomSheet(
+                    item = ItemGroup(listOf(base)),
+                    version = "",
+                    onDismiss = {},
+                    onComponentClick = {},
+                    resolveItem = { id -> if (id == "6672" || id == "226672") mergedUpgradeGroup else null },
+                )
+            }
+        }
+
+        // Rendered once, keyed by the merged group's canonical (shorter-id) variant.
+        composeTestRule.onAllNodesWithContentDescription("6672").assertCountEquals(1)
+        composeTestRule.onNodeWithContentDescription("226672").assertDoesNotExist()
     }
 }
