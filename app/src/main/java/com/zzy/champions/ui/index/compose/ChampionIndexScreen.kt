@@ -53,17 +53,8 @@ fun ChampionIndexRoute(
     modifier: Modifier = Modifier,
     viewModel: ChampionViewModel = hiltViewModel(),
     onItemClick: (Champion) -> Unit,
-    refreshStamp: Int = 0,
-    onStampConsumed: () -> Unit = {},
     onSplashFinished: () -> Unit = {},
 ) {
-    LaunchedEffect(refreshStamp) {
-        if (refreshStamp > 0) {
-            viewModel.refresh()
-            onStampConsumed()
-        }
-    }
-
     val champions by viewModel.champions.collectAsStateWithLifecycle()
 
     ChampionIndexScreen(

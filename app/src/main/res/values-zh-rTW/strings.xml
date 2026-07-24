@@ -28,6 +28,15 @@
     <string name="language">語言</string>
     <string name="internet_connection_error">網路連線錯誤。</string>
     <string name="edit">編輯</string>
+    <string name="filter_items">篩選物品</string>
+    <string name="filter_tags">標籤</string>
+    <string name="filter_clear_all">全部清除</string>
+    <string name="filter_no_results">沒有符合篩選條件的物品。</string>
+    <string name="filter_game_mode">遊戲模式</string>
+    <string name="game_mode_summoners_rift">召喚師峽谷</string>
+    <string name="game_mode_aram">大亂鬥</string>
+    <string name="game_mode_arena">競技場</string>
+    <string name="clear_game_mode_filter">清除遊戲模式篩選</string>
     <string name="delete">刪除</string>
     <string name="build_name">名稱</string>
     <string name="build_content">配置內容</string>

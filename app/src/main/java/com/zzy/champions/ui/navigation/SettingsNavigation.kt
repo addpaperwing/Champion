@@ -14,7 +14,6 @@ const val LANGUAGE_ROUTE = "settings/language"
 
 fun NavGraphBuilder.settingsScreen(
     onLanguageClick: () -> Unit,
-    onRefreshDone: () -> Unit,
 ) {
     composable(
         route = SETTINGS_ROUTE,
@@ -33,7 +32,6 @@ fun NavGraphBuilder.settingsScreen(
     ) {
         SettingsRoute(
             onLanguageClick = onLanguageClick,
-            onRefreshDone = onRefreshDone,
         )
     }
 }

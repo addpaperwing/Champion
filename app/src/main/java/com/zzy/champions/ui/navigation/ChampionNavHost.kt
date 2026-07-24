@@ -28,17 +28,11 @@ fun ChampionNavHost(
 
         settingsScreen(
             onLanguageClick = { navController.navigate(LANGUAGE_ROUTE) { launchSingleTop = true } },
-            onRefreshDone = {
-                navController.signalRefresh()
-            }
         )
 
         languageScreen(
             onBack = { navController.popBackStack() },
-            onLanguageSelected = {
-                navController.signalRefresh()
-                navController.popBackStack()
-            }
+            onLanguageSelected = { navController.popBackStack() },
         )
 
         itemsScreen()
@@ -53,13 +47,3 @@ fun NavHostController.navigateSingleTopTo(route: String) =
     }
 
 internal const val NAV_ANIM_DURATION = 300
-internal const val KEY_REFRESH = "refresh"
-
-private fun NavHostController.signalRefresh() {
-    for (tab in REFRESH_TABS) {
-        val entry = runCatching { getBackStackEntry(tab.route) }.getOrNull() ?: continue
-        entry.savedStateHandle.let { handle ->
-            handle[KEY_REFRESH] = (handle.get<Int>(KEY_REFRESH) ?: 0) + 1
-        }
-    }
-}

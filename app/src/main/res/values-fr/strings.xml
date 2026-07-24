@@ -28,6 +28,15 @@
     <string name="language">Langue</string>
     <string name="internet_connection_error">Erreur de connexion Internet.</string>
     <string name="edit">Modifier</string>
+    <string name="filter_items">Filtrer les objets</string>
+    <string name="filter_tags">Tags</string>
+    <string name="filter_clear_all">Tout effacer</string>
+    <string name="filter_no_results">Aucun objet ne correspond à vos filtres.</string>
+    <string name="filter_game_mode">Mode de jeu</string>
+    <string name="game_mode_summoners_rift">Faille de l\'invocateur</string>
+    <string name="game_mode_aram">ARAM</string>
+    <string name="game_mode_arena">Arène</string>
+    <string name="clear_game_mode_filter">Effacer le filtre de mode de jeu</string>
     <string name="delete">Supprimer</string>
     <string name="build_name">Nom</string>
     <string name="build_content">Contenu du build</string>

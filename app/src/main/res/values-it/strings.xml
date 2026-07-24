@@ -28,6 +28,15 @@
     <string name="language">Lingua</string>
     <string name="internet_connection_error">Errore di connessione Internet.</string>
     <string name="edit">Modifica</string>
+    <string name="filter_items">Filtra oggetti</string>
+    <string name="filter_tags">Tag</string>
+    <string name="filter_clear_all">Cancella tutto</string>
+    <string name="filter_no_results">Nessun oggetto corrisponde ai tuoi filtri.</string>
+    <string name="filter_game_mode">Modalità di gioco</string>
+    <string name="game_mode_summoners_rift">Landa degli Evocatori</string>
+    <string name="game_mode_aram">ARAM</string>
+    <string name="game_mode_arena">Arena</string>
+    <string name="clear_game_mode_filter">Cancella filtro modalità di gioco</string>
     <string name="delete">Elimina</string>
     <string name="build_name">Nome</string>
     <string name="build_content">Contenuto build</string>

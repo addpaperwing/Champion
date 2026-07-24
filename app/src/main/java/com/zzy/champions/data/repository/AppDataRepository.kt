@@ -5,6 +5,7 @@ import com.zzy.champions.util.DEFAULT_STATE_STOP_TIMEOUT_MS
 import com.zzy.champions.util.stateInViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -21,6 +22,17 @@ interface AppDataRepository {
     suspend fun setLanguage(l: String)
 
     suspend fun getSupportedLanguages(): List<String>
+
+    // Broadcasts "champion/item data was invalidated, please refetch" independent of
+    // navigation back-stack membership. ChampionViewModel/ItemViewModel collect this
+    // directly in their own viewModelScope (alive for as long as the ViewModel itself is,
+    // regardless of which bottom-nav tab is currently visible) instead of relying on a
+    // per-NavBackStackEntry SavedStateHandle signal, which silently fails to reach a tab
+    // that isn't currently live on the back stack (popped-with-saveState by the other
+    // tabs' single-top navigation).
+    val dataRefreshed: SharedFlow<Unit>
+
+    fun notifyDataRefreshed()
 }
 
 // PENDING_VERSION (from DataStoreManager) leaks through getLocalVersion() unfiltered, so

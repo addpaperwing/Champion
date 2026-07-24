@@ -28,6 +28,15 @@
     <string name="language">Nyelv</string>
     <string name="internet_connection_error">Internetkapcsolati hiba.</string>
     <string name="edit">Szerkesztés</string>
+    <string name="filter_items">Tárgyak szűrése</string>
+    <string name="filter_tags">Címkék</string>
+    <string name="filter_clear_all">Összes törlése</string>
+    <string name="filter_no_results">Egyetlen tárgy sem felel meg a szűrőknek.</string>
+    <string name="filter_game_mode">Játékmód</string>
+    <string name="game_mode_summoners_rift">Idézőmező</string>
+    <string name="game_mode_aram">ARAM</string>
+    <string name="game_mode_arena">Aréna</string>
+    <string name="clear_game_mode_filter">Játékmód-szűrő törlése</string>
     <string name="delete">Törlés</string>
     <string name="build_name">Név</string>
     <string name="build_content">Összeállítás tartalma</string>

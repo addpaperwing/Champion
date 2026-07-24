@@ -28,6 +28,15 @@
     <string name="language">Limbă</string>
     <string name="internet_connection_error">Eroare de conexiune la Internet.</string>
     <string name="edit">Editare</string>
+    <string name="filter_items">Filtrează obiectele</string>
+    <string name="filter_tags">Etichete</string>
+    <string name="filter_clear_all">Șterge tot</string>
+    <string name="filter_no_results">Niciun obiect nu corespunde filtrelor tale.</string>
+    <string name="filter_game_mode">Mod de joc</string>
+    <string name="game_mode_summoners_rift">Fisura Invocatorului</string>
+    <string name="game_mode_aram">ARAM</string>
+    <string name="game_mode_arena">Arenă</string>
+    <string name="clear_game_mode_filter">Șterge filtrul modului de joc</string>
     <string name="delete">Ștergere</string>
     <string name="build_name">Nume</string>
     <string name="build_content">Conținut build</string>

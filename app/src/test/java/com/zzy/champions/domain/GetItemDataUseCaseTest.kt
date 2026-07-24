@@ -3,10 +3,14 @@ package com.zzy.champions.domain
 import com.zzy.champions.LANGUAGE_US
 import com.zzy.champions.TestItemRepository
 import com.zzy.champions.VERSION_14_0
+import com.zzy.champions.longSword
+import com.zzy.champions.data.local.PENDING_VERSION
 import com.zzy.champions.data.remote.UiState
 import com.zzy.champions.data.repository.AppDataRepository
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coJustRun
+import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
@@ -33,11 +37,12 @@ class GetItemDataUseCaseTest {
 
     @Test
     fun invoke_whenItemsCached_returnsSuccessWithCachedItems() = runTest {
-        // TestItemRepository starts with 3 items seeded
+        // TestItemRepository starts with 4 items seeded (including retiredTrinket)
+        // Cached items are returned as-is without filtering, so 4 items are returned
         val result = useCase()
 
         assertTrue(result is UiState.Success)
-        assertEquals(3, (result as UiState.Success).data.size)
+        assertEquals(4, (result as UiState.Success).data.size)
     }
 
     @Test
@@ -47,7 +52,7 @@ class GetItemDataUseCaseTest {
         val result = useCase()
 
         assertTrue(result is UiState.Success)
-        assertEquals(3, (result as UiState.Success).data.size)  // re-fetched from fake remote
+        assertEquals(4, (result as UiState.Success).data.size)  // re-fetched from fake remote; all 4 fixtures are purchasable
     }
 
     @Test
@@ -58,5 +63,38 @@ class GetItemDataUseCaseTest {
         val result = useCase()
 
         assertTrue(result is UiState.Error)
+    }
+
+    @Test
+    fun invoke_excludesItemsNotInStoreEvenWhenGoldIsPurchasable() = runTest {
+        // Data Dragon's gold.purchasable and inStore flags aren't guaranteed to agree (inStore
+        // exists specifically to hide items — e.g. old event/quest items — that can otherwise
+        // still carry purchasable=true), so inStore must be checked independently at the fetch
+        // source rather than assumed to already be covered by the purchasable filter.
+        val hiddenItem = longSword.copy(id = "9001", name = "Hidden Item", inStore = false)
+        val customRepository = TestItemRepository(listOf(longSword, hiddenItem))
+        val customUseCase = GetItemDataUseCase(customRepository, appDataRepository, Dispatchers.Unconfined)
+        customRepository.saveLocalItems(emptyList())
+
+        val result = customUseCase()
+
+        assertTrue(result is UiState.Success)
+        assertEquals(listOf(longSword), (result as UiState.Success).data)
+    }
+
+    @Test
+    fun invoke_whenLocalVersionIsPending_resolvesRealVersionAndPersistsIt() = runTest {
+        // Mirrors what SettingsViewModel.clearAndRefresh() does on every language switch:
+        // local items cleared, local version reset to the PENDING_VERSION sentinel.
+        itemRepository.saveLocalItems(emptyList())
+        coEvery { appDataRepository.getLocalVersion() } returns flowOf(PENDING_VERSION)
+        coEvery { appDataRepository.getRemoteVersion() } returns listOf(VERSION_14_0)
+        coJustRun { appDataRepository.setLocalVersion(any()) }
+
+        val result = useCase()
+
+        assertTrue(result is UiState.Success)
+        assertEquals(VERSION_14_0, itemRepository.lastRequestedVersion)
+        coVerify { appDataRepository.setLocalVersion(VERSION_14_0) }
     }
 }

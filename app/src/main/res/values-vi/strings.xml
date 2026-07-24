@@ -28,6 +28,15 @@
     <string name="language">Ngôn ngữ</string>
     <string name="internet_connection_error">Lỗi kết nối Internet.</string>
     <string name="edit">Chỉnh sửa</string>
+    <string name="filter_items">Lọc vật phẩm</string>
+    <string name="filter_tags">Thẻ</string>
+    <string name="filter_clear_all">Xóa tất cả</string>
+    <string name="filter_no_results">Không có vật phẩm nào phù hợp với bộ lọc của bạn.</string>
+    <string name="filter_game_mode">Chế độ chơi</string>
+    <string name="game_mode_summoners_rift">Đấu Trường Công Lý</string>
+    <string name="game_mode_aram">ARAM</string>
+    <string name="game_mode_arena">Đấu trường</string>
+    <string name="clear_game_mode_filter">Xóa bộ lọc chế độ chơi</string>
     <string name="delete">Xóa</string>
     <string name="build_name">Tên</string>
     <string name="build_content">Nội dung build</string>

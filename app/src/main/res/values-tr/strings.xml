@@ -28,6 +28,15 @@
     <string name="language">Dil</string>
     <string name="internet_connection_error">İnternet bağlantısı hatası.</string>
     <string name="edit">Düzenle</string>
+    <string name="filter_items">Eşyaları filtrele</string>
+    <string name="filter_tags">Etiketler</string>
+    <string name="filter_clear_all">Tümünü temizle</string>
+    <string name="filter_no_results">Filtrelerinize uyan eşya yok.</string>
+    <string name="filter_game_mode">Oyun modu</string>
+    <string name="game_mode_summoners_rift">Çağırıcı Vadisi</string>
+    <string name="game_mode_aram">ARAM</string>
+    <string name="game_mode_arena">Arena</string>
+    <string name="clear_game_mode_filter">Oyun modu filtresini temizle</string>
     <string name="delete">Sil</string>
     <string name="build_name">Ad</string>
     <string name="build_content">Derleme İçeriği</string>

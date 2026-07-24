@@ -16,6 +16,8 @@ import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
+import io.mockk.justRun
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -57,6 +59,7 @@ class SettingsViewModelTest {
         coEvery { appDataRepository.getLanguage() } returns flowOf("en_US")
         coEvery { appDataRepository.getSupportedLanguages() } returns listOf("en_US", "zh_CN", "ko_KR")
         coEvery { appDataRepository.getLocalVersion() } returns flowOf(VERSION_14_0)
+        justRun { appDataRepository.notifyDataRefreshed() }
 
         viewModel = SettingsViewModel(
             appDataRepository, championRepository, getChampionDataUseCase, getItemDataUseCase, Dispatchers.Main
@@ -108,7 +111,6 @@ class SettingsViewModelTest {
     fun selectLanguage_savesLanguageClearsDataResetsCache() = runTest {
         getChampionDataUseCase.setVersion(VERSION_14_0)
         coJustRun { appDataRepository.setLanguage(any()) }
-        coJustRun { appDataRepository.setLocalVersion(any()) }
         var done = false
 
         championRepository.saveLocalChampions(listOf(akali))
@@ -116,10 +118,34 @@ class SettingsViewModelTest {
         advanceUntilIdle()
 
         coVerify { appDataRepository.setLanguage("zh_CN") }
-        coVerify { appDataRepository.setLocalVersion(PENDING_VERSION) }
         assertNull(getChampionDataUseCase.getVersion())
         assertTrue(done)
         assertTrue(championRepository.searchChampionsBy("").isEmpty())
+    }
+
+    // A language switch must NOT invalidate the local game version: the version is independent
+    // of display language, and invalidating it here would blank the "latest game version" tile
+    // on the very screen the user lands back on after switching languages.
+    @Test
+    fun selectLanguage_doesNotInvalidateLocalVersion() = runTest {
+        coJustRun { appDataRepository.setLanguage(any()) }
+        var done = false
+
+        viewModel.selectLanguage("zh_CN") { _ -> done = true }
+        advanceUntilIdle()
+
+        coVerify(exactly = 0) { appDataRepository.setLocalVersion(PENDING_VERSION) }
+        assertTrue(done)
+    }
+
+    @Test
+    fun selectLanguage_notifiesDataRefreshed() = runTest {
+        coJustRun { appDataRepository.setLanguage(any()) }
+
+        viewModel.selectLanguage("zh_CN") { _ -> }
+        advanceUntilIdle()
+
+        verify { appDataRepository.notifyDataRefreshed() }
     }
 
     @Test
@@ -133,6 +159,7 @@ class SettingsViewModelTest {
         advanceUntilIdle()
 
         coVerify { appDataRepository.setLocalVersion(PENDING_VERSION) }
+        verify { appDataRepository.notifyDataRefreshed() }
         assertNull(getChampionDataUseCase.getVersion())
         assertTrue(done)
         assertTrue(championRepository.searchChampionsBy("").isEmpty())

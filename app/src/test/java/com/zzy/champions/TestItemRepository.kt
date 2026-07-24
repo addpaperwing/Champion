@@ -13,7 +13,7 @@ internal val longSword = Item(
     image = Image("1036.png"),
     gold = ItemGold(base = 350, purchasable = true, total = 350, sell = 245),
     tags = listOf("Damage"),
-    maps = mapOf("11" to true, "12" to true),
+    maps = mapOf("11" to true, "12" to false, "22" to false, "30" to false), // Summoner's Rift only
     stats = mapOf("FlatPhysicalDamageMod" to 10.0),
     components = emptyList(),
     upgrades = listOf("3153"),
@@ -27,7 +27,7 @@ internal val infinityEdge = Item(
     image = Image("3031.png"),
     gold = ItemGold(base = 625, purchasable = true, total = 3400, sell = 2380),
     tags = listOf("Damage", "CriticalStrike", "Legendary"),
-    maps = mapOf("11" to true, "12" to true),
+    maps = mapOf("11" to true, "12" to true, "22" to false, "30" to false), // Summoner's Rift + ARAM
     stats = mapOf("FlatPhysicalDamageMod" to 80.0, "FlatCritChanceMod" to 0.2),
     components = listOf("1038", "1018"),
     upgrades = emptyList(),
@@ -41,22 +41,42 @@ internal val sorceresShoes = Item(
     image = Image("3020.png"),
     gold = ItemGold(base = 600, purchasable = true, total = 1100, sell = 770),
     tags = listOf("Boots", "SpellDamage"),
-    maps = mapOf("11" to true, "12" to true),
+    maps = mapOf("11" to false, "12" to true, "22" to false, "30" to true), // ARAM + Arena
     stats = mapOf("FlatMovementSpeedMod" to 45.0, "FlatMagicPenetrationMod" to 18.0),
     components = listOf("1001"),
     upgrades = emptyList(),
 )
 
-private val remoteItems = listOf(longSword, infinityEdge, sorceresShoes)
+internal val retiredTrinket = Item(
+    id = "9999",
+    name = "Retired Trinket",
+    description = "No longer purchasable anywhere",
+    plaintext = "Removed from all game modes",
+    image = Image("9999.png"),
+    gold = ItemGold(base = 0, purchasable = true, total = 0, sell = 0),
+    tags = listOf("Trinket"),
+    maps = emptyMap(), // unavailable on every map (empty maps map, not all-false)
+    stats = emptyMap(),
+    components = emptyList(),
+    upgrades = emptyList(),
+)
 
-internal class TestItemRepository : ItemRepository {
+private val remoteItems = listOf(longSword, infinityEdge, sorceresShoes, retiredTrinket)
+
+internal class TestItemRepository(
+    private val initialItems: List<Item> = remoteItems,
+) : ItemRepository {
     // Separate local store so clearning local doesn't affect remote
-    private val localItems = mutableListOf(longSword, infinityEdge, sorceresShoes)
+    private val localItems = initialItems.toMutableList()
     var shouldThrowOnFetch = false
+    var lastRequestedVersion: String? = null
+    var getRemoteItemsCallCount = 0
 
     override suspend fun getRemoteItems(version: String, language: String): List<Item> {
+        lastRequestedVersion = version
+        getRemoteItemsCallCount++
         if (shouldThrowOnFetch) throw java.io.IOException("Network error")
-        return remoteItems
+        return initialItems
     }
 
     override suspend fun saveLocalItems(items: List<Item>) {

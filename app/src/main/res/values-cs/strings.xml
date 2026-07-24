@@ -28,6 +28,15 @@
     <string name="language">Jazyk</string>
     <string name="internet_connection_error">Chyba připojení k internetu.</string>
     <string name="edit">Upravit</string>
+    <string name="filter_items">Filtrovat položky</string>
+    <string name="filter_tags">Značky</string>
+    <string name="filter_clear_all">Vymazat vše</string>
+    <string name="filter_no_results">Žádné položky neodpovídají vašim filtrům.</string>
+    <string name="filter_game_mode">Herní režim</string>
+    <string name="game_mode_summoners_rift">Zaklínačova rokle</string>
+    <string name="game_mode_aram">ARAM</string>
+    <string name="game_mode_arena">Aréna</string>
+    <string name="clear_game_mode_filter">Vymazat filtr herního režimu</string>
     <string name="delete">Smazat</string>
     <string name="build_name">Název</string>
     <string name="build_content">Obsah sestavy</string>

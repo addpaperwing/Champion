@@ -37,6 +37,15 @@
     <string name="internet_connection_error">インターネット接続エラー。</string>
 
     <string name="edit">編集</string>
+    <string name="filter_items">アイテムをフィルター</string>
+    <string name="filter_tags">タグ</string>
+    <string name="filter_clear_all">すべてクリア</string>
+    <string name="filter_no_results">フィルターに一致するアイテムがありません。</string>
+    <string name="filter_game_mode">ゲームモード</string>
+    <string name="game_mode_summoners_rift">サモナーズリフト</string>
+    <string name="game_mode_aram">ARAM</string>
+    <string name="game_mode_arena">アリーナ</string>
+    <string name="clear_game_mode_filter">ゲームモードフィルターをクリア</string>
     <string name="delete">削除</string>
 
     <string name="build_name">名前</string>

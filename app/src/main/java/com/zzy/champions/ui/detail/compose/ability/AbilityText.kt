@@ -8,9 +8,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -25,8 +29,13 @@ fun HtmlText(
     @ColorRes defaultTextColor: Int = R.color.white,
 ) {
     val argb = if (color != Color.Unspecified) color.toArgb() else null
+    // Exposes the rendered plain text via Compose semantics so UI tests can assert on it with
+    // onNodeWithText — the AndroidView-wrapped TextView's own text isn't otherwise visible to
+    // Compose's semantics tree (real accessibility services read the platform View directly and
+    // are unaffected either way).
+    val plainText = remember(text) { Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT).toString() }
     AndroidView(
-        modifier = modifier,
+        modifier = modifier.semantics { this.text = AnnotatedString(plainText) },
         factory = { context -> TextView(context) },
         update = { tv ->
             if (argb != null) tv.setTextColor(argb)
