@@ -66,6 +66,51 @@ class ItemGroupingTest {
     }
 
     @Test
+    fun sameName_sameCuratedModes_keepsOnlyTheShorterIdVariant() {
+        // Real Data Dragon data: Zeke's Convergence ships both "3050" and "323050" marked
+        // available on Summoner's Rift — no genuinely different mode is covered, so the
+        // longer-id duplicate carries no build-planning value and is dropped at grouping time,
+        // leaving only the canonical variant.
+        val canonical = item("3050", "Zeke's Convergence", maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true))
+        val reskin = item("323050", "Zeke's Convergence", maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true))
+
+        val groups = groupItems(listOf(reskin, canonical))
+
+        assertEquals(1, groups.size)
+        assertEquals(listOf(canonical), groups.single().variants)
+    }
+
+    @Test
+    fun sameName_sameCuratedModes_dropsAnOrnnMasterworkStyleUpgradeEvenWithBoostedStats() {
+        // Real Data Dragon data: Frozen Heart ships id "3110" (SR/ARAM, 2500g) and id "323110"
+        // (Ornn's forge upgrade — boosted stats and a higher total, still flagged SR-true, but
+        // not independently purchasable). Boosted stats don't exempt it: it covers no mode the
+        // canonical variant doesn't already cover, so it's dropped the same as any other
+        // redundant duplicate.
+        val base = item("3110", "Frozen Heart", total = 2500, maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true, GAME_MODE_ARAM to true))
+        val masterwork = item("323110", "Frozen Heart", total = 2700, maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true))
+
+        val groups = groupItems(listOf(base, masterwork))
+
+        assertEquals(1, groups.size)
+        assertEquals(listOf(base), groups.single().variants)
+    }
+
+    @Test
+    fun sameName_sameSingleCuratedMode_keepsOnlyTheShorterIdVariant() {
+        // Real Data Dragon data: Scorchclaw Pup ships functionally-identical twin ids ("1101"
+        // and "1107") both available only on Summoner's Rift — a plain duplicate, not a
+        // different-mode variant, so only the shorter id survives grouping.
+        val a = item("1107", "Scorchclaw Pup", maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true))
+        val b = item("1101", "Scorchclaw Pup", maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true))
+
+        val groups = groupItems(listOf(a, b))
+
+        assertEquals(1, groups.size)
+        assertEquals(listOf(b), groups.single().variants)
+    }
+
+    @Test
     fun primary_prefersTheShorterId() {
         val arenaVariant = item("223031", "Infinity Edge", maps = mapOf(GAME_MODE_ARENA to true, GAME_MODE_SUMMONERS_RIFT to false))
         val srVariant = item("3031", "Infinity Edge", maps = mapOf(GAME_MODE_SUMMONERS_RIFT to true, GAME_MODE_ARENA to false))

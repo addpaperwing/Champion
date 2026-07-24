@@ -100,6 +100,9 @@ fun ItemBottomSheet(
     // Variants only need breaking out by mode when they actually differ; two catalog entries
     // that happen to share a name/icon but carry identical gold+description are the same item
     // in every way that matters here and should render exactly like a single-variant item.
+    // Redundant same-mode duplicates (Ornn's Masterwork upgrades, champion-locked reprints,
+    // functionally-identical twins) are already dropped upstream in groupItems, so item.variants
+    // only ever holds genuinely distinct, purchasable entries here.
     val distinctVariants = remember(item) { item.variants.distinctBy { it.gold to it.description } }
     val variantContents = remember(distinctVariants) { distinctVariants.map { variantContent(it) } }
     // Variants that differ only in gold (e.g. mode-specific pricing) but share the same stats

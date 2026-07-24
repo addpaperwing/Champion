@@ -71,18 +71,32 @@ data class ItemGroup(val variants: List<Item>) {
 
     // The shorter id is always Data Dragon's original/canonical entry — mode-specific reskins
     // are minted by prefixing digits onto the canonical id (e.g. Arena's "223031" from the
-    // canonical "3031"), so they're always longer. This can't be "prefer the Summoner's Rift
-    // variant": some pairs (e.g. Zeke's Convergence — "3050" and "323050") are BOTH marked
-    // available on Summoner's Rift, which made that rule pick whichever variant happened to
-    // come first from an unordered DB read — non-deterministic. Comparing (length, id) is fully
-    // deterministic regardless of input order, with the id itself only breaking ties between
-    // equal-length ids (which do exist, e.g. Scorchclaw Pup's "1101"/"1107" — functionally
-    // interchangeable either way).
+    // canonical "3031"), so they're always longer. Comparing (length, id) is fully deterministic
+    // regardless of input order, with the id itself only breaking ties between equal-length ids.
     val primary: Item get() = variants.minWithOrNull(compareBy({ it.id.length }, { it.id })) ?: variants.first()
 }
 
+// Some same-named entries claim a curated mode a shorter-id sibling already claims instead of
+// covering a genuinely new one — Ornn's "Masterwork" forge upgrade of a legendary item (e.g.
+// Frozen Heart's id "323110" duplicating "3110"'s Summoner's Rift availability with boosted,
+// non-purchasable stats), a champion-locked reprint (Kalista's Black Spear duplicated for
+// Sylas's ultimate-steal), or a functionally-identical twin (Scorchclaw Pup's "1101"/"1107").
+// None of these matter for planning a build — only the canonical (shortest-id) entry for each
+// mode is kept; a variant covering a genuinely different mode (e.g. Mercury's Treads' separate
+// ARAM/Arena entries) is unaffected and kept in full.
+private fun dropRedundantModeVariants(variants: List<Item>): List<Item> {
+    val ordered = variants.sortedWith(compareBy({ it.id.length }, { it.id }))
+    val claimedModes = mutableSetOf<String>()
+    return ordered.filter { variant ->
+        val newModes = ALL_GAME_MODES.filter { variant.maps[it] == true && it !in claimedModes }
+        if (newModes.isEmpty()) return@filter false
+        claimedModes += newModes
+        true
+    }
+}
+
 internal fun groupItems(items: List<Item>): List<ItemGroup> =
-    items.groupBy { it.name }.values.map { ItemGroup(it) }
+    items.groupBy { it.name }.values.map { ItemGroup(dropRedundantModeVariants(it)) }
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
