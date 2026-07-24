@@ -36,7 +36,7 @@ class GetItemDataUseCase @Inject constructor(
                 v.await() to l.await()
             }
             val fetched = itemRepository.getRemoteItems(version, language)
-                .filter { it.gold.purchasable }
+                .filter { it.gold.purchasable && it.inStore }
             // Read the language once after the fetch to detect mid-flight changes.
             val langAfterFetch = appDataRepository.getLanguage().first()
             return@withContext if (langAfterFetch == language) {

@@ -94,6 +94,15 @@ object PersistenceModule {
                         // SR/ARAM filter that was previously applied — show all purchasable items.
                         db.execSQL("DELETE FROM items")
                     }
+                },
+                object : Migration(5, 6) {
+                    override fun migrate(db: SupportSQLiteDatabase) {
+                        db.execSQL("ALTER TABLE items ADD COLUMN inStore INTEGER NOT NULL DEFAULT 1")
+                        // Clear cached items so the next launch re-fetches and applies the new
+                        // inStore filter — rows cached before this column existed would otherwise
+                        // default to true regardless of their real Data Dragon inStore value.
+                        db.execSQL("DELETE FROM items")
+                    }
                 }
             )
             .build()

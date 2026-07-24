@@ -10,7 +10,7 @@ import com.zzy.champions.data.model.Item
 
 @Database(
     entities = [Champion::class, ChampionDetail::class, ChampionBuild::class, Item::class],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

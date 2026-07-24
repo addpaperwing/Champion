@@ -20,6 +20,7 @@ data class Item(
     val stats: Map<String, Double> = emptyMap(),
     @Json(name = "from") val components: List<String> = emptyList(),  // "from" is SQL reserved word
     @Json(name = "into") val upgrades: List<String> = emptyList(),    // renamed for clarity
+    val inStore: Boolean = true, // absent in Data Dragon JSON means true; only ever appears as false
 ) {
     fun getIconUrl(version: String) = itemIconUrl(version, id)
 }
