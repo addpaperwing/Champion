@@ -88,6 +88,30 @@ class ItemCategorizationTest {
     }
 
     @Test
+    fun componentReferencedOnlyByNonPrimaryVariant_stillGoesToComponentsCategory() {
+        // The Arena variant's build path references this component even though the SR
+        // (primary, empty-components) variant's build path doesn't — componentIds must scan
+        // every variant, not just primary, or the component wrongly falls through to Starter.
+        val component = item("1036", listOf("Damage"), 350)
+        val srVariant = item("3031", listOf("Damage", "Legendary"), 3400)
+        val arenaVariant = Item(
+            id = "223031", name = "3031", description = "", plaintext = "",
+            image = srVariant.image,
+            gold = ItemGold(total = 2500, purchasable = true),
+            tags = listOf("Damage", "Legendary"),
+            maps = mapOf("11" to false, "30" to true),
+            stats = emptyMap(),
+            components = listOf("1036"),
+        )
+        val group = ItemGroup(listOf(srVariant, arenaVariant))
+
+        val result = categorizeItems(listOf(single(component), group))
+
+        val compCat = result.find { it.first == "Components" }
+        assertTrue(compCat?.second?.any { it.primary == component } == true)
+    }
+
+    @Test
     fun eachItem_appearsInExactlyOneCategory() {
         val items = listOf(
             item("3031", listOf("Damage", "Legendary"), 3400),

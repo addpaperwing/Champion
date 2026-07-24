@@ -139,7 +139,10 @@ class ItemViewModel @Inject constructor(
                 is UiState.Success -> {
                     val filtered = state.data.mapNotNull { (name, groups) ->
                         val matched = groups.filter { group ->
-                            (tags.isEmpty() || tags.all { it in group.primary.tags }) &&
+                            // Checked against every variant's tags (not just primary's) so a chip
+                            // surfaced by availableTags — which also scans all variants — can
+                            // always match the group that offered it.
+                            (tags.isEmpty() || tags.all { tag -> group.variants.any { tag in it.tags } }) &&
                                 (gameModes.isEmpty() || group.variants.any { v -> gameModes.all { v.maps[it] == true } }) &&
                                 (query.isBlank() || group.primary.name.contains(query, ignoreCase = true))
                         }
@@ -217,7 +220,7 @@ internal fun Item.isAvailableOnACuratedGameMode() = ALL_GAME_MODES.any { maps[it
 internal fun categorizeItems(groups: List<ItemGroup>): List<Pair<String, List<ItemGroup>>> {
     val validGroups = groups.filter { it.primary.id.isNotEmpty() }
     val allItemIds = validGroups.flatMap { g -> g.variants.map { it.id } }.toSet()
-    val componentIds = validGroups.flatMap { it.primary.components }.filter { it in allItemIds }.toSet()
+    val componentIds = validGroups.flatMap { g -> g.variants.flatMap { it.components } }.filter { it in allItemIds }.toSet()
 
     val categories = listOf(
         CATEGORY_STARTER    to { g: ItemGroup -> g.primary.gold.total in 1..500 && g.variants.none { it.id in componentIds } && "Boots" !in g.primary.tags },

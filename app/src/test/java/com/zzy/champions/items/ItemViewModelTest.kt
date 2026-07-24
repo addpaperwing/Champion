@@ -336,6 +336,39 @@ class ItemViewModelTest {
     }
 
     @Test
+    fun tagFilter_matchesGroupWhenTagIsOnlyOnNonPrimaryVariant() = runTest {
+        // srVariant (shorter id "3031") is primary and doesn't carry "ArenaOnly"; only the
+        // Arena variant does. availableTags surfaces "ArenaOnly" from every raw variant, so
+        // selecting it must still match the merged group via a variant-wide tag lookup,
+        // not just group.primary.tags.
+        val srVariant = infinityEdge.copy(tags = listOf("Damage", "Legendary"))
+        val arenaVariant = infinityEdge.copy(
+            id = "223031",
+            tags = listOf("Damage", "Legendary", "ArenaOnly"),
+            maps = mapOf("11" to false, "12" to false, "22" to false, "30" to true),
+        )
+        val customRepository = TestItemRepository(listOf(srVariant, arenaVariant))
+        val customViewModel = ItemViewModel(
+            GetItemDataUseCase(customRepository, appDataRepository, Dispatchers.Main),
+            appDataRepository,
+            SavedStateHandle(),
+        )
+
+        val job = launch { customViewModel.itemListState.collect() }
+        val tagsJob = launch { customViewModel.availableTags.collect() }
+        advanceUntilIdle()
+        assertTrue("ArenaOnly" in customViewModel.availableTags.value)
+
+        customViewModel.toggleTagFilter("ArenaOnly")
+        advanceUntilIdle()
+
+        val groups = (customViewModel.itemListState.value as UiState.Success).data.groups
+        assertEquals(1, groups.sumOf { it.second.size })
+        job.cancel()
+        tagsJob.cancel()
+    }
+
+    @Test
     fun clearFilters_alsoClearsGameMode() = runTest {
         val job = launch { viewModel.itemListState.collect() }
         advanceUntilIdle()
